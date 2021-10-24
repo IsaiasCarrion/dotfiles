@@ -14,22 +14,19 @@ set shiftwidth=4
 set showtabline=4
 set formatoptions-=cro
 set hidden
-set nowrap
+set wrap
 set encoding=utf-8
 set fileencoding=utf-8
 set ruler
 set mouse=a
 set cursorline
-set splitbelow splitright "set default position for wheare a split open"
+set splitbelow
 set splitright
 set clipboard=unnamedplus
 set background=dark
-set autochdir
 set ignorecase
-set smartcase
+set autochdir
 syntax enable
 filetype on
 filetype indent on
 filetype plugin on
-
-

@@ -35,28 +35,9 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-" Term
-
-augroup exe_code
-    autocmd!
-    
-    "execute python code"
-    autocmd FileType python nnoremap <buffer> <F5>
-        \ :sp<CR> :term python3 %<CR> :startinsert<CR>
-    
-    "execute Javascript code"
-    autocmd FileType javascript nnoremap <buffer> <F5>
-        \ :sp<CR> :term node %<CR> :startinsert<CR>
-    
-    "execute bash code"
-    autocmd FileType bash,sh nnoremap <buffer> <F5>
-        \ :sp<CR> :term bash %<CR> :startinsert<CR>
-
-augroup END
-
 if !exists('g:vscode')
     " TAB in general mode will move to next buffer
-    nnoremap <TAB> :bnext<CR>
+    nnoremap <C-TAB> :bnext<CR>
     " SHIFT-TAB will go to prev buffer
     nnoremap <S-TAB> :bprevious<CR>
 endif

@@ -8,31 +8,35 @@ call plug#begin('~/.config/nvim/plugged')
     else
         " Syntax support
         Plug 'sheerun/vim-polyglot'
-        Plug 'zchee/deoplete-jedi'
+        Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+        Plug 'mattn/emmet-vim'
         
-        " Typing
+        " Autopairs
         Plug 'jiangmiao/auto-pairs'
-      
+        
         " File explorer
         Plug 'scrooloose/NERDTree'    
-       
-        " Multiple Cursor
-        Plug 'terryma/vim-multiple-cursors'
-
+        
         " Icons
         Plug 'ryanoasis/vim-devicons'
         
         " Intellisense
         Plug 'neoclide/coc.nvim', {'branch': 'release'}
-        Plug 'sirver/ultisnips'           
-        Plug 'vim-python/python-syntax'        
         
         " Airline
         Plug 'vim-airline/vim-airline'
         Plug 'vim-airline/vim-airline-themes'
+        " Indent guides
+        " Plug 'Yggdroot/indentLine' 
         
         " Git integration
         Plug 'mhinz/vim-signify'
+        " Git commands within vim
+        Plug 'tpope/vim-fugitive'
+        " Git changes on the gutter
+        Plug 'airblade/vim-gitgutter'
+        " Nerdtree git changes
+        Plug 'Xuyuanp/nerdtree-git-plugin'
         
         " Autoclose tags
         Plug 'alvan/vim-closetag'
@@ -47,6 +51,8 @@ call plug#begin('~/.config/nvim/plugged')
         
         " Prettier
         Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+        " Rainbow Brackets
+        Plug 'luochen1990/rainbow'
 
         " Themes
         Plug 'joshdick/onedark.vim'
@@ -56,6 +62,6 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'ayu-theme/ayu-vim'
         Plug 'dracula/vim', { 'as': 'dracula' }
         Plug 'phanviet/vim-monokai-pro'
-        Plug 'morhetz/gruvbox'
+		Plug 'morhetz/gruvbox'
     endif
 call plug#end()
