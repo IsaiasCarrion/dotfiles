@@ -74,11 +74,8 @@ keys = [
     Key([mod], "Return", lazy.spawn("alacritty")), 
     Key([mod], "KP_Enter", lazy.spawn('alacritty')),
     Key([mod], "d", lazy.spawn('rofi -show drun -show-icons')),
-# SUPER + FUNCTION KEYS
-
-    Key([mod], "f", lazy.window.toggle_fullscreen()),
-    Key([mod], "q", lazy.window.kill()),
-
+    Key([mod], "s", lazy.spawn('flameshot gui')),
+    Key([mod, "control"],  "q", lazy.shutdown()), 
 
 # SUPER + SHIFT KEYS
 
@@ -183,7 +180,8 @@ group_names = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0",]
 #group_names = ["ampersand", "eacute", "quotedbl", "apostrophe", "parenleft", "section", "egrave", "exclam", "ccedilla", "agrave",]
 
 #group_labels = ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "0",]
-group_labels = ["", "", "", "", "", "", "", "", "", "",]
+group_labels = ["   ", "  ", "  ","  ", "  ","  ", "  ", "  ","  ", "  ",]
+#group_labels = ["", "", "", "", "", "", "", "", "", "",]
 #group_labels = ["Web", "Edit/chat", "Image", "Gimp", "Meld", "Video", "Vb", "Files", "Mail", "Music",]
 
 group_layouts = ["monadtall", "monadtall", "monadtall", "monadtall", "monadtall", "monadtall", "monadtall", "monadtall", "monadtall", "monadtall",]
