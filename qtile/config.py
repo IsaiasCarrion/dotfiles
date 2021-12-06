@@ -34,7 +34,7 @@ from libqtile import layout, bar, widget, hook
 from libqtile.config import Click, Drag, Group, Key, Match, Screen, Rule
 from libqtile.command import lazy
 from libqtile.widget import Spacer
-#import arcobattery
+import arcobattery
 
 #mod4 or mod = super key
 mod = "mod4"
@@ -169,7 +169,13 @@ keys = [
 # TOGGLE FLOATING LAYOUT
     Key([mod, "shift"], "space", lazy.window.toggle_floating()),
 
-    ]
+# INCREASE/DECREASE BRIGHTNESS
+    Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl set +10%")),
+    Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl set 10%-")),
+
+
+
+]
 
 groups = []
 
@@ -463,6 +469,22 @@ def init_widgets_list():
                         fontsize = 12,
                         format="%Y-%m-%d %H:%M"
                         ),
+                widget.Sep(
+                         linewidth = 1,
+                         padding = 10,
+                         foreground = colors[2],
+                         background = colors[1]
+                         ),
+                widget.Battery(
+                        format='{char} {percent:2.0%}'
+                        ),
+                arcobattery.BatteryIcon(
+                         padding=0,
+                         scale=0.7,
+                         y_poss=2,
+                         theme_path=home + "/.config/qtile/icons/battery_icons_horiz",update_interval = 5,
+                         background = colors[1]
+                         ),
                 widget.Sep(
                          linewidth = 1,
                          padding = 10,

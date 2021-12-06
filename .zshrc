@@ -160,3 +160,14 @@ export PATH="$PATH:$NPM_PACKAGES/bin"
 # Preserve MANPATH if you already defined it somewhere in your config.
 # Otherwise, fall back to `manpath` so we can inherit from `/etc/manpath`.
 export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
+
+### LS & TREE
+# alias ls='ls --color=auto'
+# alias ll='ls -l'
+# alias lla='ls -la'
+# alias la='ls -A'
+
+alias l='ls -lahF --icons'
+alias ls='exa -l --icons'
+alias ll='exa -l --icons'
+

@@ -1,70 +1,71 @@
-background_opacity: 1
+background_opacity: 0.8
 
 colors:
   # Default colors
   primary:
-    background: "#2D2A2E"
-    foreground: "#FCFCFA"
+    background: '#282a36'
+    foreground: '#f8f8f2'
 
   # Normal colors
   normal:
-    black: "#403E41"
-    red: "#FF6188"
-    green: "#A9DC76"
-    yellow: "#FFD866"
-    blue: "#FC9867"
-    magenta: "#AB9DF2"
-    cyan: "#78DCE8"
-    white: "#FCFCFA"
+    black: '#000000'
+    red: '#ff5555'
+    green: '#50fa7b'
+    yellow: '#f1fa8c'
+    blue: '#caa9fa'
+    magenta: '#ff79c6'
+    cyan: '#8be9fd'
+    white: '#bfbfbf'
 
   # Bright colors
   bright:
-    black: "#727072"
-    red: "#FF6188"
-    green: "#A9DC76"
-    yellow: "#FFD866"
-    blue: "#FC9867"
-    magenta: "#AB9DF2"
-    cyan: "#78DCE8"
-    white: "#FCFCFA"
+    black: '#575b70'
+    red: '#ff6e67'
+    green: '#5af78e'
+    yellow: '#f4f99d'
+    blue: '#caa9fa'
+    magenta: '#ff92d0'
+    cyan: '#9aedfe'
+    white: '#e6e6e6'
 
 font:
   bold:
-    #family: UbuntuMono Nerd Font
+    # family: UbuntuMono Nerd Font
     # family: mononoki Nerd Font
     # family: agave Nerd Font
     # family: Caskaydia Cove Nerd Font
-    family: JetBrains Mono ExtraBold Nerd Font
+    family: JetBrains Mono Medium
     # family: Hurmit Nerd Font Mono
     # family: DaddyTimeMono Nerd Font
     # family: Iosevka NF
     # family: Hack NF
     # family: SpaceMono NF
   italic:
-    #family: UbuntuMono Nerd Font
+    # family: UbuntuMono Nerd Font
     # family: mononoki Nerd Font
     # family: agave Nerd Font
     # family: Caskaydia Cove Nerd Font
-    family: JetBrains Mono Medium Nerd Font
+    family: JetBrains Mono Medium
     # family: Hurmit Nerd Font Mono
     # family: DaddyTimeMono Nerd Font
     # family: Iosevka NF
     # family: Hack NF
     # family: SpaceMono NF
   normal:
-    #family: UbuntuMono Nerd Font
+    # family: UbuntuMono Nerd Font
     # family: mononoki Nerd Font
     # family: agave Nerd Font
     # family: Caskaydia Cove Nerd Font
-    family: JetBrains Mono Medium Nerd Font
+    family: JetBrains Mono Medium
     # family: Hurmit Nerd Font Mono
     # family: DaddyTimeMono Nerd Font
     # family: Iosevka NF
     # family: Hack NF
     # family: SpaceMono NF
     style: Regular
-  size: 8
+  size: 7.5
 
 window:
   padding:
     x: 2
+theme: Dracula
