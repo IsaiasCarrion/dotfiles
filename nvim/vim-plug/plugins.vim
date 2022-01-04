@@ -10,7 +10,11 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'sheerun/vim-polyglot'
         Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
         Plug 'mattn/emmet-vim'
-        
+        Plug 'dense-analysis/ale'
+
+        " Visual Pluggin
+        Plug 'sheerun/vim-polyglot'
+        Plug 'Yggdroot/indentLine'
         " Autopairs
         Plug 'jiangmiao/auto-pairs'
         
@@ -27,6 +31,11 @@ call plug#begin('~/.config/nvim/plugged')
         Plug 'vim-airline/vim-airline'
         Plug 'vim-airline/vim-airline-themes'
         
+
+        " Snippes
+        Plug 'grvcoelho/vim-javascript-snippets'
+        
+
         " Indent guides
         Plug 'Yggdroot/indentLine' 
         Plug 'Valloric/YouCompleteMe'
@@ -54,8 +63,9 @@ call plug#begin('~/.config/nvim/plugged')
         
         " Prettier
         Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+       
         " Rainbow Brackets
-        Plug 'luochen1990/rainbow'
+        Plug 'frazrepo/vim-rainbow'
 
         " Themes
         Plug 'joshdick/onedark.vim'
