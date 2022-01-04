@@ -75,6 +75,8 @@ plugins=(
   zsh-syntax-highlighting
   dirhistory
   archlinux
+  fzf
+
 )
 
 source $ZSH/oh-my-zsh.sh

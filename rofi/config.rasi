@@ -1,1 +1,13 @@
-@theme "/usr/share/rofi/themes/Monokai.rasi"
+/** Basic config file **/
+
+configuration {
+  show-icons:         true;
+  icon-theme:         "Papirus";
+}
+//@theme "/usr/share/rofi/themes/style_11.rasi"
+//@theme "/usr/share/rofi/themes/style_1.rasi"
+//@theme "/usr/share/rofi/themes/style_10.rasi"
+//@theme "/usr/share/rofi/themes/ArcoLinux-Darkish.rasi"
+//@theme "/usr/share/rofi/themes/style_2.rasi"
+//@theme "/usr/share/rofi/themes/style_1.rasi"
+@theme "/usr/share/rofi/themes/onedark.rasi"

@@ -26,8 +26,11 @@ call plug#begin('~/.config/nvim/plugged')
         " Airline
         Plug 'vim-airline/vim-airline'
         Plug 'vim-airline/vim-airline-themes'
+        
         " Indent guides
-        " Plug 'Yggdroot/indentLine' 
+        Plug 'Yggdroot/indentLine' 
+        Plug 'Valloric/YouCompleteMe'
+
         
         " Git integration
         Plug 'mhinz/vim-signify'
