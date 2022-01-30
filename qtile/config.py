@@ -475,7 +475,9 @@ def init_widgets_list():
                          background = colors[1]
                          ),
                 widget.Battery(
-                        format='{char} {percent:2.0%}'
+                        format='{char} {percent:2.0%}',
+                        foreground = colors[2],
+                        background = colors[1]
                         ),
                 arcobattery.BatteryIcon(
                          padding=0,

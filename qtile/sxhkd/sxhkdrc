@@ -2,69 +2,17 @@
 # KEYBOARD BINDINGS FOR ANY TWM
 #################################################################
 
-#################################################################
-# SUPER + FUNCTION KEYS
-#################################################################
-
-# Vivaldi
-super + F1
-	vivaldi-stable
-
-# Atom
-super + F2
-	atom
-
-#Inkscape
-super + F3
-    inkscape
-
-#Gimp
-super + F4
-    gimp
-
-#Meld
-super + F5
-    meld
-
-#Vlc
-super + F6
-    vlc --video-on-top
-
-#Virtualbox
-super + F7
-    virtualbox
-
-#Thunar
-super + F8
-    thunar
-
-#Evolution
-super + F9
-    evolution
-
-#Spotify
-super + F10
-    spotify
-
-#Rofi Fullscreen
-super + F11
-    rofi -theme-str 'window \{width: 100%;height: 100%;\}' -show drun
-
-#Rofi
-super + F12
-    rofi -show drun
 
 #################################################################
 # SUPER + ... KEYS
 #################################################################
-
-#Atom
-super + e
-    atom
+#Rofi
+super + d
+    rofi -show run -show-icons
 
 #Browser
-super + w
-    vivaldi-stable
+super + b
+    google-chrome-stable
 
 #Conky-toggle
 super + c
@@ -96,7 +44,7 @@ super + m
 
 #urxvt
 super + Return
-    urxvt
+    alacritty
 
 #Xkill
 super + Escape
@@ -306,26 +254,11 @@ ctrl + shift + Escape
 #     SCREENSHOTS
 #################################################################
 
-#Scrot
-Print
-    scrot 'ArcoLinux-%Y-%m-%d-%s_screenshot_$wx$h.jpg' -e 'mv $f $$(xdg-user-dir PICTURES)'
 
-#screeenshooter
-ctrl + Print
-     xfce4-screenshooter
+#Flameshot
+ctrl + alt + s
+     flameshot gui
 
-#Gnome-Screenshot
-ctrl + shift + Print
-     gnome-screenshot -i
-
-
-#################################################################
-#     FUNCTION KEYS
-#################################################################
-
-#xfce4-terminal dropdown
-F12
-    xfce4-terminal --drop-down
 
 
 #################################################################
