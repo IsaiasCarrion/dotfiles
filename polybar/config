@@ -1,9 +1,3 @@
-;-------------------------------------------------
-;                                                ;
-;         Polybar config By Nojipiz              ;
-;                                                ;
-;-------------------------------------------------
-
 include-file = ~/.config/polybar/modules
 
 
@@ -62,7 +56,7 @@ module-margin-left = 1
 module-margin-right = 1
 modules-left = i3 
 modules-center = title
-modules-right = date wired-network wireless-network network volume battery xkeyboard speed memory cpu sysmenu
+modules-right =  cpu memory xkeyboard backlight volume ethernet wireless-network battery battery1 date sysmenu 
 
 ; [bar/bottom]
 ; inherit = bar/mainBar

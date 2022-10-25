@@ -5,26 +5,27 @@ set $mod Mod4
 #--------------------------EXECUTABLES-----------------------------------
 exec_always "bash ~/.config/polybar/launch.sh"
 exec "fluxgui"
-exec "setxkbmap en_US"
+exec "setxkbmap latam"
 exec "ip link set wlp4s0 down"
-exec_always feh --bg-fill /home/izzy/Pictures/girl.jpg
+exec_always --no-startup-id feh ~/Pictures/Wallpapers/* --recursive --randomize --bg-fill
 exec "xmodmap ~/.config/xmodmap/custom_config"
+exec --no-startup-id xrandr --output DVI-1-0 --auto --top-of HDMI-0 & workspace 1 output HDMI-0
 #-------------------------------------------------------------------------
 
 #--------------------------FONTS------------------------------------------
-font pango:inconsolata 10
+font pango:Hack Nerd Font 10
 font-0 = FontAwesome5Free:style=Solid:pixelsize=10:antialias=false;3
 #-------------------------------------------------------------------------
 
 #---------------------------WINDOWS---------------------------------------
 for_window [class="^.*"] border pixel 0Zc
-gaps inner 10
+gaps inner 2
 hide_edge_borders vertical
 set $unfocused_border #000000
 set $focused_border #000000
 
 for_window [workspace=""] floating enable
-floating_minimum_size 300 x 200
+floating_minimum_size 600 x 300
 #floating_maximum_size 500 x 310
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
@@ -39,17 +40,20 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
-bindsym XF86MonBrightnessUp exec sudo -S bash /home/nojipiz/.config/i3/scripts/brightnessUp.sh
-bindsym XF86MonBrightnessDown exec sudo -S bash /home/nojipiz/.config/i3/scripts/brightnessDown.sh
+#bindsym XF86MonBrightnessUp exec sudo -S bash ~/.config/i3/scripts/brightnessUp.sh
+#bindsym XF86MonBrightnessDown exec sudo -S bash ~/.config/i3/scripts/brightnessDown.sh
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
+
 #---------------------------------------------------------------------------
 
 #-------------------------BINDS---------------------------------------------
 floating_modifier $mod
-bindsym $mod+Return exec kitty
+bindsym $mod+Return exec alacritty
 bindsym $mod+braceright exec $HOME/.config/i3/scripts/openTerminalSameDir.sh
 bindsym $mod+q kill
 bindsym $mod+d exec rofi -show drun -show-icons
-bindsym $mod+x exec rofi-surfraw
+# bindsym $mod+x exec rofi-surfraw
 bindsym $mod+f fullscreen toggle
 bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
@@ -61,21 +65,31 @@ bindsym $mod+r mode "resize"
 bindsym $mod+t exec thunar
 
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
-bindsym Mod1+Tab exec --no-startup-id rofi -modi combi -combi-modi window -show combi
+bindsym $mod+Tab exec --no-startup-id rofi -modi combi -combi-modi window -show combi
+bindsym $mod+p exec ~/.config/rofi/todofi.sh
 
-# Windows Movement
+# Windows Movement Focus
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+
+# Windows Move 
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
+
 # Windows Split
-bindsym $mod+h split h
-bindsym $mod+v split v
+default_orientation horizontal
+# bindsym $mod+h split h
+# bindsym $mod+v split v
 
 # Container Layout
 bindsym $mod+s layout stacking
@@ -86,16 +100,14 @@ bindsym $mod+e layout toggle split
 bindsym $mod+a focus parent
 #bindsym $mod+d focus child
 
-#Change Keyboard Spanish To English Distro
-
 #--------------------------------------------------------------------------------
 
 #----------------------------------WORKSPACES------------------------------------
-set $ws1 "1: WwW  "
-set $ws2 "2: Code  "
-set $ws3 "3: Term  "
-set $ws4 "4: Social "
-set $ws5 "5: Game  "
+set $ws1 "1: Code    "
+set $ws2 "2: Term   "
+set $ws3 "3: WwW   "
+set $ws4 "4: Social  "
+set $ws5 "5: Game   "
 set $ws6 "6"
 set $ws7 "7"
 set $ws8 "8"
@@ -137,10 +149,10 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 
 #---------------------------------------FUNCTIONS------------------------------
 mode "resize" {
-        bindsym Left resize shrink width 15 px or 15 ppt
-        bindsym Down resize grow height 15 px or 15 ppt
-        bindsym Up resize shrink height 15 px or 15 ppt
-        bindsym Right resize grow width 15 px or 15 ppt
+        bindsym Left resize shrink width 5 px or 5 ppt
+        bindsym Down resize grow height 5 px or 5 ppt
+        bindsym Up resize shrink height 5 px or 5 ppt
+        bindsym Right resize grow width 5 px or 5 ppt
 
         # back to normal: Enter or Escape or $mod+r
         bindsym Return mode "default"

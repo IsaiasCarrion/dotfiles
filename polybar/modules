@@ -122,9 +122,47 @@ ramp-volume-1 = 
 ramp-volume-2 = 
 
 
-[module/battery]
+[module/battery1]
 type = internal/battery
 battery = BAT1
+adapter = AC
+full-at = 99
+
+format-full-background = ${colors.background}
+format-charging-background = ${colors.background}
+format-charging = "⁣   <animation-charging> <label-charging>"
+format-charging-underline = #ff4d4d
+
+format-charging-suffix = "   "
+
+format-discharging-background = ${colors.background}
+format-discharging = "⁣  <ramp-capacity> <label-discharging>  "
+format-discharging-underline = #ff4d4d
+
+format-full =  
+format-full-prefix-foreground = ${colors.foreground-alt}
+format-full-underline = ${self.format-charging-underline}
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+
+ramp-capacity-foreground = ${colors.foreground-alt}
+ramp-capacity-font = 2
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
+animation-charging-foreground = ${colors.foreground-alt}
+animation-charging-framerate = 750
+
+[module/battery]
+type = internal/battery
+battery = BAT0
 adapter = AC
 full-at = 99
 
@@ -226,9 +264,29 @@ click-left = ~/.config/polybar/scripts/powermenu.sh &
 
 [module/xkeyboard]
 type = internal/xkeyboard
-label-layout =
 indicator-icon-default = 
 indicator-icon-0 = caps lock;-CL;+CL
 indicator-icon-1 = scroll lock;;+SL
 indicator-icon-2 = num lock;-NL;+NL
 blacklist-0 = scroll lock
+
+[module/backlight]
+type = internal/backlight
+content = 
+content-font = 5
+card = intel_backlight
+enable-scroll = true
+
+[module/ethernet]
+type = internal/network
+interface = wlp4s0
+interval = 3
+format-connected-foreground = ${colors.eth_con}
+format-connected = "E <label-connected>"
+label-connected = "%local_ip%"
+format-disconnected-foreground = ${colors.eth_dis}
+format-disconnected = ""
+
+
+
+
