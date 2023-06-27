@@ -67,8 +67,19 @@ class Timer:
         if not self.notified and self.time < 0:
             self.notified = True
             try:
-                call(["notify-send", "-t", "0", "-u", "critical", "Pomodoro",
-                      "Timer reached zero"], stdout=DEVNULL, stderr=DEVNULL)
+                call(
+                    [
+                        "notify-send",
+                        "-t",
+                        "0",
+                        "-u",
+                        "critical",
+                        "Pomodoro",
+                        "Timer reached zero",
+                    ],
+                    stdout=DEVNULL,
+                    stderr=DEVNULL,
+                )
             except FileNotFoundError:
                 # Skip if notify-send isn't installed
                 pass
@@ -125,8 +136,7 @@ class Status:
 
 @contextmanager
 def setup_listener():
-    s = socket.socket(socket.AF_UNIX,
-                      socket.SOCK_DGRAM)
+    s = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
 
     # If there's an existing socket, replace it
     # this isn't nice to active polypomo instances but ensures we can start
@@ -150,8 +160,7 @@ def setup_listener():
 @contextmanager
 def setup_client():
     # creates socket object
-    s = socket.socket(socket.AF_UNIX,
-                      socket.SOCK_DGRAM)
+    s = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
 
     s.connect(SOCKFILE)
 
@@ -169,7 +178,7 @@ def check_actions(sock, status):
     data = ""
 
     while True:
-        ready = select.select([sock], [], [], .2)
+        ready = select.select([sock], [], [], 0.2)
         if time.time() > timeout:
             break
         if ready[0]:
@@ -179,7 +188,7 @@ def check_actions(sock, status):
                     break
             except socket.error as e:
                 # TODO replace this by logging
-                print('Lost connection to client. Printing buffer...', e)
+                print("Lost connection to client. Printing buffer...", e)
                 break
 
     if not data:
@@ -240,14 +249,16 @@ def action_time(args):
 
 class ValidateTime(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
-        if values[0] not in '-+':
-            parser.error("Time format should be +num or -num to add or remove time, respectively")
+        if values[0] not in "-+":
+            parser.error(
+                "Time format should be +num or -num to add or remove time, respectively"
+            )
         if not values[1:].isdigit():
             parser.error("Expected number after +/- but saw '{}'".format(values[1:]))
 
         # action = operator.add if values[0] == '+' else operator.sub
         # value = int(values[1:])
-        action = "add" if values[0] == '+' else "sub"
+        action = "add" if values[0] == "+" else "sub"
         value = values[1:]
 
         setattr(namespace, self.dest, (action, value))
@@ -255,41 +266,44 @@ class ValidateTime(argparse.Action):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Pomodoro timer to be used with polybar")
+        description="Pomodoro timer to be used with polybar"
+    )
     # Display - main loop showing status
-    parser.add_argument("--worktime",
-                        type=int,
-                        default=50 * 60,
-                        help="Default work timer time in seconds")
-    parser.add_argument("--breaktime",
-                        type=int,
-                        default=10 * 60,
-                        help="Default break timer time in seconds")
+    parser.add_argument(
+        "--worktime",
+        type=int,
+        default=50 * 60,
+        help="Default work timer time in seconds",
+    )
+    parser.add_argument(
+        "--breaktime",
+        type=int,
+        default=10 * 60,
+        help="Default break timer time in seconds",
+    )
     parser.set_defaults(func=action_display)
 
     sub = parser.add_subparsers()
 
     # start/stop timer
-    toggle = sub.add_parser("toggle",
-                            help="start/stop timer")
+    toggle = sub.add_parser("toggle", help="start/stop timer")
     toggle.set_defaults(func=action_toggle)
 
     # end timer
-    end = sub.add_parser("end",
-                         help="end current timer")
+    end = sub.add_parser("end", help="end current timer")
     end.set_defaults(func=action_end)
 
     # lock timer changes
-    lock = sub.add_parser("lock",
-                          help="lock time actions - prevent changing time")
+    lock = sub.add_parser("lock", help="lock time actions - prevent changing time")
     lock.set_defaults(func=action_lock)
 
     # change timer
-    time = sub.add_parser("time",
-                          help="add/remove time to current timer")
-    time.add_argument("delta",
-                      action=ValidateTime,
-                      help="Time to add/remove to current timer (in seconds)")
+    time = sub.add_parser("time", help="add/remove time to current timer")
+    time.add_argument(
+        "delta",
+        action=ValidateTime,
+        help="Time to add/remove to current timer (in seconds)",
+    )
     time.set_defaults(func=action_time)
 
     return parser.parse_args()

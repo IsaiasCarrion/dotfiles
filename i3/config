@@ -1,5 +1,4 @@
 #-------------------Izzy2k-i3-Config-File-------------------------------
-
 set $mod Mod4
 
 #--------------------------EXECUTABLES-----------------------------------
@@ -10,6 +9,10 @@ exec "ip link set wlp4s0 down"
 exec_always --no-startup-id feh ~/Pictures/Wallpapers/* --recursive --randomize --bg-fill
 exec "xmodmap ~/.config/xmodmap/custom_config"
 exec --no-startup-id xrandr --output DVI-1-0 --auto --top-of HDMI-0 & workspace 1 output HDMI-0
+### Autostart
+exec_always autotiling -w 1 3 5 7 9
+# FlashFocus
+exec_always --no-startup-id flashfocus
 #-------------------------------------------------------------------------
 
 #--------------------------FONTS------------------------------------------
@@ -35,8 +38,8 @@ for_window [class=".*"] split toggle
 
 #----------------------AUDIO&BRIGHTNESS------------------------------------
 set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% 
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% 
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
@@ -53,16 +56,19 @@ bindsym $mod+Return exec alacritty
 bindsym $mod+braceright exec $HOME/.config/i3/scripts/openTerminalSameDir.sh
 bindsym $mod+q kill
 bindsym $mod+d exec rofi -show drun -show-icons
-# bindsym $mod+x exec rofi-surfraw
+bindsym $mod+m exec rofi -show emoji -show-icons
+bindsym $mod+s exec --no-startup-id ~/.config/rofi/rofi-search.sh
 bindsym $mod+f fullscreen toggle
 bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 bindsym $mod+Shift+c reload
 bindsym Print exec scrot $HOME/Images/`date +%Y-%m-%d_%H:%M:%S`.png
-bindsym $mod+Shift+s exec flameshot gui
+# bindsym $mod+Shift+s exec flameshot gui
+bindsym --release  $mod+Shift+s exec gnome-screenshot -a
 bindsym $mod+Shift+r restart
 bindsym $mod+r mode "resize"
-bindsym $mod+t exec thunar
+bindsym $mod+e exec thunar
+bindsym $mod+n exec --no-startup-id flash_window
 
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 bindsym $mod+Tab exec --no-startup-id rofi -modi combi -combi-modi window -show combi
@@ -79,7 +85,7 @@ bindsym $mod+k focus up
 bindsym $mod+l focus right
 
 
-# Windows Move 
+# Windows Move
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
@@ -87,31 +93,31 @@ bindsym $mod+Shift+Right move right
 
 
 # Windows Split
-default_orientation horizontal
+default_orientation vertical
 # bindsym $mod+h split h
 # bindsym $mod+v split v
 
 # Container Layout
-bindsym $mod+s layout stacking
+#bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
+#bindsym $mod+e layout toggle split
 
 # Container Focus
-bindsym $mod+a focus parent
+#bindsym $mod+a focus parent
 #bindsym $mod+d focus child
 
 #--------------------------------------------------------------------------------
 
 #----------------------------------WORKSPACES------------------------------------
-set $ws1 "1: Code    "
-set $ws2 "2: Term   "
-set $ws3 "3: WwW   "
+set $ws1 "1: WwW   "
+set $ws2 "2: Code    "
+set $ws3 "3: Term   "
 set $ws4 "4: Social  "
 set $ws5 "5: Game   "
-set $ws6 "6"
+set $ws9 "6: Spotify  "
 set $ws7 "7"
+set $ws6 "9"
 set $ws8 "8"
-set $ws9 "9: Spotify  "
 set $ws10 "10"
 
 bindsym $mod+1 workspace number $ws1
@@ -163,4 +169,4 @@ mode "resize" {
 #------------------------------------BAR---------------------------------------
 
 
-    
+

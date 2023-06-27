@@ -54,9 +54,9 @@ background = ${colors.background}
 foreground = ${colors.foreground}
 module-margin-left = 1
 module-margin-right = 1
-modules-left = i3 
+modules-left = i3
 modules-center = title
-modules-right =  cpu memory xkeyboard backlight volume ethernet wireless-network battery battery1 date sysmenu 
+modules-right =   cpu memory  battery battery1 backlight volume date wireless-network xkeyboard
 
 ; [bar/bottom]
 ; inherit = bar/mainBar

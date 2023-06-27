@@ -1,0 +1,108 @@
+format = """
+[](#81A1C1)\
+$username\
+[](bg:#D8DEE9 fg:#81A1C1)\
+$directory\
+[](bg:#5E81AC fg:#D8DEE9)\
+$git_branch\
+[](fg:#5E81AC)\
+$all\
+"""
+[battery]
+full_symbol = "🔋"
+charging_symbol = "🔌"
+discharging_symbol = "⚡"
+
+[[battery.display]]
+threshold = 30
+style = "bold red"
+
+[character]
+success_symbol = "[➜](bold green) "
+error_symbol = "[✗](bold red) "
+
+[cmd_duration]
+min_time = 1
+format = "[⏳$duration ](bold yellow)"
+
+[directory]
+truncation_symbol = "\ue5ff …/"
+truncation_length = 5
+style = "bg:#D8DEE9 fg:#2E3440"
+format = "[ $path ]($style)"
+
+[dotnet]
+format = "[$symbol($version )]($style)"
+symbol = "\ue70c "
+style = "#ee82ee"
+heuristic = true
+disabled = false
+
+[git_branch]
+symbol = ""
+style = "bg:#5E81AC fg:#2E3440"
+format = "[ $symbol $branch ]($style)"
+
+[git_commit]
+commit_hash_length = 8
+style = "bold white"
+
+[git_state]
+format = '[\($state( $progress_current of $progress_total)\)]($style) '
+
+[git_status]
+conflicted = "⚔️ "
+ahead = "🏎️ 💨 ×${count}"
+behind = "🐢 ×${count}"
+diverged = "🔱 🏎️ 💨 ×${ahead_count} 🐢 ×${behind_count}"
+untracked = "? ${count} "
+stashed = "📦 "
+modified = "📝 ×${count}"
+staged = "✅×${count} "
+renamed = "📛 ×${count}"
+deleted = "🗑️ ×${count}"
+style = "bright-white"
+format = "$all_status$ahead_behind"
+
+[hostname]
+ssh_only = false
+format = "<[$hostname]($style)>"
+trim_at = "-"
+style = "bold dimmed white"
+disabled = true
+
+[julia]
+format = "[$symbol$version]($style) "
+symbol = "ஃ "
+style = "bold green"
+
+[memory_usage]
+format = "$symbol[${ram}( | ${swap})]($style) "
+threshold = 70
+style = "bold dimmed white"
+disabled = false
+
+[package]
+disabled = true
+
+[python]
+format = "[$symbol$version]($style) "
+style = "bold green"
+
+[rust]
+format = "[$symbol$version]($style) "
+style = "bold green"
+
+[time]
+time_format = "%T"
+format = "🕙 $time($style) "
+style = "bright-white"
+disabled = true
+
+[username]
+show_always = true
+style_user = "bg:#81A1C1"
+format = '[$user ]($style)'
+
+[nodejs]
+format = "[🤖 $version](bold green) "

@@ -1,1 +1,7 @@
 @theme "/usr/share/rofi/themes/nord.rasi"
+
+configuration {
+	width: 50px;
+	font: "JetBrainsMono Nerd Font 14";
+	show-icons: true;
+}

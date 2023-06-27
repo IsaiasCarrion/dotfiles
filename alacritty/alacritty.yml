@@ -1,7 +1,17 @@
 env:
     TERM: xterm-256color
 
+# shell:
+#      program: /bin/zsh
+#      args:
+#          - -l
+#          - -c
+#          - "tmux attach || tmux"
+
 window:
+    dimensions:
+        columns: 90
+        lines: 40
     padding:
         x: 1
         y: 1
@@ -44,7 +54,7 @@ font:
         #   - (macOS) Menlo
         #   - (Linux/BSD) monospace
         #   - (Windows) Consolas
-        family: Source Code Pro
+        # family: Source Code Pro
         # family: CodeNewRoman Nerd Font
         # family: RobotoMono Nerd Font
         # family: Hack
@@ -53,6 +63,7 @@ font:
         # family: Monofur Nerd Font
         # family: TerminessTTF Nerd Font
         # family: Mononoki Nerd Font
+        family: JetBrainsMono Nerd Font
 
         # The `style` can be specified to pick a specific face.
         style: Regular
@@ -63,7 +74,7 @@ font:
         #
         # If the bold family is not specified, it will fall back to the
         # value specified for the normal font.
-        family: Source Code Pro
+        # family: Source Code Pro
         # family: CodeNewRoman Nerd Font
         # family: RobotoMono Nerd Font
         # family: Hack
@@ -72,6 +83,7 @@ font:
         # family: Monofur Nerd Font
         # family: TerminessTTF Nerd Font
         # family: Mononoki Nerd Font
+        family: JetBrainsMono Nerd Font
 
         # The `style` can be specified to pick a specific face.
         style: Bold
@@ -82,7 +94,7 @@ font:
         #
         # If the italic family is not specified, it will fall back to the
         # value specified for the normal font.
-        family: Source Code Pro
+        # family: Source Code Pro
         # family: CodeNewRoman Nerd Font
         # family: RobotoMono Nerd Font
         # family: Hack
@@ -91,6 +103,7 @@ font:
         # family: Monofuritalic Nerd Font Mono
         # family: TerminessTTF Nerd Font
         # family: Mononoki Nerd Font
+        family: JetBrainsMono Nerd Font
 
         # The `style` can be specified to pick a specific face.
         style: Italic
@@ -115,7 +128,7 @@ font:
         style: Bold Italic
 
     # Point size
-    size: 9
+    size: 14
 
     # Offset is the extra space around each character. `offset.y` can be thought of
     # as modifying the line spacing, and `offset.x` as modifying the letter spacing.

@@ -1,65 +1,96 @@
-add_newline = true
+# prompt-wide option
+# Disable the newline at the start of the prompt
+add_newline = false
 
-format = """
-($username)[@](bold white)($hostname)
-($directory)
-"""
+# format
 
-right_format = """$all"""
-
+# Wait 10 milliseconds for starship to check files under the current directory.
+scan_timeout = 10
 
 [username]
 disabled = false
-show_always = true
-style_user = "bold white"
-format = "[$user]($style)"
+style_root = "bold fg:red"
+style_user = "bold fg:cyan"
 
 [hostname]
 disabled = false
-ssh_only = false
-style = "bold white"
-format =  "[$hostname]($style)"
+style = "bold fg:green"
+ssh_only = true
+format = "[$hostname]($style) in"
+# Linux
+# 
+# Windows
+# 
+# mac/apple
+# 
 
 [directory]
 disabled = false
-truncation_length = 1
-home_symbol = "~"
-format = "[$path](bold cyan)[/](bold green) "
-
-[character]
-success_symbol = ""
-error_symbol = "[](bold red)"
+style = "bold fg:bright-green"
+# fish_style_pwd_dir_length = 1
+format = "[ $path]($style)[$lock_symbol]($lock_style) "
 
 [git_branch]
-symbol = " "
-style = "bold blue"
+disabled = false
+style = "bold fg:bright-blue"
+symbol = " "
 
 [git_commit]
-commit_hash_length = 4
-tag_symbol = "🔖 "
+disabled = false
+style = "bold bright-blue"
 
 [git_state]
-format = '[\($state( $progress_current of $progress_total)\)]($style) '
-cherry_pick = "[🍒 PICKING](bold red)"
-
-[git_metrics]
-added_style = "bold blue"
-format = '[+$added]($added_style)/[-$deleted]($deleted_style) '
+disabled = false
+style = "bold bright-red"
 
 [git_status]
-format = '([\[$all_status$ahead_behind\]]($style) )'
-style = "bold cyan"
-conflicted = "= "
-ahead = "⇡ ${count} "
-behind = "⇣ ${count} "
-diverged = "⇕ "
-up_to_date = ""
-untracked = "? "
-stashed = "$ "
-modified = "! "
-staged = '[++\($count\)](green)'
-renamed = "» "
-deleted = " "
+disabled = false
+style = "bold fg:red"
+conflicted_count.enabled = false
+modified_count.enabled = false
+staged_count.enabled = false
+show_sync_count = false
+
+[dotnet]
+disabled = true
+# symbol = " "
+
+[java]
+disabled = true
+# symbol = " "
+
+[package]
+disabled = false
+# symbol = " "
+
+[nodejs]
+disabled = true
+# symbol = " "
+
+[golang]
+disabled = true
+# symbol = " "
+
+[python]
+disabled = true
+pyenv_version_name = true
+# symbol = " "
+
+[ruby]
+disabled = true
+# symbol = " "
 
 [cmd_duration]
+disabled = false
+style = "bold fg:green"
+
+[env_var]
 disabled = true
+
+
+
+# [battery]
+# full_symbol = ""
+# charging_symbol = ""
+# discharging_symbol = ""
+
