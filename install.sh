@@ -12,20 +12,18 @@ install_proprietary_packages() {
     if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
         echo "Configurando repositorios para Google Chrome y Visual Studio Code..."
 
-        # Configurar repositorio de Visual Studio Code
         wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
         sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
         sudo sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
         rm packages.microsoft.gpg
 
-        # Configurar repositorio de Google Chrome
         wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
         sudo sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-
+        
         echo "Repositorios configurados. Ahora instalando los programas..."
         sudo apt update
         sudo apt install -y code google-chrome-stable
-
+        
         echo "Instalación de Visual Studio Code y Google Chrome completada."
     else
         echo "Omitiendo la instalación de programas propietarios."
@@ -34,9 +32,7 @@ install_proprietary_packages() {
 
 install_system_packages() {
     local packages_to_install=(
-        # Añadido: herramientas básicas para descargas y gpg
         wget curl gnupg
-
         kitty zsh fzf bat eza
         python3 python3-pip pipx
         golang rustc cargo
@@ -48,7 +44,7 @@ install_system_packages() {
     read -r response
     if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
         echo "Instalando paquetes del sistema..."
-
+        
         sudo apt update
         sudo apt install -y "${packages_to_install[@]}"
 
@@ -61,6 +57,22 @@ install_system_packages() {
         echo "Omitiendo la instalación de paquetes del sistema."
     fi
 }
+
+install_oh_my_zsh() {
+    echo "¿Quieres instalar Oh My Zsh? (s/n)"
+    read -r response
+    if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
+        echo "Instalando Oh My Zsh..."
+        
+        # Instala Oh My Zsh
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        
+        echo "Oh My Zsh instalado. Ahora se configurará tu .zshrc."
+    else
+        echo "Omitiendo la instalación de Oh My Zsh."
+    fi
+}
+
 
 install_starship() {
     echo "¿Quieres instalar Starship? (s/n)"
@@ -119,7 +131,7 @@ create_symlinks() {
         ln -sf "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
         ln -sf "$DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
         ln -sf "$DOTFILES_DIR/.config/micro" "$HOME/.config/micro"
-
+        
         mkdir -p "$HOME/.config/rofi"
         ln -sf "$DOTFILES_DIR/.config/rofi/nord.rasi" "$HOME/.config/rofi/nord.rasi"
 
@@ -158,6 +170,7 @@ cd "$DOTFILES_DIR"
 
 install_system_packages
 install_proprietary_packages
+install_oh_my_zsh # <-- Nuevo: Instala Oh My Zsh
 install_starship
 install_docker
 create_symlinks
