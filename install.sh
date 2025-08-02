@@ -127,17 +127,15 @@ create_symlinks() {
         fi
         mkdir -p "$HOME/.config"
 
-               if [ -f "$HOME/.zshrc" ]; then
-            echo "Borrando el .zshrc existente para crear el symlink."
-            rm "$HOME/.zshrc"
-        fi
+        # --- CÓDIGO CORREGIDO: Usamos rm -f para forzar la eliminación ---
+        echo "Eliminando .zshrc existente y creando symlink..."
+        rm -f "$HOME/.zshrc"
         ln -sf "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 
-        if [ -f "$HOME/.gitconfig" ]; then
-            echo "Borrando el .gitconfig existente para crear el symlink."
-            rm "$HOME/.gitconfig"
-        fi
+        echo "Eliminando .gitconfig existente y creando symlink..."
+        rm -f "$HOME/.gitconfig"
         ln -sf "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
+        # -----------------------------------------------------------------
 
         ln -sf "$DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
         ln -sf "$DOTFILES_DIR/.config/micro" "$HOME/.config/micro"
