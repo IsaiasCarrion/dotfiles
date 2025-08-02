@@ -6,12 +6,38 @@ REPO_URL="https://github.com/IsaiasCarrion/dotfiles"
 DOTFILES_DIR="$HOME/.dotfiles"
 
 # --- FUNCIONES ---
+install_proprietary_packages() {
+    echo "¿Quieres instalar Google Chrome y Visual Studio Code? (s/n)"
+    read -r response
+    if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
+        echo "Configurando repositorios para Google Chrome y Visual Studio Code..."
+
+        # Configurar repositorio de Visual Studio Code
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+        sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+        sudo sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+        rm packages.microsoft.gpg
+
+        # Configurar repositorio de Google Chrome
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        sudo sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
+
+        echo "Repositorios configurados. Ahora instalando los programas..."
+        sudo apt update
+        sudo apt install -y code google-chrome-stable
+
+        echo "Instalación de Visual Studio Code y Google Chrome completada."
+    else
+        echo "Omitiendo la instalación de programas propietarios."
+    fi
+}
+
 install_system_packages() {
     local packages_to_install=(
         kitty zsh fzf bat eza
         python3 python3-pip golang rustc cargo
-        git gh code
-        google-chrome-stable jupyter-notebook
+        git gh
+        jupyter-notebook
     )
 
     echo "¿Quieres instalar los programas y lenguajes de desarrollo? (s/n)"
@@ -22,7 +48,6 @@ install_system_packages() {
         sudo apt update
         sudo apt install -y "${packages_to_install[@]}"
 
-        # Instalar pipx si no está
         if ! command -v pipx &> /dev/null; then
             echo "Instalando pipx..."
             python3 -m pip install --user pipx
@@ -53,27 +78,22 @@ install_docker() {
     if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
         echo "Instalando Docker y Docker Compose..."
 
-        # Limpia cualquier versión anterior de Docker
         for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
 
-        # Añade la clave GPG oficial de Docker
         sudo apt-get update
         sudo apt-get install -y ca-certificates curl gnupg
         sudo install -m 0755 -d /etc/apt/keyrings
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
         sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-        # Añade el repositorio de Docker a APT sources
         echo \
           "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
           "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
           sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-        # Instala Docker Engine, containerd y Docker Compose
         sudo apt-get update
         sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-        # Añade el usuario actual al grupo docker para usarlo sin sudo
         sudo usermod -aG docker $USER
         echo "Docker instalado. Por favor, reinicia tu terminal o cierra y vuelve a abrir tu sesión para que los permisos se apliquen."
     else
@@ -99,7 +119,6 @@ create_symlinks() {
         ln -sf "$DOTFILES_DIR/.config/micro" "$HOME/.config/micro"
 
         # --- NUEVO CÓDIGO PARA ROFI ---
-        # Crea la carpeta rofi y el enlace simbólico para el tema
         mkdir -p "$HOME/.config/rofi"
         ln -sf "$DOTFILES_DIR/.config/rofi/nord.rasi" "$HOME/.config/rofi/nord.rasi"
 
@@ -139,6 +158,7 @@ cd "$DOTFILES_DIR"
 
 # 2. Ejecutar todas las funciones de instalación y configuración
 install_system_packages
+install_proprietary_packages
 install_starship
 install_docker
 create_symlinks
