@@ -19,11 +19,11 @@ install_proprietary_packages() {
 
         wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
         sudo sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-        
+
         echo "Repositorios configurados. Ahora instalando los programas..."
         sudo apt update
         sudo apt install -y code google-chrome-stable
-        
+
         echo "Instalación de Visual Studio Code y Google Chrome completada."
     else
         echo "Omitiendo la instalación de programas propietarios."
@@ -44,7 +44,7 @@ install_system_packages() {
     read -r response
     if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
         echo "Instalando paquetes del sistema..."
-        
+
         sudo apt update
         sudo apt install -y "${packages_to_install[@]}"
 
@@ -63,10 +63,10 @@ install_oh_my_zsh() {
     read -r response
     if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
         echo "Instalando Oh My Zsh..."
-        
+
         # Instala Oh My Zsh
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-        
+
         echo "Oh My Zsh instalado. Ahora se configurará tu .zshrc."
     else
         echo "Omitiendo la instalación de Oh My Zsh."
@@ -127,11 +127,21 @@ create_symlinks() {
         fi
         mkdir -p "$HOME/.config"
 
+               if [ -f "$HOME/.zshrc" ]; then
+            echo "Borrando el .zshrc existente para crear el symlink."
+            rm "$HOME/.zshrc"
+        fi
         ln -sf "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
+
+        if [ -f "$HOME/.gitconfig" ]; then
+            echo "Borrando el .gitconfig existente para crear el symlink."
+            rm "$HOME/.gitconfig"
+        fi
         ln -sf "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
+
         ln -sf "$DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
         ln -sf "$DOTFILES_DIR/.config/micro" "$HOME/.config/micro"
-        
+
         mkdir -p "$HOME/.config/rofi"
         ln -sf "$DOTFILES_DIR/.config/rofi/nord.rasi" "$HOME/.config/rofi/nord.rasi"
 
