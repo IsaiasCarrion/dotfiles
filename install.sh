@@ -33,9 +33,11 @@ install_proprietary_packages() {
 }
 
 install_system_packages() {
+    # --- CAMBIO AQUÍ: pipx se agrega a la lista de apt ---
     local packages_to_install=(
         kitty zsh fzf bat eza
-        python3 python3-pip golang rustc cargo
+        python3 python3-pip pipx # <-- pipx agregado a la lista
+        golang rustc cargo
         git gh
         jupyter-notebook
     )
@@ -48,9 +50,11 @@ install_system_packages() {
         sudo apt update
         sudo apt install -y "${packages_to_install[@]}"
 
-        if ! command -v pipx &> /dev/null; then
-            echo "Instalando pipx..."
-            python3 -m pip install --user pipx
+        # --- SE ELIMINA LA INSTALACIÓN DE PIPX CON PIP ---
+        # El comando 'python3 -m pip install --user pipx' ya no es necesario
+
+        # Sigue siendo buena práctica ejecutar ensurepath por si el usuario ya lo tenía
+        if command -v pipx &> /dev/null; then
             python3 -m pipx ensurepath
         fi
 
@@ -118,7 +122,6 @@ create_symlinks() {
         ln -sf "$DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
         ln -sf "$DOTFILES_DIR/.config/micro" "$HOME/.config/micro"
 
-        # --- NUEVO CÓDIGO PARA ROFI ---
         mkdir -p "$HOME/.config/rofi"
         ln -sf "$DOTFILES_DIR/.config/rofi/nord.rasi" "$HOME/.config/rofi/nord.rasi"
 
@@ -144,7 +147,6 @@ configure_zsh() {
 }
 
 # --- LÓGICA PRINCIPAL ---
-# 1. Clonar o actualizar el repositorio
 if [ ! -d "$DOTFILES_DIR" ]; then
     echo "Clonando repositorio de dotfiles..."
     git clone --depth=1 "$REPO_URL" "$DOTFILES_DIR"
@@ -156,7 +158,6 @@ fi
 
 cd "$DOTFILES_DIR"
 
-# 2. Ejecutar todas las funciones de instalación y configuración
 install_system_packages
 install_proprietary_packages
 install_starship
