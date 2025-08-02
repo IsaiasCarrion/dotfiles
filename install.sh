@@ -33,10 +33,12 @@ install_proprietary_packages() {
 }
 
 install_system_packages() {
-    # --- CAMBIO AQUÍ: pipx se agrega a la lista de apt ---
     local packages_to_install=(
+        # Añadido: herramientas básicas para descargas y gpg
+        wget curl gnupg
+
         kitty zsh fzf bat eza
-        python3 python3-pip pipx # <-- pipx agregado a la lista
+        python3 python3-pip pipx
         golang rustc cargo
         git gh
         jupyter-notebook
@@ -50,10 +52,6 @@ install_system_packages() {
         sudo apt update
         sudo apt install -y "${packages_to_install[@]}"
 
-        # --- SE ELIMINA LA INSTALACIÓN DE PIPX CON PIP ---
-        # El comando 'python3 -m pip install --user pipx' ya no es necesario
-
-        # Sigue siendo buena práctica ejecutar ensurepath por si el usuario ya lo tenía
         if command -v pipx &> /dev/null; then
             python3 -m pipx ensurepath
         fi
