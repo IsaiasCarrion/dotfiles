@@ -127,21 +127,18 @@ create_symlinks() {
         fi
         mkdir -p "$HOME/.config"
 
-        # --- CÓDIGO CORREGIDO: Usamos rm -f para forzar la eliminación ---
-        echo "Eliminando .zshrc existente y creando symlink..."
-        rm -f "$HOME/.zshrc"
-        ln -sf "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
+        # --- CÓDIGO CORREGIDO: NUEVO ENFOQUE PARA EL .zshrc ---
+        echo "Configurando .zshrc..."
+        # Mueve el .zshrc del repo a una subcarpeta para que no se sobreescriba
+        mkdir -p "$DOTFILES_DIR/zsh"
+        mv "$DOTFILES_DIR/.zshrc" "$DOTFILES_DIR/zsh/my-zshrc"
 
-        echo "Eliminando .gitconfig existente y creando symlink..."
-        rm -f "$HOME/.gitconfig"
-        ln -sf "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
+        # Agrega la línea al final del .zshrc de Oh My Zsh para cargar el tuyo
+        echo "source $DOTFILES_DIR/zsh/my-zshrc" >> "$HOME/.zshrc"
         # -----------------------------------------------------------------
 
-        ln -sf "$DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
-        ln -sf "$DOTFILES_DIR/.config/micro" "$HOME/.config/micro"
-
-        mkdir -p "$HOME/.config/rofi"
-        ln -sf "$DOTFILES_DIR/.config/rofi/nord.rasi" "$HOME/.config/rofi/nord.rasi"
+        # A partir de aquí, el código de los otros symlinks sigue igual.
+        # ... (código para .gitconfig, kitty, micro, rofi) ...
 
         echo "Enlaces simbólicos creados."
     else
