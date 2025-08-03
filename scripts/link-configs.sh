@@ -25,31 +25,33 @@ link_configs() {
         fi
         mkdir -p "$HOME/.config"
 
-        # Cita de tu archivo install.sh para la lógica de copiado
+        # Copiamos .zshrc y .gitconfig desde el repositorio
         echo "Copiando .zshrc y .gitconfig desde el repositorio..."
         rm -f "$HOME/.zshrc"
         cp "$SOURCE_CONFIG_DIR/.zshrc" "$HOME/.zshrc"
 
         echo "Creando enlaces simbólicos para las configuraciones..."
-        # El directorio .config dentro de tu repositorio
-        # Aquí la corrección para Starship
+        # Enlaces simbólicos para las carpetas dentro de .config
         ln -sf "$SOURCE_CONFIG_DIR/.config/kitty" "$HOME/.config/kitty"
         ln -sf "$SOURCE_CONFIG_DIR/.config/nvim" "$HOME/.config/nvim"
         ln -sf "$SOURCE_CONFIG_DIR/.config/rofi" "$HOME/.config/rofi"
 
-        # Corrección: El enlace simbólico apunta a la carpeta de starship, no al archivo directamente
+        # Enlace para Alacritty
+        ln -sf "$SOURCE_CONFIG_DIR/.config/alacritty" "$HOME/.config/alacritty"
+
+        # Enlace para Starship
         if [ ! -d "$HOME/.config/starship" ]; then
           mkdir -p "$HOME/.config/starship"
         fi
         ln -sf "$SOURCE_CONFIG_DIR/.config/starship/starship.toml" "$HOME/.config/starship/starship.toml"
 
-        # También debes agregar el enlace para warp-terminal si lo necesitas
+        # Enlace para Warp-Terminal
         if [ ! -d "$HOME/.config/warp-terminal" ]; then
           mkdir -p "$HOME/.config/warp-terminal"
         fi
         ln -sf "$SOURCE_CONFIG_DIR/.config/warp-terminal/themes" "$HOME/.config/warp-terminal/themes"
 
-        # --- NUEVA ADICIÓN PARA XFCE4 ---
+        # Enlace para XFCE4
         if [ ! -d "$HOME/.config/xfce4" ]; then
             echo "Creando enlace simbólico para la configuración de XFCE4..."
             ln -sf "$SOURCE_CONFIG_DIR/.config/xfce4" "$HOME/.config/xfce4"

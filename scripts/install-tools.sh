@@ -55,7 +55,33 @@ install_docker() {
         echo "⏩ Omitiendo la instalación de Docker."
     fi
 }
+install_warp_terminal() {
+    if ask_user "¿Quieres instalar Warp Terminal?"; then
+        echo "Instalando Warp Terminal..."
+        curl -fsSL https://releases.warp.dev/linux/debian/warp.sh | sh
+        echo "✅ Warp Terminal instalado."
+    else
+        echo "⏩ Omitiendo la instalación de Warp Terminal."
+    fi
+}
+
+install_fonts() {
+    if ask_user "¿Quieres instalar JetBrains Mono Nerd Font?"; then
+        echo "Descargando e instalando JetBrains Mono Nerd Font..."
+        local font_dir="$HOME/.local/share/fonts/JetBrainsMono"
+        mkdir -p "$font_dir"
+        curl -fsSL "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/JetBrainsMono.zip" -o /tmp/JetBrainsMono.zip
+        unzip -o /tmp/JetBrainsMono.zip -d "$font_dir"
+        rm /tmp/JetBrainsMono.zip
+        fc-cache -f -v
+        echo "✅ JetBrains Mono Nerd Font instalado."
+    else
+        echo "⏩ Omitiendo la instalación de la fuente."
+    fi
+}
 
 install_zinit
 install_starship
 install_docker
+install_warp_terminal
+install_fonts

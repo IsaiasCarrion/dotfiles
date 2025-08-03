@@ -38,6 +38,8 @@ install_system_packages() {
         golang rustc cargo
         git gh
         jupyter-notebook
+        alacritty
+        papirus-icon-theme
     )
     if ask_user "¿Quieres instalar los programas y lenguajes de desarrollo?"; then
         echo "Instalando paquetes del sistema..."
