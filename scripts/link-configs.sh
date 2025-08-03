@@ -49,6 +49,14 @@ link_configs() {
         fi
         ln -sf "$SOURCE_CONFIG_DIR/.config/warp-terminal/themes" "$HOME/.config/warp-terminal/themes"
 
+        # --- NUEVA ADICIÓN PARA XFCE4 ---
+        if [ ! -d "$HOME/.config/xfce4" ]; then
+            echo "Creando enlace simbólico para la configuración de XFCE4..."
+            ln -sf "$SOURCE_CONFIG_DIR/.config/xfce4" "$HOME/.config/xfce4"
+            echo "✅ Enlace simbólico de XFCE4 creado."
+        else
+            echo "👌 El directorio ~/.config/xfce4 ya existe. Omitiendo la creación del enlace simbólico."
+        fi
 
         echo "✅ Enlaces simbólicos y copias creadas."
     else

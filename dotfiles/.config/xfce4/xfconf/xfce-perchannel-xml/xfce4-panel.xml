@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<channel name="xfce4-panel" version="1.0">
+  <property name="configver" type="empty"/>
+  <property name="panels" type="empty">
+    <property name="panel-1" type="empty">
+      <property name="position" type="string" value="p=6;x=2040;y=412"/>
+      <property name="length" type="double" value="100"/>
+      <property name="position-locked" type="bool" value="true"/>
+      <property name="size" type="uint" value="25"/>
+      <property name="background-style" type="uint" value="1"/>
+      <property name="background-alpha" type="empty"/>
+      <property name="enter-opacity" type="empty"/>
+      <property name="leave-opacity" type="empty"/>
+      <property name="icon-size" type="uint" value="0"/>
+      <property name="plugin-ids" type="array">
+        <value type="int" value="4"/>
+        <value type="int" value="14"/>
+        <value type="int" value="6"/>
+        <value type="int" value="7"/>
+        <value type="int" value="8"/>
+        <value type="int" value="9"/>
+        <value type="int" value="10"/>
+        <value type="int" value="11"/>
+        <value type="int" value="12"/>
+        <value type="int" value="13"/>
+      </property>
+      <property name="output-name" type="string" value="Primary"/>
+      <property name="mode" type="uint" value="0"/>
+      <property name="autohide-behavior" type="uint" value="0"/>
+      <property name="enable-struts" type="bool" value="true"/>
+    </property>
+    <property name="dark-mode" type="bool" value="true"/>
+  </property>
+  <property name="plugins" type="empty">
+    <property name="plugin-1" type="empty"/>
+    <property name="plugin-2" type="empty"/>
+    <property name="plugin-3" type="empty">
+      <property name="items" type="empty"/>
+    </property>
+    <property name="plugin-4" type="string" value="whiskermenu">
+      <property name="items" type="empty"/>
+      <property name="favorites" type="array">
+      </property>
+      <property name="recent" type="array">
+        <value type="string" value="xfce-settings-manager.desktop"/>
+        <value type="string" value="xfce4-settings-editor.desktop"/>
+        <value type="string" value="mintsources.desktop"/>
+        <value type="string" value="xfce-keyboard-settings.desktop"/>
+        <value type="string" value="kitty.desktop"/>
+        <value type="string" value="xfce-wm-settings.desktop"/>
+        <value type="string" value="xfce-ui-settings.desktop"/>
+        <value type="string" value="google-chrome.desktop"/>
+        <value type="string" value="albert.desktop"/>
+        <value type="string" value="nm-connection-editor.desktop"/>
+      </property>
+    </property>
+    <property name="plugin-5" type="empty">
+      <property name="items" type="empty"/>
+    </property>
+    <property name="plugin-6" type="empty">
+      <property name="show-handle" type="bool" value="false"/>
+      <property name="middle-click" type="uint" value="1"/>
+      <property name="show-labels" type="bool" value="true"/>
+      <property name="flat-buttons" type="bool" value="false"/>
+      <property name="show-tooltips" type="bool" value="true"/>
+      <property name="grouping" type="bool" value="false"/>
+      <property name="switch-workspace-on-unminimize" type="bool" value="true"/>
+      <property name="show-wireframes" type="bool" value="false"/>
+      <property name="include-all-workspaces" type="bool" value="false"/>
+      <property name="show-only-minimized" type="bool" value="false"/>
+      <property name="sort-order" type="uint" value="4"/>
+      <property name="include-all-monitors" type="bool" value="false"/>
+    </property>
+    <property name="plugin-7" type="empty">
+      <property name="expand" type="empty"/>
+      <property name="style" type="empty"/>
+    </property>
+    <property name="plugin-8" type="empty">
+      <property name="icon-size" type="empty"/>
+      <property name="names-visible" type="empty"/>
+      <property name="show-frame" type="empty"/>
+      <property name="known-items" type="array">
+        <value type="string" value="openrgb"/>
+        <value type="string" value="steam"/>
+        <value type="string" value="albert"/>
+        <value type="string" value="chrome_status_icon_1"/>
+        <value type="string" value="blueman"/>
+      </property>
+    </property>
+    <property name="plugin-9" type="empty"/>
+    <property name="plugin-10" type="empty"/>
+    <property name="plugin-11" type="empty"/>
+    <property name="plugin-12" type="empty">
+      <property name="enable-keyboard-shortcuts" type="empty"/>
+      <property name="enable-mpris" type="empty"/>
+      <property name="mixer-command" type="empty"/>
+      <property name="show-notifications" type="empty"/>
+      <property name="known-players" type="string" value="Chrome"/>
+    </property>
+    <property name="plugin-13" type="empty">
+      <property name="digital-time-format" type="empty"/>
+      <property name="digital-layout" type="empty"/>
+      <property name="digital-date-font" type="empty"/>
+      <property name="digital-time-font" type="empty"/>
+      <property name="mode" type="uint" value="2"/>
+    </property>
+    <property name="plugin-14" type="empty"/>
+  </property>
+</channel>
