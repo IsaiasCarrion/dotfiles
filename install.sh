@@ -3,40 +3,36 @@ set -e
 
 # --- VARIABLES ---
 REPO_URL="https://github.com/IsaiasCarrion/dotfiles"
+# El directorio donde se clona el repo
 DOTFILES_DIR="$HOME/.dotfiles"
-# CORREGIDO: Definimos la ruta real a los dotfiles dentro del repo
-# para no tener que repetirla en cada comando.
-SOURCE_DOTFILES_DIR="$DOTFILES_DIR/dotfiles" 
+# El directorio fuente dentro del repo (si hay una carpeta anidada)
+# Revisa la estructura de tu repo para asegurarte de que esta ruta es correcta
+SOURCE_DOTFILES_DIR="$DOTFILES_DIR/dotfiles"
 
 # --- MODO NO INTERACTIVO ---
-# Si se pasa -y o --yes al script, se omiten todas las preguntas.
 NON_INTERACTIVE=false
 if [[ "$1" == "-y" || "$1" == "--yes" ]]; then
     NON_INTERACTIVE=true
 fi
 
-# --- FUNCIONES ---
-# Función auxiliar para manejar las preguntas interactivas
 ask_user() {
     if [ "$NON_INTERACTIVE" = true ]; then
-        return 0 # Responde "sí" automáticamente
+        return 0
     fi
     read -r -p "$1 (s/n): " response
     [[ "$response" =~ ^([sS][iI]|[sS])$ ]]
 }
 
+# --- FUNCIONES (sin cambios en la lógica interna) ---
 install_proprietary_packages() {
     if ask_user "¿Quieres instalar Google Chrome y Visual Studio Code?"; then
         echo "Configurando repositorios para Google Chrome y Visual Studio Code..."
-
         wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
         sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
         sudo sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
         rm packages.microsoft.gpg
-
         wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
         sudo sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list'
-
         echo "Repositorios configurados. Ahora instalando los programas..."
         sudo apt update
         sudo apt install -y code google-chrome-stable
@@ -72,11 +68,9 @@ install_zinit() {
     if ask_user "¿Quieres instalar Zinit?"; then
         if [[ ! -d "$HOME/.zinit/bin" ]]; then
             echo "Clonando Zinit..."
-            # Clona directamente en el directorio correcto
             git clone https://github.com/zdharma-continuum/zinit.git "$HOME/.zinit/bin"
         else
             echo "Zinit ya está instalado. Actualizando..."
-            # Actualiza sin cambiar de directorio (más seguro)
             git -C "$HOME/.zinit/bin" pull
         fi
          echo "✅ Zinit listo."
@@ -120,37 +114,28 @@ install_docker() {
 create_symlinks() {
     if ask_user "¿Quieres crear los enlaces simbólicos y copias para los dotfiles?"; then
         echo "Creando enlaces simbólicos y copias..."
-
-        # CORREGIDO: Verifica la existencia del directorio fuente antes de continuar.
         if [ ! -d "$SOURCE_DOTFILES_DIR" ]; then
             echo "❌ Error: El directorio de origen '$SOURCE_DOTFILES_DIR' no existe. Revisa la estructura del repositorio."
             exit 1
         fi
-
-        # Mueve .config existente a .config.bak si existe
         if [ -d "$HOME/.config" ] && [ ! -L "$HOME/.config" ]; then
             echo "Moviendo el directorio ~/.config existente a ~/.config.bak"
             mv "$HOME/.config" "$HOME/.config.bak"
         fi
         mkdir -p "$HOME/.config"
 
-        # CORREGIDO: Las rutas ahora apuntan a la carpeta anidada 'dotfiles'.
-        # Asumo que .zshrc y .gitconfig están dentro de la segunda carpeta 'dotfiles'.
-        # Si están en la raíz del repo, quita 'dotfiles/' de las dos líneas siguientes.
         echo "Copiando .zshrc y .gitconfig desde el repositorio..."
         rm -f "$HOME/.zshrc"
         cp "$SOURCE_DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 
-        #rm -f "$HOME/.gitconfig"
-        #cp "$SOURCE_DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
+        # rm -f "$HOME/.gitconfig"
+        # cp "$SOURCE_DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
 
         echo "Creando enlaces simbólicos para las configuraciones..."
         ln -sf "$SOURCE_DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
         ln -sf "$SOURCE_DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
         ln -sf "$SOURCE_DOTFILES_DIR/.config/rofi" "$HOME/.config/rofi"
         ln -sf "$SOURCE_DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
-        # ln -sf "$SOURCE_DOTFILES_DIR/.config/greenclip.toml" "$HOME/.config/greenclip.toml" # Descomenta si usas greenclip
-
         echo "✅ Enlaces simbólicos y copias creadas."
     else
         echo "⏩ Omitiendo la creación de enlaces simbólicos y copias."
@@ -171,6 +156,7 @@ configure_zsh() {
 }
 
 # --- LÓGICA PRINCIPAL ---
+echo "⚙️  Iniciando la configuración de dotfiles..."
 if [ ! -d "$DOTFILES_DIR" ]; then
     echo "Clonando repositorio de dotfiles..."
     git clone --depth=1 "$REPO_URL" "$DOTFILES_DIR"
@@ -180,8 +166,6 @@ else
 fi
 
 cd "$DOTFILES_DIR"
-
-# Ejecución de las funciones
 install_system_packages
 install_zinit
 install_starship
