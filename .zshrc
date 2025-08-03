@@ -6,14 +6,27 @@
 # Define PATH para comandos de pipx.
 # El instalador de pipx lo agrega, así que no es necesario aquí.
 # export PATH="$PATH:/home/izzy/.local/bin"
+# ~/.zshrc - Carga condicional de herramientas
 
-# ---| Zinit Autoinstalación y Carga |--- #
-if [[ ! -f "${HOME}/.zinit/bin/zinit.zsh" ]]; then
-  echo "Instalando Zinit..."
-  mkdir -p "${HOME}/.zinit" && \
-  git clone https://github.com/zdharma-continuum/zinit.git "${HOME}/.zinit/bin"
+# Zinit
+if [[ -f "$HOME/.zinit/bin/zinit.zsh" ]]; then
+  source "$HOME/.zinit/bin/zinit.zsh"
+  zinit light zsh-users/zsh-syntax-highlighting
+  zinit light zdharma-continuum/fast-syntax-highlighting
+else
+  echo "[.zshrc] ⚠️ Zinit no encontrado."
 fi
-source "${HOME}/.zinit/bin/zinit.zsh"
+
+# Starship
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+else
+  echo "[.zshrc] ⚠️ Starship no encontrado."
+fi
+
+# Confirmación de carga
+echo "[.zshrc] ✅ cargado correctamente"
+
 
 # ---| Plugins via Zinit |--- #
 zinit light zsh-users/zsh-syntax-highlighting
@@ -23,11 +36,6 @@ zinit light junegunn/fzf
 # CORREGIDO: Usar la ruta correcta para la instalación de fzf vía apt
 [ -f "/usr/share/fzf/key-bindings.zsh" ] && source "/usr/share/fzf/key-bindings.zsh"
 source /usr/share/doc/fzf/examples/key-bindings.zsh
-
-# ---| Starship Prompt |--- #
-# El script `install.sh` ya se encarga de instalar Starship.
-# Esta línea solo lo inicializa.
-eval "$(starship init zsh)"
 
 # ---| Paths de Caché |--- #
 typeset -g comppath="$HOME/.cache"

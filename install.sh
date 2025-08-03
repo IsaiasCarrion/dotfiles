@@ -1,3 +1,4 @@
+NON_INTERACTIVE=true
 #!/bin/bash
 set -e
 
@@ -188,3 +189,13 @@ create_symlinks
 configure_zsh
 
 echo "Configuración de dotfiles completada. ¡Disfruta!"
+# Verificación explícita
+echo "Verificando existencia de $HOME/.zshrc..."
+if [[ -f "$HOME/.zshrc" ]]; then
+    echo "✅ ~/.zshrc copiado correctamente."
+else
+    echo "❌ No se encontró ~/.zshrc. Listando $HOME:"
+    ls -la "$HOME"
+fi
+
+echo "Para iniciar Zsh manualmente: docker exec -it <container> zsh"
