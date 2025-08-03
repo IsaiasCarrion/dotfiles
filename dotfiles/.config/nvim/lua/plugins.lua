@@ -55,12 +55,5 @@ return require("lazy").setup({ -- Tema: Similar a VS Code (dark)
       })
     end
   },
-
--- Jupytext
-{
-    "goerz/jupytext.nvim",
-    opts = {}
-},
-
 })
 
