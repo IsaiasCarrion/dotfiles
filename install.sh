@@ -1,16 +1,32 @@
-NON_INTERACTIVE=true
 #!/bin/bash
 set -e
 
 # --- VARIABLES ---
 REPO_URL="https://github.com/IsaiasCarrion/dotfiles"
 DOTFILES_DIR="$HOME/.dotfiles"
+# CORREGIDO: Definimos la ruta real a los dotfiles dentro del repo
+# para no tener que repetirla en cada comando.
+SOURCE_DOTFILES_DIR="$DOTFILES_DIR/dotfiles" 
+
+# --- MODO NO INTERACTIVO ---
+# Si se pasa -y o --yes al script, se omiten todas las preguntas.
+NON_INTERACTIVE=false
+if [[ "$1" == "-y" || "$1" == "--yes" ]]; then
+    NON_INTERACTIVE=true
+fi
 
 # --- FUNCIONES ---
+# Función auxiliar para manejar las preguntas interactivas
+ask_user() {
+    if [ "$NON_INTERACTIVE" = true ]; then
+        return 0 # Responde "sí" automáticamente
+    fi
+    read -r -p "$1 (s/n): " response
+    [[ "$response" =~ ^([sS][iI]|[sS])$ ]]
+}
+
 install_proprietary_packages() {
-    echo "¿Quieres instalar Google Chrome y Visual Studio Code? (s/n)"
-    read -r response
-    if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
+    if ask_user "¿Quieres instalar Google Chrome y Visual Studio Code?"; then
         echo "Configurando repositorios para Google Chrome y Visual Studio Code..."
 
         wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
@@ -24,148 +40,133 @@ install_proprietary_packages() {
         echo "Repositorios configurados. Ahora instalando los programas..."
         sudo apt update
         sudo apt install -y code google-chrome-stable
-
-        echo "Instalación de Visual Studio Code y Google Chrome completada."
+        echo "✅ Instalación de Visual Studio Code y Google Chrome completada."
     else
-        echo "Omitiendo la instalación de programas propietarios."
+        echo "⏩ Omitiendo la instalación de programas propietarios."
     fi
 }
 
 install_system_packages() {
     local packages_to_install=(
         wget curl gnupg
-        kitty zsh fzf bat eza nala # <-- nala añadido aquí
+        kitty zsh fzf bat eza nala
         python3 python3-pip pipx jq
         golang rustc cargo
         git gh
         jupyter-notebook
     )
-
-    echo "¿Quieres instalar los programas y lenguajes de desarrollo? (s/n)"
-    read -r response
-    if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
+    if ask_user "¿Quieres instalar los programas y lenguajes de desarrollo?"; then
         echo "Instalando paquetes del sistema..."
-
         sudo apt update
         sudo apt install -y "${packages_to_install[@]}"
-
         if command -v pipx &> /dev/null; then
             python3 -m pipx ensurepath
         fi
-
-        echo "Instalación de paquetes del sistema completada."
+        echo "✅ Instalación de paquetes del sistema completada."
     else
-        echo "Omitiendo la instalación de paquetes del sistema."
+        echo "⏩ Omitiendo la instalación de paquetes del sistema."
     fi
 }
 
-# --- NUEVA FUNCIÓN: Instala Zinit ---
 install_zinit() {
-    echo "¿Quieres instalar Zinit? (s/n)"
-    read -r response
-    if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
-        if [[ ! -f "$HOME/.zinit/bin/zinit.zsh" ]]; then
+    if ask_user "¿Quieres instalar Zinit?"; then
+        if [[ ! -d "$HOME/.zinit/bin" ]]; then
             echo "Clonando Zinit..."
-            mkdir -p "$HOME/.zinit" && \
+            # Clona directamente en el directorio correcto
             git clone https://github.com/zdharma-continuum/zinit.git "$HOME/.zinit/bin"
         else
             echo "Zinit ya está instalado. Actualizando..."
-            cd "$HOME/.zinit/bin"
-            git pull
-            cd "$DOTFILES_DIR" # Vuelve al directorio de dotfiles
+            # Actualiza sin cambiar de directorio (más seguro)
+            git -C "$HOME/.zinit/bin" pull
         fi
+         echo "✅ Zinit listo."
     else
-        echo "Omitiendo la instalación de Zinit."
+        echo "⏩ Omitiendo la instalación de Zinit."
     fi
 }
 
 install_starship() {
-    echo "¿Quieres instalar Starship? (s/n)"
-    read -r response
-    if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
+    if ask_user "¿Quieres instalar Starship?"; then
         echo "Instalando Starship..."
-        # Si ya se instaló, el script de Starship lo gestiona bien
         curl -sS https://starship.rs/install.sh | sh -s -- -y
-        echo "Starship instalado."
+        echo "✅ Starship instalado."
     else
-        echo "Omitiendo la instalación de Starship."
+        echo "⏩ Omitiendo la instalación de Starship."
     fi
 }
 
 install_docker() {
-    echo "¿Quieres instalar Docker y Docker Compose? (s/n)"
-    read -r response
-    if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
+    if ask_user "¿Quieres instalar Docker y Docker Compose?"; then
         echo "Instalando Docker y Docker Compose..."
-
-        for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
-
+        for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove -y $pkg; done
         sudo apt-get update
         sudo apt-get install -y ca-certificates curl gnupg
         sudo install -m 0755 -d /etc/apt/keyrings
         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
         sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
         echo \
           "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
           "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
           sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
         sudo apt-get update
         sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
         sudo usermod -aG docker $USER
-        echo "Docker instalado. Por favor, reinicia tu terminal o cierra y vuelve a abrir tu sesión para que los permisos se apliquen."
+        echo "✅ Docker instalado. Por favor, reinicia tu sesión para que los permisos de grupo se apliquen."
     else
-        echo "Omitiendo la instalación de Docker."
+        echo "⏩ Omitiendo la instalación de Docker."
     fi
 }
 
 create_symlinks() {
-    echo "¿Quieres crear los enlaces simbólicos y copias para los dotfiles? (s/n)"
-    read -r response
-    if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
+    if ask_user "¿Quieres crear los enlaces simbólicos y copias para los dotfiles?"; then
         echo "Creando enlaces simbólicos y copias..."
 
-        if [ -d "$HOME/.config" ]; then
+        # CORREGIDO: Verifica la existencia del directorio fuente antes de continuar.
+        if [ ! -d "$SOURCE_DOTFILES_DIR" ]; then
+            echo "❌ Error: El directorio de origen '$SOURCE_DOTFILES_DIR' no existe. Revisa la estructura del repositorio."
+            exit 1
+        fi
+
+        # Mueve .config existente a .config.bak si existe
+        if [ -d "$HOME/.config" ] && [ ! -L "$HOME/.config" ]; then
             echo "Moviendo el directorio ~/.config existente a ~/.config.bak"
             mv "$HOME/.config" "$HOME/.config.bak"
         fi
         mkdir -p "$HOME/.config"
 
-        # Ahora se copia directamente el .zshrc
-        echo "Borrando .zshrc existente y copiando el de dotfiles..."
+        # CORREGIDO: Las rutas ahora apuntan a la carpeta anidada 'dotfiles'.
+        # Asumo que .zshrc y .gitconfig están dentro de la segunda carpeta 'dotfiles'.
+        # Si están en la raíz del repo, quita 'dotfiles/' de las dos líneas siguientes.
+        echo "Copiando .zshrc y .gitconfig desde el repositorio..."
         rm -f "$HOME/.zshrc"
-        cp "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
+        cp "$SOURCE_DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 
-        echo "Borrando .gitconfig existente y copiando el de dotfiles..."
-        rm -f "$HOME/.gitconfig"
-        cp "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
+        #rm -f "$HOME/.gitconfig"
+        #cp "$SOURCE_DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
 
-        ln -sf "$DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
-        ln -sf "$DOTFILES_DIR/.config/micro" "$HOME/.config/micro"
+        echo "Creando enlaces simbólicos para las configuraciones..."
+        ln -sf "$SOURCE_DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
+        ln -sf "$SOURCE_DOTFILES_DIR/.config/nvim" "$HOME/.config/nvim"
+        ln -sf "$SOURCE_DOTFILES_DIR/.config/rofi" "$HOME/.config/rofi"
+        ln -sf "$SOURCE_DOTFILES_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
+        # ln -sf "$SOURCE_DOTFILES_DIR/.config/greenclip.toml" "$HOME/.config/greenclip.toml" # Descomenta si usas greenclip
 
-        mkdir -p "$HOME/.config/rofi"
-        ln -sf "$DOTFILES_DIR/.config/rofi/nord.rasi" "$HOME/.config/rofi/nord.rasi"
-
-        echo "Enlaces simbólicos y copias creadas."
+        echo "✅ Enlaces simbólicos y copias creadas."
     else
-        echo "Omitiendo la creación de enlaces simbólicos y copias."
+        echo "⏩ Omitiendo la creación de enlaces simbólicos y copias."
     fi
 }
 
 configure_zsh() {
-    echo "¿Quieres configurar zsh como tu shell por defecto? (s/n)"
-    read -r response
-    if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
-        if [ "$SHELL" != "/usr/bin/zsh" ]; then
-            chsh -s /usr/bin/zsh
-            echo "Zsh se ha establecido como tu shell por defecto. Reinicia tu terminal para aplicar los cambios."
+    if ask_user "¿Quieres configurar zsh como tu shell por defecto?"; then
+        if [[ "$(getent passwd "$USER" | cut -d: -f7)" != "$(which zsh)" ]]; then
+            chsh -s "$(which zsh)"
+            echo "✅ Zsh se ha establecido como tu shell por defecto. Reinicia tu sesión para aplicar los cambios."
         else
-            echo "Zsh ya es tu shell por defecto."
+            echo "👌 Zsh ya es tu shell por defecto."
         fi
     else
-        echo "Omitiendo la configuración de zsh."
+        echo "⏩ Omitiendo la configuración de zsh."
     fi
 }
 
@@ -175,27 +176,18 @@ if [ ! -d "$DOTFILES_DIR" ]; then
     git clone --depth=1 "$REPO_URL" "$DOTFILES_DIR"
 else
     echo "El directorio de dotfiles ya existe. Actualizando..."
-    cd "$DOTFILES_DIR"
-    git pull
+    git -C "$DOTFILES_DIR" pull
 fi
 
 cd "$DOTFILES_DIR"
 
+# Ejecución de las funciones
 install_system_packages
-install_zinit # <-- Ahora se llama a Zinit
+install_zinit
 install_starship
 install_docker
 create_symlinks
 configure_zsh
 
-echo "Configuración de dotfiles completada. ¡Disfruta!"
-# Verificación explícita
-echo "Verificando existencia de $HOME/.zshrc..."
-if [[ -f "$HOME/.zshrc" ]]; then
-    echo "✅ ~/.zshrc copiado correctamente."
-else
-    echo "❌ No se encontró ~/.zshrc. Listando $HOME:"
-    ls -la "$HOME"
-fi
-
-echo "Para iniciar Zsh manualmente: docker exec -it <container> zsh"
+echo ""
+echo "🎉 Configuración de dotfiles completada. ¡Disfruta!"
