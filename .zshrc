@@ -1,32 +1,19 @@
 #!/bin/zsh
 
 # ---| Carga Temprana de PATHs y Interactividad |--- #
+# Solo cargar el script si es una sesión interactiva (no en scripts o entornos no interactivos)
 [[ $- != *i* ]] && return
 
-# Define PATH para comandos de pipx.
-# El instalador de pipx lo agrega, así que no es necesario aquí.
-# export PATH="$PATH:/home/izzy/.local/bin"
-# ~/.zshrc - Carga condicional de herramientas
+# Define PATH para comandos de pipx. Es mejor que esté al principio.
+export PATH="$PATH:/home/izzy/.local/bin"
 
-# Zinit
-if [[ -f "$HOME/.zinit/bin/zinit.zsh" ]]; then
-  source "$HOME/.zinit/bin/zinit.zsh"
-  zinit light zsh-users/zsh-syntax-highlighting
-  zinit light zdharma-continuum/fast-syntax-highlighting
-else
-  echo "[.zshrc] ⚠️ Zinit no encontrado."
+# ---| Zinit Autoinstalación y Carga |--- #
+if [[ ! -f "${HOME}/.zinit/bin/zinit.zsh" ]]; then
+  echo "Instalando Zinit..."
+  mkdir -p "${HOME}/.zinit" && \
+  git clone https://github.com/zdharma-continuum/zinit.git "${HOME}/.zinit/bin"
 fi
-
-# Starship
-if command -v starship >/dev/null 2>&1; then
-  eval "$(starship init zsh)"
-else
-  echo "[.zshrc] ⚠️ Starship no encontrado."
-fi
-
-# Confirmación de carga
-echo "[.zshrc] ✅ cargado correctamente"
-
+source "${HOME}/.zinit/bin/zinit.zsh"
 
 # ---| Plugins via Zinit |--- #
 zinit light zsh-users/zsh-syntax-highlighting
@@ -36,6 +23,13 @@ zinit light junegunn/fzf
 # CORREGIDO: Usar la ruta correcta para la instalación de fzf vía apt
 [ -f "/usr/share/fzf/key-bindings.zsh" ] && source "/usr/share/fzf/key-bindings.zsh"
 source /usr/share/doc/fzf/examples/key-bindings.zsh
+
+# ---| Starship Prompt |--- #
+if ! command -v starship &> /dev/null; then
+  echo "Instalando Starship..."
+  curl -sS https://starship.rs/install.sh | sh
+fi
+eval "$(starship init zsh)"
 
 # ---| Paths de Caché |--- #
 typeset -g comppath="$HOME/.cache"
@@ -62,6 +56,7 @@ setopt NO_NOMATCH
 setopt LIST_PACKED
 setopt ALWAYS_TO_END
 setopt GLOB_COMPLETE
+# setopt COMPLETE_ES
 setopt COMPLETE_IN_WORD
 setopt AUTO_CD
 setopt AUTO_CONTINUE
@@ -222,32 +217,39 @@ function mkvenv() {
 
 # Automatiza el flujo de git add, commit y push
 function gpush() {
+  # Verifica si se proporcionó un mensaje de commit
   if [ -z "$1" ]; then
     echo "Error: Debes proporcionar un mensaje de commit."
     echo "Uso: gpush \"Tu mensaje de commit\""
     return 1
   fi
 
+  # 1. git add --all
   echo "Añadiendo todos los archivos modificados con 'git add --all'..."
   git add --all
 
+  # 2. git commit -m
   echo "Realizando commit con el mensaje: '$1'"
   git commit -m "$1"
 
+  # Verifica si el commit fue exitoso
   if [ $? -ne 0 ]; then
     echo "El commit falló. No se realizará el push."
     return 1
   fi
 
+  # 3. Pregunta antes de hacer el push
   echo ""
   echo "Resumen de los cambios a subir:"
   git --no-pager log -1 --stat
 
+  # Pide confirmación al usuario (versión compatible con Zsh)
   print -n "¿Estás seguro de que quieres hacer 'git push'? (y/n): "
   read -r reply
   echo
 
   if [[ $reply =~ ^[Yy]$ ]]; then
+    # 4. git push
     echo "Realizando 'git push'..."
     git push
   else
@@ -265,18 +267,6 @@ alias aup='sudo apt-get update && apt-get upgrade -y'
 alias ls='eza -lF --git --icons'
 alias ll='eza -alF --git --icons'
 alias bat='batcat'
-
-# ========================
-# Alias para Docker
-# ========================
-
-alias dpsa='docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}"'
-alias dstop ='docker stop test-dotfiles'
-alias dstart ='docker start test-dotfiles'
-alias drm ='docker rm test-dotfiles'
-alias dexec ='docker exec -it test-dotfiles zsh'
-
-# ========================
 
 # ---| Estilos de Autocompletado |--- #
 zstyle ':completion:*:correct:*' original true
@@ -306,6 +296,8 @@ zstyle ':completion:*:matches' group 'yes'
 zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*:options' auto-description '%d'
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+zstyle ':completion:*' format ' %F{green}->%F{yellow} %d%f'
 zstyle ':completion:*:messages' format ' %F{green}->%F{purple} %d%f'
 zstyle ':completion:*:descriptions' format ' %F{green}->%F{yellow} %d%f'
 zstyle ':completion:*:warnings' format ' %F{green}->%F{red} no matches%f'
+
