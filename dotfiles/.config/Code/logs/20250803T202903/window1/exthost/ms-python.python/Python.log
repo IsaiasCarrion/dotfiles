@@ -1,0 +1,15 @@
+2025-08-03 20:29:06.071 [info] Experiment 'pythonSurveyNotificationcf' is active
+2025-08-03 20:29:06.071 [info] Native locator: Refresh started
+2025-08-03 20:29:06.100 [info] > pyenv which python
+2025-08-03 20:29:06.100 [info] cwd: .
+2025-08-03 20:29:06.313 [info] Active interpreter [/home/izzy/Documents/dotfiles]:  /bin/python3
+2025-08-03 20:29:06.314 [info] Native locator: Refresh finished in 328 ms
+2025-08-03 20:29:06.317 [info] Discover tests for workspace name: dotfiles - uri: /home/izzy/Documents/dotfiles
+2025-08-03 20:29:06.904 [info] Discover tests for workspace name: undefined - uri: /home/izzy/.config/Code/User/settings.json
+2025-08-03 20:29:07.907 [info] Starting Pylance language server.
+2025-08-03 20:31:43.867 [info] Discover tests for workspace name: undefined - uri: /home/izzy/.config/Code/User/settings.json
+2025-08-03 20:31:44.592 [info] Discover tests for workspace name: undefined - uri: /home/izzy/.config/Code/User/settings.json
+2025-08-03 20:31:46.064 [info] Discover tests for workspace name: undefined - uri: /home/izzy/.config/Code/User/settings.json
+2025-08-03 20:31:49.928 [info] Discover tests for workspace name: undefined - uri: /home/izzy/.config/Code/User/settings.json
+2025-08-03 20:32:21.473 [info] Discover tests for workspace name: undefined - uri: /home/izzy/.config/Code/User/settings.json
+2025-08-03 20:32:29.349 [info] Discover tests for workspace name: undefined - uri: /home/izzy/.config/Code/User/settings.json

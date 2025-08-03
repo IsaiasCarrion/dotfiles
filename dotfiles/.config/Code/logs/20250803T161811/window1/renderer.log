@@ -1,0 +1,36 @@
+2025-08-03 16:18:12.203 [warning] Via 'product.json#extensionEnabledApiProposals' extension 'ms-vsliveshare.vsliveshare' wants API proposal 'notebookCellExecutionState' but that proposal DOES NOT EXIST. Likely, the proposal has been finalized (check 'vscode.d.ts') or was abandoned.
+2025-08-03 16:18:12.212 [warning] Via 'product.json#extensionEnabledApiProposals' extension 'ms-python.gather' wants API proposal 'notebookCellExecutionState' but that proposal DOES NOT EXIST. Likely, the proposal has been finalized (check 'vscode.d.ts') or was abandoned.
+2025-08-03 16:18:12.213 [warning] Via 'product.json#extensionEnabledApiProposals' extension 'ms-python.vscode-pylance' wants API proposal 'mcpConfigurationProvider' but that proposal DOES NOT EXIST. Likely, the proposal has been finalized (check 'vscode.d.ts') or was abandoned.
+2025-08-03 16:18:12.478 [info] Started local extension host with pid 345584.
+2025-08-03 16:18:13.349 [info] Settings Sync: Account status changed from uninitialized to available
+2025-08-03 16:18:14.027 [error] [Extension Host] (node:345584) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `exe --trace-deprecation ...` to show where the warning was created)
+2025-08-03 16:18:14.772 [warning] Settings pattern "mcp" doesn't match any settings
+2025-08-03 16:18:15.071 [info] [perf] Render performance baseline is 13ms
+2025-08-03 16:18:15.532 [warning] Settings pattern "mcp" doesn't match any settings
+2025-08-03 16:18:16.325 [error] [UriError]: Scheme contains illegal characters.: Error: [UriError]: Scheme contains illegal characters.
+    at C7 (file:///usr/share/code/resources/app/out/main.js:30:63994)
+    at new id (file:///usr/share/code/resources/app/out/main.js:30:67374)
+    at new jr (file:///usr/share/code/resources/app/out/main.js:30:68812)
+    at id.revive (file:///usr/share/code/resources/app/out/main.js:30:68589)
+    at V5.call (file:///usr/share/code/resources/app/out/main.js:85:103918)
+    at Df.s (file:///usr/share/code/resources/app/out/main.js:31:14859)
+    at Df.q (file:///usr/share/code/resources/app/out/main.js:31:14382)
+    at Yo.value (file:///usr/share/code/resources/app/out/main.js:31:13784)
+    at D.C (file:///usr/share/code/resources/app/out/main.js:30:2373)
+    at D (file:///usr/share/code/resources/app/out/main.js:30:2443)
+    at D.fire (file:///usr/share/code/resources/app/out/main.js:30:2660)
+    at Yo.value (file:///usr/share/code/resources/app/out/main.js:28:4827)
+    at D.C (file:///usr/share/code/resources/app/out/main.js:30:2373)
+    at D.fire (file:///usr/share/code/resources/app/out/main.js:30:2591)
+    at Yo.value (file:///usr/share/code/resources/app/out/main.js:28:5015)
+    at D.C (file:///usr/share/code/resources/app/out/main.js:30:2373)
+    at D.fire (file:///usr/share/code/resources/app/out/main.js:30:2591)
+    at z (file:///usr/share/code/resources/app/out/main.js:28:7309)
+    at IpcMainImpl.i (file:///usr/share/code/resources/app/out/main.js:33:21024)
+    at IpcMainImpl.emit (node:events:518:28)
+    at WebContents.<anonymous> (node:electron/js2c/browser_init:2:88892)
+    at WebContents.emit (node:events:518:28)
+2025-08-03 16:18:16.822 [warning] Settings pattern "mcp" doesn't match any settings
+2025-08-03 16:18:18.625 [warning] Settings pattern "mcp" doesn't match any settings
+2025-08-03 16:18:25.690 [error] [Extension Host] (node:345584) [DEP0051] DeprecationWarning: The `util.isNullOrUndefined` API is deprecated. Please use `arg === null || arg === undefined` instead.

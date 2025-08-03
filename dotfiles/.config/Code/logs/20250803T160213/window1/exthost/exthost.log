@@ -1,0 +1,109 @@
+2025-08-03 16:02:14.694 [info] Extension host with pid 329679 started
+2025-08-03 16:02:14.717 [info] ExtensionService#_doActivateExtension vscode.github-authentication, startup: false, activationEvent: 'onAuthenticationRequest:github'
+2025-08-03 16:02:14.737 [info] ExtensionService#_doActivateExtension GrapeCity.gc-excelviewer, startup: false, activationEvent: 'onLanguage:plaintext'
+2025-08-03 16:02:14.740 [info] ExtensionService#_doActivateExtension mechatroner.rainbow-csv, startup: false, activationEvent: 'onLanguage:plaintext'
+2025-08-03 16:02:14.748 [info] ExtensionService#_doActivateExtension vscode.emmet, startup: false, activationEvent: 'onLanguage'
+2025-08-03 16:02:14.763 [info] ExtensionService#_doActivateExtension pflannery.vscode-versionlens, startup: false, activationEvent: 'onLanguage:toml'
+2025-08-03 16:02:14.815 [info] ExtensionService#_doActivateExtension tamasfe.even-better-toml, startup: false, activationEvent: 'onLanguage:toml'
+2025-08-03 16:02:15.715 [info] ExtensionService#_doActivateExtension vscode.git-base, startup: true, activationEvent: '*', root cause: vscode.git
+2025-08-03 16:02:15.717 [info] ExtensionService#_doActivateExtension christian-kohler.path-intellisense, startup: true, activationEvent: '*'
+2025-08-03 16:02:15.732 [info] ExtensionService#_doActivateExtension formulahendry.auto-close-tag, startup: true, activationEvent: '*'
+2025-08-03 16:02:15.734 [info] ExtensionService#_doActivateExtension ms-vscode.test-adapter-converter, startup: true, activationEvent: '*', root cause: hbenl.vscode-test-explorer
+2025-08-03 16:02:15.737 [info] ExtensionService#_doActivateExtension mhutchie.git-graph, startup: true, activationEvent: '*'
+2025-08-03 16:02:15.757 [info] ExtensionService#_doActivateExtension SirTori.indenticator, startup: true, activationEvent: '*'
+2025-08-03 16:02:15.759 [info] ExtensionService#_doActivateExtension zh9528.file-size, startup: true, activationEvent: '*'
+2025-08-03 16:02:15.760 [info] ExtensionService#_doActivateExtension Zignd.html-css-class-completion, startup: true, activationEvent: '*'
+2025-08-03 16:02:15.832 [info] ExtensionService#_doActivateExtension vscode.git, startup: true, activationEvent: '*'
+2025-08-03 16:02:15.869 [info] ExtensionService#_doActivateExtension vscode.github, startup: true, activationEvent: '*'
+2025-08-03 16:02:15.870 [info] ExtensionService#_doActivateExtension hbenl.vscode-test-explorer, startup: true, activationEvent: '*'
+2025-08-03 16:02:15.957 [info] Eager extensions activated
+2025-08-03 16:02:15.958 [info] ExtensionService#_doActivateExtension vscode.debug-auto-launch, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:15.960 [info] ExtensionService#_doActivateExtension vscode.merge-conflict, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:15.972 [info] ExtensionService#_doActivateExtension bierner.emojisense, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:15.979 [info] ExtensionService#_doActivateExtension cweijan.vscode-office, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.096 [info] ExtensionService#_doActivateExtension ecmel.vscode-html-css, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.098 [info] ExtensionService#_doActivateExtension esbenp.prettier-vscode, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.158 [info] ExtensionService#_doActivateExtension formulahendry.code-runner, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.188 [info] ExtensionService#_doActivateExtension ionutvmi.path-autocomplete, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.202 [info] ExtensionService#_doActivateExtension kisstkondoros.vscode-gutter-preview, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.225 [info] ExtensionService#_doActivateExtension ms-python.python, startup: false, activationEvent: 'onStartupFinished', root cause: littlefoxteam.vscode-python-test-adapter
+2025-08-03 16:02:16.330 [info] ExtensionService#_doActivateExtension miguelsolorio.symbols, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.336 [info] ExtensionService#_doActivateExtension ms-dotnettools.vscode-dotnet-runtime, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.490 [info] ExtensionService#_doActivateExtension ms-vscode-remote.remote-containers, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.591 [info] ExtensionService#_doActivateExtension ms-vscode-remote.remote-wsl, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.666 [info] ExtensionService#_doActivateExtension mskelton.one-dark-theme, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.667 [info] ExtensionService#_doActivateExtension naumovs.color-highlight, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.672 [info] ExtensionService#_doActivateExtension PKief.material-icon-theme, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.681 [info] ExtensionService#_doActivateExtension ritwickdey.LiveServer, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.689 [info] ExtensionService#_doActivateExtension shardulm94.trailing-spaces, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.710 [info] ExtensionService#_doActivateExtension usernamehw.errorlens, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.716 [info] ExtensionService#_doActivateExtension zhuangtongfa.material-theme, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:16.857 [info] ExtensionService#_doActivateExtension vscode.configuration-editing, startup: false, activationEvent: 'onLanguage:jsonc'
+2025-08-03 16:02:16.868 [info] ExtensionService#_doActivateExtension vscode.json-language-features, startup: false, activationEvent: 'onLanguage:jsonc'
+2025-08-03 16:02:16.902 [info] ExtensionService#_doActivateExtension vscode.typescript-language-features, startup: false, activationEvent: 'onLanguage:jsonc'
+2025-08-03 16:02:16.936 [info] ExtensionService#_doActivateExtension ms-python.vscode-python-envs, startup: false, activationEvent: 'api', root cause: ms-python.python
+2025-08-03 16:02:17.118 [info] ExtensionService#_doActivateExtension littlefoxteam.vscode-python-test-adapter, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:02:17.421 [info] ExtensionService#_doActivateExtension ms-python.vscode-pylance, startup: false, activationEvent: 'api', root cause: ms-python.python
+2025-08-03 16:15:18.082 [info] ExtensionService#_doActivateExtension rafamel.subtle-brackets, startup: false, activationEvent: '*'
+2025-08-03 16:15:30.038 [info] ExtensionService#_doActivateExtension formulahendry.auto-rename-tag, startup: false, activationEvent: '*'
+2025-08-03 16:16:56.609 [error] ExtensionError: Error in extension zh9528.file-size: FAILED to handle event
+    at Gh.value (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:164:103730)
+    at $.C (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:27:2375)
+    at $.D (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:27:2445)
+    at $.fire (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:27:2662)
+    at Gh.value (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:164:70638)
+    at $.C (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:27:2375)
+    at $.fire (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:27:2593)
+    at fy.acceptDocumentsAndEditorsDelta (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:121:11787)
+    at fy.$acceptDocumentsAndEditorsDelta (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:121:10246)
+    at a4.S (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:117864)
+    at a4.Q (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:117644)
+    at a4.M (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:116733)
+    at a4.L (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:115838)
+    at Gh.value (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:114635)
+    at $.C (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:27:2375)
+    at $.fire (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:27:2593)
+    at ao.fire (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:9459)
+    at Gh.value (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:8152)
+    at $.C (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:27:2375)
+    at $.fire (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:27:2593)
+    at ao.fire (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:9459)
+    at MessagePortMain.<anonymous> (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:6444)
+    at MessagePortMain.emit (node:events:518:28)
+    at Object.MessagePortMain._internalPort.emit (node:electron/js2c/utility_init:2:3073)
+2025-08-03 16:17:26.872 [info] Extension host terminating: renderer closed the MessagePort
+2025-08-03 16:17:26.900 [error] An error occurred when deactivating the extension 'rafamel.subtle-brackets':
+2025-08-03 16:17:26.901 [error] TypeError: Cannot read properties of undefined (reading 'subscriptions')
+    at Object.deactivate (/home/izzy/.vscode/extensions/rafamel.subtle-brackets-3.0.0/out/extension.js:42:13)
+    at QG.eb (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:11726)
+    at file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:9876
+    at Array.map (<anonymous>)
+    at QG.$ (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:9864)
+    at QG.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:10107)
+    at Y3.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:119:914)
+    at us (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:9945)
+    at MessagePortMain.<anonymous> (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:6484)
+    at MessagePortMain.emit (node:events:518:28)
+    at Object.MessagePortMain._internalPort.emit (node:electron/js2c/utility_init:2:3073)
+2025-08-03 16:17:26.905 [error] TypeError: Cannot read properties of undefined (reading 'subscriptions')
+    at Object.K [as deactivate] (/home/izzy/.vscode/extensions/ms-python.vscode-python-envs-1.2.0-linux-x64/dist/extension.js:2:618887)
+    at QG.eb (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:11726)
+    at file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:9876
+    at Array.map (<anonymous>)
+    at QG.$ (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:9864)
+    at QG.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:10107)
+    at Y3.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:119:914)
+    at us (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:9945)
+    at MessagePortMain.<anonymous> (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:6484)
+    at MessagePortMain.emit (node:events:518:28)
+    at Object.MessagePortMain._internalPort.emit (node:electron/js2c/utility_init:2:3073)
+2025-08-03 16:17:26.910 [error] ReferenceError: 'PackageFileWatcher' has no disposable(s) to dispose
+    at PackageFileWatcher.dispose (/home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:1:3621)
+    at Object.dispose (/home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:854:14932)
+    at /home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:854:13963
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 76)
+    at Object.deactivate (/home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:860:49418)
+    at async Promise.all (index 35)
+    at QG.$ (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:9890)
+2025-08-03 16:17:26.911 [info] Extension host with pid 329679 exiting with code 0

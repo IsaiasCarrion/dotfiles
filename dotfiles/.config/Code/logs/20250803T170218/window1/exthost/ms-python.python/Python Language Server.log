@@ -1,0 +1,18 @@
+2025-08-03 17:02:23.039 [info] (Client) Pylance client (2025.7.1) started with python extension (2025.10.1)
+2025-08-03 17:02:23.737 [info] (393964) Server root directory: file:///home/izzy/.vscode/extensions/ms-python.vscode-pylance-2025.7.1/dist
+2025-08-03 17:02:23.743 [info] (393964) Pylance language server 2025.7.1 (pyright version 1.1.403, commit 8b02aa84) starting
+2025-08-03 17:02:23.743 [info] (393964) Starting service instance "dotfiles" for workspace "/home/izzy/Documents/dotfiles"
+2025-08-03 17:02:23.761 [info] (393964) Starting Mcp server id:5249 ...
+2025-08-03 17:02:23.784 [info] (393964) Setting environmentName for service "dotfiles": "Python 3.12.3"
+2025-08-03 17:02:23.784 [info] (393964) Setting pythonPath for service "dotfiles": "/bin/python3"
+2025-08-03 17:02:23.784 [info] (393964) No include entries specified; assuming /home/izzy/Documents/dotfiles
+2025-08-03 17:02:23.784 [info] (393964) Auto-excluding **/node_modules
+2025-08-03 17:02:23.784 [info] (393964) Auto-excluding **/__pycache__
+2025-08-03 17:02:23.785 [info] (393964) Auto-excluding **/.*
+2025-08-03 17:02:23.804 [info] (393964) Assuming Python version 3.12.3.final.0
+2025-08-03 17:02:23.983 [info] (393964) Found 1 source file
+2025-08-03 17:02:23.985 [info] (393964) Settings have not changed. Skipping update.
+2025-08-03 17:02:24.241 [info] (393964) BG: Priority queue background worker(2) root directory: file:///home/izzy/.vscode/extensions/ms-python.vscode-pylance-2025.7.1/dist
+2025-08-03 17:02:24.241 [info] (393964) BG: Priority queue background worker(2) started
+2025-08-03 19:48:53.097 [info] (393964) Settings have not changed. Skipping update.
+2025-08-03 20:04:40.270 [info] (393964) Settings have not changed. Skipping update.

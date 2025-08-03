@@ -1,0 +1,52 @@
+# Colores
+colors:
+  # Normal (oscuros)
+  normal:
+    black:   '0x000000'
+    red:     '0xd08770'
+    green:   '0xa9b665'
+    yellow:  '0xe7c156'
+    blue:    '0x7c94c9'
+    magenta: '0xb28c8c'
+    cyan:    '0x5a9a8d'
+    white:   '0xbfbfbf'
+
+  # Brillantes
+  bright:
+    black:   '0x666666'
+    red:     '0xdf8a71'
+    green:   '0xa9b665'
+    yellow:  '0xe7c156'
+    blue:    '0x7c94c9'
+    magenta: '0xb28c8c'
+    cyan:    '0x5a9a8d'
+    white:   '0xffffff'
+
+  # Fondo y primer plano
+  primary:
+    background: '0x1e1e1e'
+    foreground: '0xc5c5c5'
+
+# Fuente
+font:
+  # Fuente principal
+  normal:
+    family: UbuntuMono Nerd Font
+    style: Regular
+
+  # Fuente en negrita
+  bold:
+    family: UbuntuMono Nerd Font
+    style: Bold
+
+  # Fuente en cursiva
+  italic:
+    family: UbuntuMono Nerd Font
+    style: Italic
+
+  # Tamaño de la fuente
+  size: 12.0
+
+# Opacidad
+window:
+  opacity: 0.95

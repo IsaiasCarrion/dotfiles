@@ -1,0 +1,22 @@
+# Usamos la imagen de Ubuntu como base
+FROM ubuntu:latest
+
+# Evita preguntas interactivas durante la instalación de paquetes
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Instala las herramientas necesarias para que el script de instalación funcione
+# git, sudo y curl son esenciales para el script
+RUN apt-get update && \
+    apt-get install -y sudo git curl
+
+# Crea el usuario 'izzy' con sudo y configura su shell por defecto a bash
+RUN useradd -ms /bin/bash izzy && \
+    adduser izzy sudo && \
+    echo 'izzy:izzy' | chpasswd
+
+# Cambia al usuario 'izzy' y configura su directorio de trabajo
+USER izzy
+WORKDIR /home/izzy
+
+# Comando por defecto para iniciar el contenedor
+CMD ["/bin/bash"]

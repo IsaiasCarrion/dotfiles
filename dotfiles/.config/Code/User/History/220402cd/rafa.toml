@@ -1,0 +1,39 @@
+[colors.bright]
+black = "#1C252C"
+red = "#DF5B61"
+green = "#78B892"
+yellow = "#DE8F78"
+blue = "#6791C9"
+magenta = "#BC83E3"
+cyan = "#67AFC1"
+white = "#D9D7D6"
+
+[colors.normal]
+black = "#1C252C"
+red = "#DF5B61"
+green = "#78B892"
+yellow = "#DE8F78"
+blue = "#6791C9"
+magenta = "#BC83E3"
+cyan = "#67AFC1"
+white = "#D9D7D6"
+
+[colors.primary]
+background = "#061115"
+foreground = "#D9D7D6"
+
+[font]
+size = 12
+
+[font.bold]
+family = "UbuntuMono Nerd Font"
+
+[font.italic]
+family = "UbuntuMono Nerd Font"
+
+[font.normal]
+family = "UbuntuMono Nerd Font"
+style = "Regular"
+
+[window.padding]
+x = 2

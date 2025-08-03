@@ -1,0 +1,93 @@
+2025-08-03 16:18:41.172 [info] Extension host with pid 346574 started
+2025-08-03 16:18:41.212 [info] ExtensionService#_doActivateExtension vscode.github-authentication, startup: false, activationEvent: 'onAuthenticationRequest:github'
+2025-08-03 16:18:41.228 [info] ExtensionService#_doActivateExtension GrapeCity.gc-excelviewer, startup: false, activationEvent: 'onLanguage:plaintext'
+2025-08-03 16:18:41.230 [info] ExtensionService#_doActivateExtension mechatroner.rainbow-csv, startup: false, activationEvent: 'onLanguage:plaintext'
+2025-08-03 16:18:41.233 [info] ExtensionService#_doActivateExtension vscode.emmet, startup: false, activationEvent: 'onLanguage'
+2025-08-03 16:18:42.204 [info] ExtensionService#_doActivateExtension vscode.git-base, startup: true, activationEvent: '*', root cause: vscode.git
+2025-08-03 16:18:42.205 [info] ExtensionService#_doActivateExtension christian-kohler.path-intellisense, startup: true, activationEvent: '*'
+2025-08-03 16:18:42.210 [info] ExtensionService#_doActivateExtension formulahendry.auto-close-tag, startup: true, activationEvent: '*'
+2025-08-03 16:18:42.211 [info] ExtensionService#_doActivateExtension formulahendry.auto-rename-tag, startup: true, activationEvent: '*'
+2025-08-03 16:18:42.225 [info] ExtensionService#_doActivateExtension ms-vscode.test-adapter-converter, startup: true, activationEvent: '*', root cause: hbenl.vscode-test-explorer
+2025-08-03 16:18:42.228 [info] ExtensionService#_doActivateExtension mhutchie.git-graph, startup: true, activationEvent: '*'
+2025-08-03 16:18:42.234 [info] ExtensionService#_doActivateExtension rafamel.subtle-brackets, startup: true, activationEvent: '*'
+2025-08-03 16:18:42.240 [info] ExtensionService#_doActivateExtension SirTori.indenticator, startup: true, activationEvent: '*'
+2025-08-03 16:18:42.241 [info] ExtensionService#_doActivateExtension zh9528.file-size, startup: true, activationEvent: '*'
+2025-08-03 16:18:42.241 [info] ExtensionService#_doActivateExtension Zignd.html-css-class-completion, startup: true, activationEvent: '*'
+2025-08-03 16:18:42.319 [error] Activating extension zh9528.file-size failed due to an error:
+2025-08-03 16:18:42.319 [error] Error: ENOENT: no such file or directory, stat 'Untitled-1'
+    at statSync (node:fs:1741:25)
+    at Object.t.statSync (node:electron/js2c/node_init:2:5407)
+    at updateSize (/home/izzy/.vscode/extensions/zh9528.file-size-1.0.0/extension.js:31:19)
+    at activate (/home/izzy/.vscode/extensions/zh9528.file-size-1.0.0/extension.js:39:23)
+    at sy.kb (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:15232)
+    at sy.jb (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:14977)
+    at file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:13135
+    at db.n (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:112:13386)
+    at db.m (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:112:13349)
+    at db.l (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:112:12805)
+2025-08-03 16:18:42.329 [info] ExtensionService#_doActivateExtension vscode.git, startup: true, activationEvent: '*'
+2025-08-03 16:18:42.356 [info] ExtensionService#_doActivateExtension vscode.github, startup: true, activationEvent: '*'
+2025-08-03 16:18:42.357 [info] ExtensionService#_doActivateExtension hbenl.vscode-test-explorer, startup: true, activationEvent: '*'
+2025-08-03 16:18:42.401 [info] ExtensionService#_doActivateExtension vscode.configuration-editing, startup: false, activationEvent: 'onLanguage:jsonc'
+2025-08-03 16:18:42.406 [info] ExtensionService#_doActivateExtension vscode.json-language-features, startup: false, activationEvent: 'onLanguage:jsonc'
+2025-08-03 16:18:42.439 [info] ExtensionService#_doActivateExtension vscode.typescript-language-features, startup: false, activationEvent: 'onLanguage:jsonc'
+2025-08-03 16:18:42.471 [info] ExtensionService#_doActivateExtension pflannery.vscode-versionlens, startup: false, activationEvent: 'onLanguage:jsonc'
+2025-08-03 16:18:42.585 [info] Eager extensions activated
+2025-08-03 16:18:42.589 [info] ExtensionService#_doActivateExtension vscode.debug-auto-launch, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:42.590 [info] ExtensionService#_doActivateExtension vscode.merge-conflict, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:42.601 [info] ExtensionService#_doActivateExtension bierner.emojisense, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:42.607 [info] ExtensionService#_doActivateExtension cweijan.vscode-office, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:42.712 [info] ExtensionService#_doActivateExtension ecmel.vscode-html-css, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:42.713 [info] ExtensionService#_doActivateExtension esbenp.prettier-vscode, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:42.755 [info] ExtensionService#_doActivateExtension formulahendry.code-runner, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:42.762 [info] ExtensionService#_doActivateExtension ionutvmi.path-autocomplete, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:42.767 [info] ExtensionService#_doActivateExtension kisstkondoros.vscode-gutter-preview, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:42.786 [info] ExtensionService#_doActivateExtension ms-python.python, startup: false, activationEvent: 'onStartupFinished', root cause: littlefoxteam.vscode-python-test-adapter
+2025-08-03 16:18:42.883 [info] ExtensionService#_doActivateExtension miguelsolorio.symbols, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:42.886 [info] ExtensionService#_doActivateExtension ms-dotnettools.vscode-dotnet-runtime, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:43.037 [info] ExtensionService#_doActivateExtension ms-vscode-remote.remote-containers, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:43.124 [info] ExtensionService#_doActivateExtension ms-vscode-remote.remote-wsl, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:43.196 [info] ExtensionService#_doActivateExtension naumovs.color-highlight, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:43.200 [info] ExtensionService#_doActivateExtension PKief.material-icon-theme, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:43.210 [info] ExtensionService#_doActivateExtension ritwickdey.LiveServer, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:43.213 [info] ExtensionService#_doActivateExtension shardulm94.trailing-spaces, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:43.218 [info] ExtensionService#_doActivateExtension usernamehw.errorlens, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:43.426 [info] ExtensionService#_doActivateExtension ms-python.vscode-python-envs, startup: false, activationEvent: 'api', root cause: ms-python.python
+2025-08-03 16:18:43.551 [info] ExtensionService#_doActivateExtension littlefoxteam.vscode-python-test-adapter, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 16:18:43.637 [info] ExtensionService#_doActivateExtension ms-python.vscode-pylance, startup: false, activationEvent: 'api', root cause: ms-python.python
+2025-08-03 16:19:44.601 [info] Extension host terminating: renderer closed the MessagePort
+2025-08-03 16:19:44.620 [error] An error occurred when deactivating the extension 'rafamel.subtle-brackets':
+2025-08-03 16:19:44.620 [error] TypeError: Cannot read properties of undefined (reading 'subscriptions')
+    at Object.deactivate (/home/izzy/.vscode/extensions/rafamel.subtle-brackets-3.0.0/out/extension.js:42:13)
+    at QG.eb (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:11726)
+    at file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:9876
+    at Array.map (<anonymous>)
+    at QG.$ (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:9864)
+    at QG.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:10107)
+    at Y3.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:119:914)
+    at us (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:9945)
+    at MessagePortMain.<anonymous> (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:6484)
+    at MessagePortMain.emit (node:events:518:28)
+    at Object.MessagePortMain._internalPort.emit (node:electron/js2c/utility_init:2:3073)
+2025-08-03 16:19:44.622 [error] TypeError: Cannot read properties of undefined (reading 'subscriptions')
+    at Object.K [as deactivate] (/home/izzy/.vscode/extensions/ms-python.vscode-python-envs-1.2.0-linux-x64/dist/extension.js:2:618887)
+    at QG.eb (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:11726)
+    at file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:9876
+    at Array.map (<anonymous>)
+    at QG.$ (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:9864)
+    at QG.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:10107)
+    at Y3.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:119:914)
+    at us (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:9945)
+    at MessagePortMain.<anonymous> (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:6484)
+    at MessagePortMain.emit (node:events:518:28)
+    at Object.MessagePortMain._internalPort.emit (node:electron/js2c/utility_init:2:3073)
+2025-08-03 16:19:44.623 [error] ReferenceError: 'PackageFileWatcher' has no disposable(s) to dispose
+    at PackageFileWatcher.dispose (/home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:1:3621)
+    at Object.dispose (/home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:854:14932)
+    at /home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:854:13963
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 76)
+    at Object.deactivate (/home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:860:49418)
+    at async Promise.all (index 34)
+    at QG.$ (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:9890)
+2025-08-03 16:19:44.624 [info] Extension host with pid 346574 exiting with code 0

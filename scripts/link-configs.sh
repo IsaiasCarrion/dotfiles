@@ -35,8 +35,6 @@ link_configs() {
         ln -sf "$SOURCE_CONFIG_DIR/.config/kitty" "$HOME/.config/kitty"
         ln -sf "$SOURCE_CONFIG_DIR/.config/nvim" "$HOME/.config/nvim"
         ln -sf "$SOURCE_CONFIG_DIR/.config/rofi" "$HOME/.config/rofi"
-
-        # Enlace para Alacritty
         ln -sf "$SOURCE_CONFIG_DIR/.config/alacritty" "$HOME/.config/alacritty"
 
         # Enlace para Starship
@@ -58,6 +56,16 @@ link_configs() {
             echo "✅ Enlace simbólico de XFCE4 creado."
         else
             echo "👌 El directorio ~/.config/xfce4 ya existe. Omitiendo la creación del enlace simbólico."
+        fi
+        
+        # --- NUEVA ADICIÓN PARA VS CODE ---
+        if [ ! -d "$HOME/.config/Code" ]; then
+            echo "Creando enlace simbólico para la configuración de VS Code..."
+            mkdir -p "$HOME/.config/Code"
+            ln -sf "$SOURCE_CONFIG_DIR/.config/Code/User" "$HOME/.config/Code/User"
+            echo "✅ Enlace simbólico de VS Code creado."
+        else
+            echo "👌 El directorio ~/.config/Code ya existe. Omitiendo la creación del enlace simbólico."
         fi
 
         echo "✅ Enlaces simbólicos y copias creadas."

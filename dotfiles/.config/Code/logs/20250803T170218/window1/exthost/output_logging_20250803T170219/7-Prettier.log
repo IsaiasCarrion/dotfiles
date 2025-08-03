@@ -1,0 +1,4 @@
+["INFO" - 5:02:21 PM] Extension Name: esbenp.prettier-vscode.
+["INFO" - 5:02:21 PM] Extension Version: 11.0.0.
+["INFO" - 5:02:21 PM] Extension is disabled. No formatters will be registered. To enable, change the `prettier.enable` to `true` and restart VS Code.
+["WARN" - 8:04:40 PM] To enable or disable prettier after changing the `enable` setting, you must restart VS Code.

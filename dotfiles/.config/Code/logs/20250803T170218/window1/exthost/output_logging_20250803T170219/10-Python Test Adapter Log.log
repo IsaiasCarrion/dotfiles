@@ -1,0 +1,384 @@
+2025-08-03T20:02:21.953Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:02:21.954Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:02:21.955Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:02:21.955Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:02:21.956Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:02:21.956Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:02:23.754Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:02:23.754Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:02:23.754Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:02:23.756Z INFO unittest at 'dotfiles': Unittest test discovery is disabled
+2025-08-03T20:02:23.756Z INFO pytest at 'dotfiles': Pytest test discovery is disabled
+2025-08-03T20:02:23.756Z INFO testplan at 'dotfiles': TestPlan test discovery is disabled
+2025-08-03T20:03:26.982Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:26.983Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:26.983Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:26.983Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:26.983Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:26.984Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:26.984Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:26.984Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:26.984Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:26.984Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:26.984Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:26.984Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T20:03:27.220Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:27.220Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:27.220Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:27.221Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:27.221Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:27.221Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:27.221Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:27.221Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:27.221Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:27.221Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:27.221Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:27.221Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T20:03:27.339Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:27.340Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:27.340Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:27.340Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:27.340Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:27.340Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:27.341Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:27.341Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:27.341Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:27.341Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:27.341Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:27.341Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T20:03:27.572Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:27.572Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:27.572Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:27.572Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:27.572Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:27.572Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:27.572Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:27.573Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:27.573Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:27.573Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:27.573Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:27.573Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T20:03:29.731Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:29.731Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:29.731Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:29.732Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:29.732Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:29.732Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:29.732Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:29.732Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:29.732Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:29.732Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:29.732Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:29.732Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T20:03:29.923Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:29.923Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:29.923Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:29.924Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:29.924Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T20:03:29.924Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T20:03:29.924Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:29.924Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:29.924Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T20:03:29.924Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:29.924Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T20:03:29.924Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:50:34.549Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:50:34.550Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:50:34.550Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:50:34.550Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:50:34.550Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:50:34.550Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:50:34.550Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:50:34.550Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:50:34.550Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:50:34.550Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:50:34.550Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:50:34.550Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:50:34.755Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:50:34.755Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:50:34.755Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:50:34.755Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:50:34.755Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:50:34.756Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:50:34.756Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:50:34.756Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:50:34.756Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:50:34.756Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:50:34.756Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:50:34.756Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:50:34.957Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:50:34.957Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:50:34.957Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:50:34.957Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:50:34.957Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:50:34.958Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:50:34.958Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:50:34.958Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:50:34.958Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:50:34.958Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:50:34.958Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:50:34.958Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:51:10.748Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:10.748Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:10.748Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:10.748Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:10.748Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:10.748Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:10.748Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:10.748Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:10.748Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:10.748Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:10.748Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:10.748Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.010Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.011Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.011Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.011Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.011Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.011Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.011Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.011Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.011Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.011Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.011Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.011Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.217Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.217Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.217Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.217Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.217Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.217Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.217Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.218Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.218Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.218Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.218Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.218Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.387Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.387Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.387Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.387Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.387Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.388Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.388Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.388Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.388Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.388Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.388Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.388Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.571Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.571Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.571Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.571Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.571Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:11.572Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:11.572Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.572Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.572Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:11.572Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.572Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:11.572Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:51:46.757Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:46.757Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:46.757Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:46.758Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:46.758Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:46.758Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:46.758Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:46.758Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:46.758Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:46.758Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:46.758Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:46.758Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:51:46.962Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:46.963Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:46.963Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:46.963Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:46.963Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:46.963Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:46.963Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:46.963Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:46.963Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:46.963Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:46.963Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:46.964Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:51:47.147Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:47.148Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:47.148Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:47.148Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:47.148Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:47.148Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:47.148Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:47.148Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:47.148Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:47.149Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:47.149Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:47.149Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:51:47.346Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:47.346Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:47.346Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:47.346Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:47.346Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:51:47.346Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:51:47.346Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:47.346Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:47.346Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:51:47.347Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:47.347Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:51:47.347Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:52:41.463Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:52:41.464Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:52:41.464Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:52:41.464Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:52:41.464Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:52:41.464Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:52:41.464Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:52:41.464Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:52:41.464Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:52:41.464Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:52:41.464Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:52:41.464Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:52:42.064Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:52:42.064Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:52:42.064Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:52:42.065Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:52:42.065Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:52:42.065Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:52:42.065Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:52:42.065Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:52:42.065Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:52:42.065Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:52:42.065Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:52:42.065Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:52:42.255Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:52:42.255Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:52:42.255Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:52:42.255Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:52:42.255Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:52:42.255Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:52:42.255Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:52:42.255Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:52:42.255Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:52:42.256Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:52:42.256Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:52:42.256Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.260Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.261Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.261Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.261Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.261Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.261Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.261Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.261Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.261Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.261Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.261Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.261Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.454Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.454Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.454Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.455Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.455Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.455Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.455Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.455Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.455Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.455Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.455Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.455Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.654Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.654Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.654Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.655Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.655Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.655Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.655Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.655Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.655Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.655Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.655Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.655Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.869Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.869Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.869Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.869Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.869Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:53:57.870Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:53:57.870Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.870Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.870Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:53:57.870Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.870Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:53:57.870Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:54:40.863Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:40.863Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:40.863Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:40.864Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:40.864Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:40.864Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:40.864Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:40.864Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:40.864Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:40.864Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:40.864Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:40.864Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:54:43.181Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:43.182Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:43.182Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:43.182Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:43.182Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:43.182Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:43.182Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:43.182Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:43.182Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:43.182Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:43.182Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:43.182Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:54:43.453Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:43.453Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:43.453Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:43.453Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:43.453Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:43.453Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:43.453Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:43.453Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:43.453Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:43.453Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:43.454Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:43.454Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:54:43.635Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:43.636Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:43.636Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:43.636Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:43.636Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:43.636Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:43.636Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:43.636Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:43.636Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:43.637Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:43.637Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:43.637Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:54:49.372Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:49.373Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:49.373Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:49.373Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:49.373Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:49.373Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:49.373Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:49.373Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:49.373Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:49.374Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:49.374Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:49.374Z  DBG testplan at 'dotfiles': Sending autorun event
+2025-08-03T22:54:49.571Z INFO unittest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:49.572Z  DBG unittest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:49.572Z INFO pytest at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:49.572Z  DBG pytest at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:49.572Z INFO testplan at 'dotfiles': Reading configuration for workspace dotfiles
+2025-08-03T22:54:49.572Z  DBG testplan at 'dotfiles': usingNewInterpreterStorage feature flag is 'true'
+2025-08-03T22:54:49.572Z INFO unittest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:49.572Z INFO pytest at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:49.572Z INFO testplan at 'dotfiles': Using auto-detected pythonPath /bin/python3
+2025-08-03T22:54:49.572Z  DBG unittest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:49.572Z  DBG pytest at 'dotfiles': Sending autorun event
+2025-08-03T22:54:49.572Z  DBG testplan at 'dotfiles': Sending autorun event

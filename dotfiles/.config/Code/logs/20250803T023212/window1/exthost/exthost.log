@@ -1,0 +1,112 @@
+2025-08-03 02:32:13.082 [info] Extension host with pid 196191 started
+2025-08-03 02:32:13.150 [info] ExtensionService#_doActivateExtension vscode.github-authentication, startup: false, activationEvent: 'onAuthenticationRequest:github'
+2025-08-03 02:32:13.166 [info] ExtensionService#_doActivateExtension GrapeCity.gc-excelviewer, startup: false, activationEvent: 'onLanguage:plaintext'
+2025-08-03 02:32:13.169 [info] ExtensionService#_doActivateExtension mechatroner.rainbow-csv, startup: false, activationEvent: 'onLanguage:plaintext'
+2025-08-03 02:32:13.171 [info] ExtensionService#_doActivateExtension vscode.emmet, startup: false, activationEvent: 'onLanguage'
+2025-08-03 02:32:13.182 [info] ExtensionService#_doActivateExtension pflannery.vscode-versionlens, startup: false, activationEvent: 'onLanguage:yaml'
+2025-08-03 02:32:14.131 [info] ExtensionService#_doActivateExtension vscode.git-base, startup: true, activationEvent: '*', root cause: vscode.git
+2025-08-03 02:32:14.133 [info] ExtensionService#_doActivateExtension christian-kohler.path-intellisense, startup: true, activationEvent: '*'
+2025-08-03 02:32:14.138 [info] ExtensionService#_doActivateExtension formulahendry.auto-close-tag, startup: true, activationEvent: '*'
+2025-08-03 02:32:14.139 [info] ExtensionService#_doActivateExtension ms-vscode.test-adapter-converter, startup: true, activationEvent: '*', root cause: hbenl.vscode-test-explorer
+2025-08-03 02:32:14.142 [info] ExtensionService#_doActivateExtension mhutchie.git-graph, startup: true, activationEvent: '*'
+2025-08-03 02:32:14.149 [info] ExtensionService#_doActivateExtension SirTori.indenticator, startup: true, activationEvent: '*'
+2025-08-03 02:32:14.149 [info] ExtensionService#_doActivateExtension zh9528.file-size, startup: true, activationEvent: '*'
+2025-08-03 02:32:14.150 [info] ExtensionService#_doActivateExtension Zignd.html-css-class-completion, startup: true, activationEvent: '*'
+2025-08-03 02:32:14.217 [info] ExtensionService#_doActivateExtension vscode.git, startup: true, activationEvent: '*'
+2025-08-03 02:32:14.243 [info] ExtensionService#_doActivateExtension vscode.github, startup: true, activationEvent: '*'
+2025-08-03 02:32:14.244 [info] ExtensionService#_doActivateExtension hbenl.vscode-test-explorer, startup: true, activationEvent: '*'
+2025-08-03 02:32:14.318 [info] Eager extensions activated
+2025-08-03 02:32:14.319 [info] ExtensionService#_doActivateExtension vscode.debug-auto-launch, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.320 [info] ExtensionService#_doActivateExtension vscode.merge-conflict, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.329 [info] ExtensionService#_doActivateExtension bierner.emojisense, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.334 [info] ExtensionService#_doActivateExtension cweijan.vscode-office, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.446 [info] ExtensionService#_doActivateExtension ecmel.vscode-html-css, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.446 [info] ExtensionService#_doActivateExtension esbenp.prettier-vscode, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.490 [info] ExtensionService#_doActivateExtension formulahendry.code-runner, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.498 [info] ExtensionService#_doActivateExtension ionutvmi.path-autocomplete, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.505 [info] ExtensionService#_doActivateExtension kisstkondoros.vscode-gutter-preview, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.529 [info] ExtensionService#_doActivateExtension ms-python.python, startup: false, activationEvent: 'onStartupFinished', root cause: littlefoxteam.vscode-python-test-adapter
+2025-08-03 02:32:14.631 [info] ExtensionService#_doActivateExtension miguelsolorio.symbols, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.634 [info] ExtensionService#_doActivateExtension ms-dotnettools.vscode-dotnet-runtime, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.783 [info] ExtensionService#_doActivateExtension ms-vscode-remote.remote-containers, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.876 [info] ExtensionService#_doActivateExtension ms-vscode-remote.remote-wsl, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.952 [info] ExtensionService#_doActivateExtension mskelton.one-dark-theme, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.953 [info] ExtensionService#_doActivateExtension naumovs.color-highlight, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.957 [info] ExtensionService#_doActivateExtension PKief.material-icon-theme, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.964 [info] ExtensionService#_doActivateExtension ritwickdey.LiveServer, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.967 [info] ExtensionService#_doActivateExtension shardulm94.trailing-spaces, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.972 [info] ExtensionService#_doActivateExtension usernamehw.errorlens, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:14.978 [info] ExtensionService#_doActivateExtension zhuangtongfa.material-theme, startup: false, activationEvent: 'onStartupFinished'
+2025-08-03 02:32:15.109 [info] Extension host terminating: renderer closed the MessagePort
+2025-08-03 02:32:15.124 [warning] Canceled
+2025-08-03 02:32:15.125 [warning] Canceled
+2025-08-03 02:32:15.125 [warning] Canceled
+2025-08-03 02:32:15.125 [warning] Canceled
+2025-08-03 02:32:15.125 [warning] Canceled
+2025-08-03 02:32:15.125 [warning] Canceled
+2025-08-03 02:32:15.125 [warning] Canceled
+2025-08-03 02:32:15.125 [warning] Canceled
+2025-08-03 02:32:15.125 [warning] Canceled
+2025-08-03 02:32:15.126 [error] ProxyResolver#resolveProxy undefined Canceled: Canceled
+    at Kc (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:7:1394)
+    at file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:114742
+    at Array.forEach (<anonymous>)
+    at a4.dispose (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:114682)
+    at QG.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:10084)
+    at Y3.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:119:914)
+    at us (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:9945)
+    at MessagePortMain.<anonymous> (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:6484)
+    at MessagePortMain.emit (node:events:518:28)
+    at Object.MessagePortMain._internalPort.emit (node:electron/js2c/utility_init:2:3073) 
+2025-08-03 02:32:15.126 [error] ProxyResolver#resolveProxy undefined Canceled: Canceled
+    at Kc (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:7:1394)
+    at file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:114742
+    at Array.forEach (<anonymous>)
+    at a4.dispose (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:114682)
+    at QG.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:10084)
+    at Y3.terminate (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:119:914)
+    at us (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:9945)
+    at MessagePortMain.<anonymous> (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:356:6484)
+    at MessagePortMain.emit (node:events:518:28)
+    at Object.MessagePortMain._internalPort.emit (node:electron/js2c/utility_init:2:3073) 
+2025-08-03 02:32:15.130 [error] ReferenceError: 'PackageFileWatcher' has no disposable(s) to dispose
+    at PackageFileWatcher.dispose (/home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:1:3621)
+    at Object.dispose (/home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:854:14932)
+    at /home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:854:13963
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 76)
+    at Object.deactivate (/home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2/dist/src/extension/activate.js:860:49418)
+    at async Promise.all (index 26)
+    at QG.$ (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:117:9890)
+2025-08-03 02:32:15.131 [error] ProxyResolver#addCertificatesV1 Canceled: Canceled
+    at new OL (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:113290)
+    at a4.U (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:117901)
+    at Proxy.s.<computed>.n.charCodeAt.s.<computed> (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:29:115395)
+    at nb.loadCertificates (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:109:70667)
+    at Object.loadAdditionalCertificates (file:///usr/share/code/resources/app/out/vs/workbench/api/node/extensionHostProcess.js:166:22848)
+    at /usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:723:53
+    at Generator.next (<anonymous>)
+    at /usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:35:71
+    at new Promise (<anonymous>)
+    at __awaiter (/usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:31:12)
+    at /usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:722:43
+    at /usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:724:16
+    at Generator.next (<anonymous>)
+    at /usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:35:71
+    at new Promise (<anonymous>)
+    at __awaiter (/usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:31:12)
+    at getOrLoadAdditionalCertificates (/usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:720:12)
+    at addCertificatesToOptionsV1 (/usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:699:9)
+    at resolveProxyWithRequest (/usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:114:9)
+    at /usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:346:77
+    at new Promise (<anonymous>)
+    at PacProxyAgent.resolveP (/usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/index.js:346:54)
+    at PacProxyAgent.<anonymous> (/usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/agent.js:74:37)
+    at Generator.next (<anonymous>)
+    at /usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/agent.js:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (/usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/agent.js:4:12)
+    at PacProxyAgent.connect (/usr/share/code/resources/app/node_modules/@vscode/proxy-agent/out/agent.js:56:16)
+    at /usr/share/code/resources/app/node_modules/agent-base/dist/index.js:132:30
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-08-03 02:32:15.132 [info] Extension host with pid 196191 exiting with code 0

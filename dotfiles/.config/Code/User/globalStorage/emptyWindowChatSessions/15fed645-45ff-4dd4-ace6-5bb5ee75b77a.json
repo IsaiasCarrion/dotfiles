@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "requesterUsername": "IsaiasCarrion",
+  "requesterAvatarIconUri": {
+    "$mid": 1,
+    "path": "/u/65595034",
+    "scheme": "https",
+    "authority": "avatars.githubusercontent.com",
+    "query": "v=4"
+  },
+  "responderUsername": "GitHub Copilot",
+  "responderAvatarIconUri": {
+    "id": "copilot"
+  },
+  "initialLocation": "panel",
+  "requests": [],
+  "sessionId": "15fed645-45ff-4dd4-ace6-5bb5ee75b77a",
+  "creationDate": 1753472230554,
+  "isImported": false,
+  "lastMessageDate": 1753472230554
+}

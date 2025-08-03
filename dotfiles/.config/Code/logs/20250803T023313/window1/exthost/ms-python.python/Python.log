@@ -1,0 +1,9 @@
+2025-08-03 02:33:17.367 [info] Experiment 'pythonSurveyNotificationcf' is active
+2025-08-03 02:33:17.367 [info] Native locator: Refresh started
+2025-08-03 02:33:17.463 [info] Active interpreter [global]:  /bin/python3
+2025-08-03 02:33:17.463 [info] Native locator: Refresh finished in 150 ms
+2025-08-03 02:33:19.107 [info] Starting Pylance language server.
+2025-08-03 02:40:11.295 [info] Native locator: Refresh started
+2025-08-03 02:40:11.297 [info] Native locator: Refresh started
+2025-08-03 02:40:11.350 [info] Send text to terminal: printenv > "/tmp/tmp-197272w1fFPR3MwNfB.txt"
+2025-08-03 02:40:11.395 [info] Native locator: Refresh finished in 104 ms
