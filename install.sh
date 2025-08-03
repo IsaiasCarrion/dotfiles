@@ -33,8 +33,8 @@ install_proprietary_packages() {
 install_system_packages() {
     local packages_to_install=(
         wget curl gnupg
-        kitty zsh fzf bat eza
-        python3 python3-pip pipx
+        kitty zsh fzf bat eza nala # <-- nala añadido aquí
+        python3 python3-pip pipx jq
         golang rustc cargo
         git gh
         jupyter-notebook
@@ -58,27 +58,32 @@ install_system_packages() {
     fi
 }
 
-install_oh_my_zsh() {
-    echo "¿Quieres instalar Oh My Zsh? (s/n)"
+# --- NUEVA FUNCIÓN: Instala Zinit ---
+install_zinit() {
+    echo "¿Quieres instalar Zinit? (s/n)"
     read -r response
     if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
-        echo "Instalando Oh My Zsh..."
-
-        # Instala Oh My Zsh
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-
-        echo "Oh My Zsh instalado. Ahora se configurará tu .zshrc."
+        if [[ ! -f "$HOME/.zinit/bin/zinit.zsh" ]]; then
+            echo "Clonando Zinit..."
+            mkdir -p "$HOME/.zinit" && \
+            git clone https://github.com/zdharma-continuum/zinit.git "$HOME/.zinit/bin"
+        else
+            echo "Zinit ya está instalado. Actualizando..."
+            cd "$HOME/.zinit/bin"
+            git pull
+            cd "$DOTFILES_DIR" # Vuelve al directorio de dotfiles
+        fi
     else
-        echo "Omitiendo la instalación de Oh My Zsh."
+        echo "Omitiendo la instalación de Zinit."
     fi
 }
-
 
 install_starship() {
     echo "¿Quieres instalar Starship? (s/n)"
     read -r response
     if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
         echo "Instalando Starship..."
+        # Si ya se instaló, el script de Starship lo gestiona bien
         curl -sS https://starship.rs/install.sh | sh -s -- -y
         echo "Starship instalado."
     else
@@ -116,10 +121,10 @@ install_docker() {
 }
 
 create_symlinks() {
-    echo "¿Quieres crear los enlaces simbólicos para los dotfiles? (s/n)"
+    echo "¿Quieres crear los enlaces simbólicos y copias para los dotfiles? (s/n)"
     read -r response
     if [[ "$response" =~ ^([sS][iI]|[sS])$ ]]; then
-        echo "Creando enlaces simbólicos..."
+        echo "Creando enlaces simbólicos y copias..."
 
         if [ -d "$HOME/.config" ]; then
             echo "Moviendo el directorio ~/.config existente a ~/.config.bak"
@@ -127,22 +132,24 @@ create_symlinks() {
         fi
         mkdir -p "$HOME/.config"
 
-        # --- CÓDIGO CORREGIDO: NUEVO ENFOQUE PARA EL .zshrc ---
-        echo "Configurando .zshrc..."
-        # Mueve el .zshrc del repo a una subcarpeta para que no se sobreescriba
-        mkdir -p "$DOTFILES_DIR/zsh"
-        mv "$DOTFILES_DIR/.zshrc" "$DOTFILES_DIR/zsh/my-zshrc"
+        # Ahora se copia directamente el .zshrc
+        echo "Borrando .zshrc existente y copiando el de dotfiles..."
+        rm -f "$HOME/.zshrc"
+        cp "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
 
-        # Agrega la línea al final del .zshrc de Oh My Zsh para cargar el tuyo
-        echo "source $DOTFILES_DIR/zsh/my-zshrc" >> "$HOME/.zshrc"
-        # -----------------------------------------------------------------
+        echo "Borrando .gitconfig existente y copiando el de dotfiles..."
+        rm -f "$HOME/.gitconfig"
+        cp "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
 
-        # A partir de aquí, el código de los otros symlinks sigue igual.
-        # ... (código para .gitconfig, kitty, micro, rofi) ...
+        ln -sf "$DOTFILES_DIR/.config/kitty" "$HOME/.config/kitty"
+        ln -sf "$DOTFILES_DIR/.config/micro" "$HOME/.config/micro"
 
-        echo "Enlaces simbólicos creados."
+        mkdir -p "$HOME/.config/rofi"
+        ln -sf "$DOTFILES_DIR/.config/rofi/nord.rasi" "$HOME/.config/rofi/nord.rasi"
+
+        echo "Enlaces simbólicos y copias creadas."
     else
-        echo "Omitiendo la creación de enlaces simbólicos."
+        echo "Omitiendo la creación de enlaces simbólicos y copias."
     fi
 }
 
@@ -174,8 +181,7 @@ fi
 cd "$DOTFILES_DIR"
 
 install_system_packages
-install_proprietary_packages
-install_oh_my_zsh # <-- Nuevo: Instala Oh My Zsh
+install_zinit # <-- Ahora se llama a Zinit
 install_starship
 install_docker
 create_symlinks

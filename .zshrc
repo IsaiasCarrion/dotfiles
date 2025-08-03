@@ -1,11 +1,11 @@
 #!/bin/zsh
 
 # ---| Carga Temprana de PATHs y Interactividad |--- #
-# Solo cargar el script si es una sesión interactiva (no en scripts o entornos no interactivos)
 [[ $- != *i* ]] && return
 
-# Define PATH para comandos de pipx. Es mejor que esté al principio.
-export PATH="$PATH:/home/izzy/.local/bin"
+# Define PATH para comandos de pipx.
+# El instalador de pipx lo agrega, así que no es necesario aquí.
+# export PATH="$PATH:/home/izzy/.local/bin"
 
 # ---| Zinit Autoinstalación y Carga |--- #
 if [[ ! -f "${HOME}/.zinit/bin/zinit.zsh" ]]; then
@@ -25,10 +25,8 @@ zinit light junegunn/fzf
 source /usr/share/doc/fzf/examples/key-bindings.zsh
 
 # ---| Starship Prompt |--- #
-if ! command -v starship &> /dev/null; then
-  echo "Instalando Starship..."
-  curl -sS https://starship.rs/install.sh | sh
-fi
+# El script `install.sh` ya se encarga de instalar Starship.
+# Esta línea solo lo inicializa.
 eval "$(starship init zsh)"
 
 # ---| Paths de Caché |--- #
@@ -56,7 +54,6 @@ setopt NO_NOMATCH
 setopt LIST_PACKED
 setopt ALWAYS_TO_END
 setopt GLOB_COMPLETE
-# setopt COMPLETE_ES
 setopt COMPLETE_IN_WORD
 setopt AUTO_CD
 setopt AUTO_CONTINUE
@@ -217,39 +214,32 @@ function mkvenv() {
 
 # Automatiza el flujo de git add, commit y push
 function gpush() {
-  # Verifica si se proporcionó un mensaje de commit
   if [ -z "$1" ]; then
     echo "Error: Debes proporcionar un mensaje de commit."
     echo "Uso: gpush \"Tu mensaje de commit\""
     return 1
   fi
 
-  # 1. git add --all
   echo "Añadiendo todos los archivos modificados con 'git add --all'..."
   git add --all
 
-  # 2. git commit -m
   echo "Realizando commit con el mensaje: '$1'"
   git commit -m "$1"
 
-  # Verifica si el commit fue exitoso
   if [ $? -ne 0 ]; then
     echo "El commit falló. No se realizará el push."
     return 1
   fi
 
-  # 3. Pregunta antes de hacer el push
   echo ""
   echo "Resumen de los cambios a subir:"
   git --no-pager log -1 --stat
 
-  # Pide confirmación al usuario (versión compatible con Zsh)
   print -n "¿Estás seguro de que quieres hacer 'git push'? (y/n): "
   read -r reply
   echo
 
   if [[ $reply =~ ^[Yy]$ ]]; then
-    # 4. git push
     echo "Realizando 'git push'..."
     git push
   else
@@ -270,27 +260,12 @@ alias bat='batcat'
 
 # ========================
 # Alias para Docker
-# Comandos usados en la depuración del script
 # ========================
 
-# Listar todos los contenedores (activos y detenidos)
-# Útil para ver el estado del contenedor de prueba
 alias dpsa='docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}"'
-
-# Detener el contenedor de prueba
-# alias dstop='docker stop test-dotfiles' # Comentar o modificar
 alias dstop ='docker stop test-dotfiles'
-
-# Iniciar el contenedor de prueba
-# alias dstart='docker start test-dotfiles' # Comentar o modificar
 alias dstart ='docker start test-dotfiles'
-
-# Borrar el contenedor de prueba
-# alias drm='docker rm test-dotfiles' # Comentar o modificar
 alias drm ='docker rm test-dotfiles'
-
-# Ejecutar un comando en un contenedor en ejecución (el que usamos para entrar en zsh)
-# En este caso, entra en el contenedor 'test-dotfiles' con el shell zsh
 alias dexec ='docker exec -it test-dotfiles zsh'
 
 # ========================
@@ -323,7 +298,6 @@ zstyle ':completion:*:matches' group 'yes'
 zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*:options' auto-description '%d'
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
-zstyle ':completion:*' format ' %F{green}->%F{yellow} %d%f'
 zstyle ':completion:*:messages' format ' %F{green}->%F{purple} %d%f'
 zstyle ':completion:*:descriptions' format ' %F{green}->%F{yellow} %d%f'
 zstyle ':completion:*:warnings' format ' %F{green}->%F{red} no matches%f'
