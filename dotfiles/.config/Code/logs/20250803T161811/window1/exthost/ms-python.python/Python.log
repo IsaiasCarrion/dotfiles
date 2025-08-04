@@ -1,5 +1,0 @@
-2025-08-03 16:18:15.245 [info] Experiment 'pythonSurveyNotificationcf' is active
-2025-08-03 16:18:15.261 [info] Native locator: Refresh started
-2025-08-03 16:18:15.347 [info] Active interpreter [global]:  /bin/python3
-2025-08-03 16:18:15.347 [info] Native locator: Refresh finished in 86 ms
-2025-08-03 16:18:17.077 [info] Starting Pylance language server.

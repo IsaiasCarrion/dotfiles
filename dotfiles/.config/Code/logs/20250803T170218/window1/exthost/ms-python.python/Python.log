@@ -1,8 +1,0 @@
-2025-08-03 17:02:21.805 [info] Experiment 'pythonSurveyNotificationcf' is active
-2025-08-03 17:02:21.805 [info] Native locator: Refresh started
-2025-08-03 17:02:21.936 [info] > pyenv which python
-2025-08-03 17:02:21.936 [info] cwd: .
-2025-08-03 17:02:22.229 [info] Active interpreter [/home/izzy/Documents/dotfiles]:  /bin/python3
-2025-08-03 17:02:22.230 [info] Native locator: Refresh finished in 463 ms
-2025-08-03 17:02:22.233 [info] Discover tests for workspace name: dotfiles - uri: /home/izzy/Documents/dotfiles
-2025-08-03 17:02:23.753 [info] Starting Pylance language server.

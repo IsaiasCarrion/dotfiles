@@ -158,4 +158,5 @@
     "[lua]": {
         "editor.defaultFormatter": "yinfei.luahelper"
     },
+    "editor.matchBrackets": "never",
 }

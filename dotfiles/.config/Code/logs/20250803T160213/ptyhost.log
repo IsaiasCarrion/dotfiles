@@ -1,1 +1,0 @@
-2025-08-03 16:02:17.369 [error] Failed to set sticky bit on /tmp/izzy-code-zsh: Error: ENOENT: no such file or directory, chmod '/tmp/izzy-code-zsh'

@@ -1,7 +1,0 @@
-2025-08-03 16:18:43.599 [info] [activate] extension path: /home/izzy/.vscode/extensions/pflannery.vscode-versionlens-1.22.2
-2025-08-03 16:18:43.599 [info] [activate] resource folder path: ..
-2025-08-03 16:18:43.599 [info] [activate] workspace mode: false
-2025-08-03 16:18:43.600 [info] [activate] version: 1.22.2
-2025-08-03 16:18:43.600 [info] [activate] log level: info
-2025-08-03 16:18:43.600 [info] [activate] log folder: /home/izzy/.config/Code/logs/20250803T161840/window1/exthost
-2025-08-03 16:18:43.600 [error] [packageFileWatcher] could not find 'Untitled-1' project file
