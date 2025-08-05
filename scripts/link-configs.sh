@@ -57,7 +57,7 @@ link_configs() {
         else
             echo "👌 El directorio ~/.config/xfce4 ya existe. Omitiendo la creación del enlace simbólico."
         fi
-        
+
         # --- NUEVA ADICIÓN PARA VS CODE ---
         if [ ! -d "$HOME/.config/Code" ]; then
             echo "Creando enlace simbólico para la configuración de VS Code..."
