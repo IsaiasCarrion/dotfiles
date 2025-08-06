@@ -91,3 +91,8 @@ markup=pango
 command=~/.config/i3blocks/dunst/dunst_info.sh
 interval=1
 markup=pango
+
+#GPU
+command=~/.config/i3blocks/gpu/gpu_info.sh
+interval=1
+markup=pango
