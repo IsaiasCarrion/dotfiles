@@ -1,0 +1,202 @@
+#----------------------------[Izzy2k-i3-Config]-----------------------------
+
+set $mod Mod4
+
+#----------------------------[STARTUP]------------------------------------
+# Comando xrandr CORRECTO basado en el log de Xorg.
+exec --no-startup-id xrandr --output HDMI-0 --rotate left --rate 75 --output DP-0 --primary --right-of HDMI-0 --mode 1920x1080 --rate 144
+exec --no-startup-id ~/.config/i3/scripts/set_wallpaper.sh
+exec_always --no-startup-id i3-autolayout autolayout
+exec --no-startup-id nm-applet
+exec --no-startup-id setxkbmap latam
+exec --no-startup-id greenclip daemon
+exec --no-startup-id openrgb --start-server
+
+
+#----------------------------[FONTS]--------------------------------------
+# Configuracion de las fuentes.
+font pango:Hack Nerd Font 10
+font pango:FontAwesome5Free:style=Solid:pixelsize=10
+
+#------------------------[WINDOW APPEARANCE]------------------------------
+for_window [class="^.*"] border pixel 0
+gaps inner 2
+hide_edge_borders vertical
+set $unfocused_border #000000
+set $focused_border #000000
+floating_minimum_size 600 x 300
+for_window [workspace=""] floating enable
+
+#----------------------[AUDIO & BRIGHTNESS]-------------------------------
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10%
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
+
+#-------------------------[KEYBINDINGS]-----------------------------------
+
+## Basicos
+floating_modifier $mod
+bindsym $mod+Return exec alacritty
+
+bindsym $mod+braceright exec ~/.config/i3/scripts/openTerminalSameDir.sh
+bindsym $mod+q kill
+bindsym $mod+d exec rofi -show drun -show-icons
+bindsym $mod+m exec rofi -show emoji -show-icons
+bindsym $mod+s exec --no-startup-id ~/.config/rofi/rofi-search.sh
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Salir de i3?' -B 'Sí, salir' 'i3-msg exit'"
+bindsym $mod+e exec thunar
+bindsym $mod+n exec --no-startup-id flash_window
+bindsym $mod+Tab exec --no-startup-id rofi -modi combi -combi-modi window -show combi
+bindsym $mod+Control+m exec dunstctl set-paused toggle
+bindsym $mod+Control+n exec dunstctl history-pop
+bindsym Print exec --no-startup-id bash -c "scrot -m '/home/$USER/Pictures/%Y-%m-%d-%H-%M-%S.png'"
+bindsym $mod+Shift+s exec sh -c "maim -s | xclip -selection clipboard -t image/png"
+bindsym $mod+v exec "greenclip print | rofi -dmenu | xdotool type --clearmodifiers --file -"
+
+## Movimiento entre ventanas
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+## Mover ventanas
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+
+default_orientation vertical
+bindsym $mod+w layout tabbed
+# bindsym $mod+s layout stacking
+# bindsym $mod+e layout toggle split
+
+#---------------------------[WORKSPACES]----------------------------------
+# Asignación de nombres e iconos a los workspaces
+set $ws1 "1: WwW "
+set $ws2 "2: Code "
+set $ws3 "3: Term "
+set $ws4 "4: Social "
+set $ws5 "5: Game "
+set $ws6 "6: Files "
+set $ws7 "7: Media "
+set $ws8 "8: Chat "
+set $ws9 "9: Music "
+set $ws10 "10: Mail "
+
+# Asigna workspaces al monitor DP-0
+workspace 1 output DP-0
+workspace 2 output DP-0
+workspace 3 output DP-0
+workspace 4 output DP-0
+workspace 5 output DP-0
+
+# Asigna workspaces al monitor HDMI-0 (el vertical)
+workspace 6 output HDMI-0
+workspace 7 output HDMI-0
+workspace 8 output HDMI-0
+workspace 9 output HDMI-0
+workspace 10 output HDMI-0
+
+# Los 'bindsym' deben usar los nombres de las variables
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+10 workspace $ws10
+
+# Mover ventanas a espacios
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+#----------------------------[FLOAT RULES]--------------------------------
+# Uncomment/ajusta segun tus necesidades
+# for_window [class="Spotify"] move to workspace $ws9
+# for_window [class="Dbeaver"] move to workspace $ws2
+# for_window [class="jetbrains-idea-ce"] move to workspace $ws2
+# for_window [class="Subl3"] move to workspace $ws3
+# for_window [class="Steam"] move to workspace $ws4
+# for_window [class="Chromium"] move to workspace $ws1
+# for_window [class="Olivia"] move to workspace $ws9
+
+#------------------------------[MODES]-----------------------------------
+mode "resize" {
+    bindsym Left resize shrink width 5 px or 5 ppt
+    bindsym Down resize grow height 5 px or 5 ppt
+    bindsym Up resize shrink height 5 px or 5 ppt
+    bindsym Right resize grow width 5 px or 5 ppt
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+#------------------------------[END]-------------------------------------
+
+#---------------------------------[i3 bar]------------------------------
+#---------------------------------[i3 bar]------------------------------
+bar {
+    status_command i3blocks
+    position top
+    font pango: Hack Nerd Font 10
+    output DP-0
+    colors {
+    background #1c1c1c
+    statusline #e6e6e6
+    separator  #4f4f4f
+
+    # Colores para los workspaces
+    focused_workspace  #8be9fd #8be9fd #1c1c1c
+    active_workspace   #282a36 #282a36 #f8f8f2
+    inactive_workspace #3d3d3d #3d3d3d #808080
+    urgent_workspace   #ff5555 #ff5555 #ffffff
+}
+}
+
+# Configuración para el monitor secundario (HDMI-0)
+bar {
+    status_command i3blocks
+    position top
+    font pango: Hack Nerd Font 10
+    output HDMI-0
+    colors {
+    background #1c1c1c
+    statusline #e6e6e6
+    separator  #4f4f4f
+
+    # Colores para los workspaces
+    focused_workspace  #8be9fd #8be9fd #1c1c1c
+    active_workspace   #282a36 #282a36 #f8f8f2
+    inactive_workspace #3d3d3d #3d3d3d #808080
+    urgent_workspace   #ff5555 #ff5555 #ffffff
+}
+}

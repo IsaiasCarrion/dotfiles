@@ -32,14 +32,20 @@ install_proprietary_packages() {
 
 install_system_packages() {
     local packages_to_install=(
-        wget curl gnupg
-        kitty zsh fzf bat eza nala
-        python3 python3-pip pipx jq
-        golang rustc cargo
-        git gh
-        jupyter-notebook
-        alacritty
-        papirus-icon-theme
+        # Utilidades del sistema y línea de comandos
+        wget curl gnupg git gh zsh fzf bat eza nala
+
+        # Gestor de ventanas y barra de estado
+        i3 i3blocks dunst unclutter feh rofi
+
+        # Dependencias de los scripts
+        xdotool xprop pulseaudio-utils build-essential autoconf xclip wmctrl
+
+        # Lenguajes de desarrollo y herramientas
+        python3 python3-pip pipx jq golang rustc cargo jupyter-notebook
+
+        # Temas, iconos y fuentes
+        alacritty papirus-icon-theme fonts-hack-ttf fonts-jetbrains-mono-nerd
     )
     if ask_user "¿Quieres instalar los programas y lenguajes de desarrollo?"; then
         echo "Instalando paquetes del sistema..."

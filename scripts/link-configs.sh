@@ -36,6 +36,11 @@ link_configs() {
         ln -sf "$SOURCE_CONFIG_DIR/.config/nvim" "$HOME/.config/nvim"
         ln -sf "$SOURCE_CONFIG_DIR/.config/rofi" "$HOME/.config/rofi"
         ln -sf "$SOURCE_CONFIG_DIR/.config/alacritty" "$HOME/.config/alacritty"
+        
+        # --- NUEVA ADICIÓN PARA i3 e i3blocks ---
+        ln -sf "$SOURCE_CONFIG_DIR/.config/i3" "$HOME/.config/i3"
+        ln -sf "$SOURCE_CONFIG_DIR/.config/i3blocks" "$HOME/.config/i3blocks"
+        # ----------------------------------------
 
         # Enlace para Starship
         if [ ! -d "$HOME/.config/starship" ]; then
@@ -76,6 +81,13 @@ link_configs() {
         else
             echo "👌 El directorio ~/.config/Code ya existe. Omitiendo la creación del enlace simbólico."
         fi
+
+        # --- ADICIÓN PARA WALLPAPERS ---
+        echo "Creando enlace simbólico para la carpeta de Wallpapers..."
+        mkdir -p "$HOME/Pictures"
+        ln -sf "$SOURCE_CONFIG_DIR/Wallpapers" "$HOME/Pictures/Wallpapers"
+        echo "✅ Enlace simbólico de Wallpapers creado."
+        # -------------------------------
 
         echo "✅ Enlaces simbólicos y copias creadas."
     else

@@ -1,0 +1,93 @@
+# Configuración del archivo de i3blocks
+
+# Colores y fuentes
+separator_block_width=10
+color=#D8DEE9
+
+# Bloque del gestor de ventanas (i3)
+# Este bloque es nativo de i3blocks y no necesita un script externo.
+# Muestra los espacios de trabajo.
+[i3]
+interval=once
+
+# Bloque para empujar el título al centro
+[spacer]
+command=echo "          " # Ajusta los espacios
+interval=once
+
+# Bloque de clima
+[weather]
+command=~/.config/i3blocks/weather/weather_info.sh
+interval=3600
+markup=pango
+
+# Bloque de la CPU
+# Ejecuta un script para obtener uso y temperatura.
+[cpu]
+command=~/.config/i3blocks/cpu/cpu_info.sh
+interval=10
+markup=pango
+
+# Bloque de la memoria
+# Muestra el uso de la memoria RAM.
+[memory]
+command=~/.config/i3blocks/memory/memory_info.sh
+interval=10
+markup=pango
+
+# Bloque de batería 1
+# Muestra el estado de la batería BAT0.
+[battery]
+command=~/.config/i3blocks/battery/battery_info.sh BAT0
+interval=30
+markup=pango
+
+# Bloque de batería 2
+# Muestra el estado de la batería BAT1.
+[battery1]
+command=~/.config/i3blocks/battery/battery_info.sh BAT1
+interval=30
+markup=pango
+
+# Bloque de control de volumen
+[volume]
+command=~/.config/i3blocks/volume/volume_info.sh
+interval=1
+signal=10
+markup=pango
+
+# Bloque de brillo de pantalla
+[backlight]
+command=~/.config/i3blocks/backlight/backlight_info.sh
+interval=1
+markup=pango
+
+# Bloque de red inalámbrica
+[wireless-network]
+command=~/.config/i3blocks/wireless-network/wireless_info.sh
+interval=3
+markup=pango
+
+# Bloque de velocidad de red
+[speed]
+command=~/.config/i3blocks/speed/speed_info.sh
+interval=5
+markup=pango
+
+# Bloque de la fecha y hora
+[date]
+command=~/.config/i3blocks/date/date_info.sh
+interval=60
+markup=pango
+
+# Bloque del menú de apagado
+[powermenu]
+command=~/.config/i3blocks/powermenu/powermenu_info.sh
+interval=once
+markup=pango
+
+# Notificaciones
+[dunst]
+command=~/.config/i3blocks/dunst/dunst_info.sh
+interval=1
+markup=pango
