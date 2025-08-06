@@ -80,8 +80,32 @@ install_fonts() {
     fi
 }
 
+install_rust_and_cargo() {
+    if ask_user "¿Quieres instalar Rust y Cargo?"; then
+        echo "Instalando Rust y Cargo..."
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+        echo "✅ Rust y Cargo instalados."
+    else
+        echo "⏩ Omitiendo la instalación de Rust y Cargo."
+    fi
+}
+
+install_zellij() {
+    if ask_user "¿Quieres instalar Zellij?"; then
+        echo "Instalando Zellij..."
+        # Asegurarse de que cargo está en el PATH
+        source "$HOME/.cargo/env"
+        cargo install --locked zellij
+        echo "✅ Zellij instalado."
+    else
+        echo "⏩ Omitiendo la instalación de Zellij."
+    fi
+}
+
 install_zinit
 install_starship
 install_docker
 install_warp_terminal
 install_fonts
+install_rust_and_cargo
+install_zellij

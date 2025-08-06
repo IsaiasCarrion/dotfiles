@@ -49,6 +49,15 @@ link_configs() {
         fi
         ln -sf "$SOURCE_CONFIG_DIR/.config/warp-terminal/themes" "$HOME/.config/warp-terminal/themes"
 
+        # Enlace para Zellij
+        if [ ! -d "$HOME/.config/zellij" ]; then
+            echo "Creando enlace simbólico para la configuración de Zellij..."
+            ln -sf "$SOURCE_CONFIG_DIR/.config/zellij" "$HOME/.config/zellij"
+            echo "✅ Enlace simbólico de Zellij creado."
+        else
+            echo "👌 El directorio ~/.config/zellij ya existe. Omitiendo la creación del enlace simbólico."
+        fi
+
         # Enlace para XFCE4
         if [ ! -d "$HOME/.config/xfce4" ]; then
             echo "Creando enlace simbólico para la configuración de XFCE4..."
