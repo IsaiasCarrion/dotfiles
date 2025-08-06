@@ -138,6 +138,36 @@ npacs() {
     xargs -r sudo nala install -y
 }
 
+apts() {
+  local query="${1:-}"
+
+  for cmd in apt fzf apt-cache;
+  do
+    command -v "$cmd" >/dev/null || {
+      echo "Error: '$cmd' no está instalado." >&2
+      return 1
+    }
+  done
+
+  local has_apt_file=""
+  if command -v apt-file >/dev/null; then
+    has_apt_file=1
+  fi
+
+  apt-cache dumpavail 2>/dev/null | awk '/^Package:/ {print $2}' | sort -u | \
+    fzf --multi --query="$query" --prompt="Paquete > " --preview-window=up:70% --height=90% --border \
+      --preview="bash -c '
+        echo \"--- Información de: {} ---\";
+        apt-cache show {} 2>/dev/null | head -n 20;
+        if [ \"$has_apt_file\" ]; then
+          echo \"\n--- Archivos de: {} ---\";
+          apt-file list {} 2>/dev/null | head -n 20;
+        fi
+      '" | \
+    xargs -r sudo apt install -y
+}
+
+
 npipx() {
   local query="${1:-}"
 
