@@ -3,7 +3,6 @@
 # Dotfiles Automated Installer (Refactorizado)
 # Compatible: Ubuntu/Debian y Arch Linux
 # Autor original: Isaias Carrion
-# Refactor: ChatGPT (Linux/Scripting Senior)
 # ===============================================
 
 set -euo pipefail
