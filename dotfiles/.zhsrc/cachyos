@@ -1,179 +1,154 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
+# Izzy2k
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${USER}.zsh" ]]; then
+	  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${USER}.zsh"
 fi
 
-# Carga la configuración base de CachyOS
+# Load the CachyOS base configuration
 source /usr/share/cachyos-zsh-config/cachyos-config.zsh
 
-# ------------------------------------------------------------------------------
-## 🛠️ Funciones Personalizadas
-# ------------------------------------------------------------------------------
-
-# ---| Funciones de Python y PyPI |---
-
-# Función auxiliar (helper) para buscar e instalar desde PyPI
-# Evita repetir código (Principio DRY)
+# Python and PyPI Functions
 _pypi_search_install() {
-  local tool="$1"   # 'pip' o 'pipx'
-  local query="$2"
-  local prompt_text="$3"
+	local tool="$1"
+	local query="$2"
+	local prompt_text="$3"
 
-  # Verificar dependencias
-  for cmd in "$tool" fzf curl jq; do
-    command -v "$cmd" >/dev/null || {
-      echo "Error: '$cmd' no está instalado." >&2
-      return 1
-    }
-  done
+	for cmd in "$tool" fzf curl jq; do
+		command -v "$cmd" >/dev/null || {
+			echo "Error: '$cmd' is not installed." >&2
+			return 1
+		}
+	done
 
-  # Obtener selección desde fzf
-  local selection
-  selection=$(curl -s "https://pypi.org/simple/" | \
-    sed -E 's|<a href=.*>(.*)</a>|\1|' | sort -u | \
-    fzf --multi --query="$query" --prompt="$prompt_text" --preview='
+	local selection
+	selection=$(curl -s "https://pypi.org/simple/" |
+		sed -E 's|<a href=.*>(.*)</a>|\1|' | sort -u |
+		fzf --multi --query="$query" --prompt="$prompt_text" --preview='
       curl -s https://pypi.org/pypi/{}/json | jq -r ".info | \"Name: \(.name)\nVersion: \(.version)\nSummary: \(.summary)\nHome Page: \(.home_page)\"" 2>/dev/null
     ')
 
-  # Instalar si la selección no está vacía
-  if [ -n "$selection" ]; then
-    echo "$selection" | xargs -r -n1 "$tool" install
-  fi
+	if [ -n "$selection" ]; then
+		echo "$selection" | xargs -r -n1 "$tool" install
+	fi
 }
 
-# Funciones públicas que usan el helper
+## Wrapper's with pypi_search_install
 npip() {
-  _pypi_search_install "pip" "${1:-}" "PyPI > "
+	_pypi_search_install "pip" "${1:-}" "PyPI > "
 }
 npipx() {
-  _pypi_search_install "pipx" "${1:-}" "PyPI (pipx) > "
+	_pypi_search_install "pipx" "${1:-}" "PyPI (pipx) > "
 }
 
+# Virtual Environment (Venv) Functions
 
-# ---| Funciones de Entornos Virtuales (Venv) |---
-
-# Activar entornos virtuales de Python (lógica mejorada)
+## Activate Python virtual environments (improved logic)
 function v() {
-  # Caso 1: Activar un entorno específico desde ~/venvs
-  if [ -n "$1" ]; then
-    local VENV_PATH="$HOME/venvs/$1"
-    if [ -f "$VENV_PATH/bin/activate" ]; then
-      echo "Activando entorno: $VENV_PATH"
-      source "$VENV_PATH/bin/activate"
-      return 0
-    else
-      echo "Error: No se encontró entorno en: $VENV_PATH" >&2
-      return 1
-    fi
-  fi
 
-  # Caso 2: Sin argumento, buscar un entorno local (./venv o ./.venv)
-  for local_env in "venv" ".venv"; do
-    if [ -f "$local_env/bin/activate" ]; then
-      echo "Activando entorno local: $local_env"
-      source "$local_env/bin/activate"
-      return 0
-    fi
-  done
+	if [ -n "$1" ]; then
+		local VENV_PATH="$HOME/venvs/$1"
+		if [ -f "$VENV_PATH/bin/activate" ]; then
+			echo "Activating environment: $VENV_PATH"
+			source "$VENV_PATH/bin/activate"
+			return 0
+		else
+			echo "Error: Environment not found at: $VENV_PATH" >&2
+			return 1
+		fi
+	fi
 
-  # Caso 3: No se encontró nada
-  echo "Error: No se encontró un entorno virtual." >&2
-  echo "Uso: v [nombre_entorno] (para ~/venvs) ó 'v' (para ./venv)" >&2
-  return 1
+	for local_env in "venv" ".venv"; do
+		if [ -f "$local_env/bin/activate" ]; then
+			echo "Activating local environment: $local_env"
+			source "$local_env/bin/activate"
+			return 0
+		fi
+	done
+
+	echo "Error: No virtual environment found." >&2
+	echo "Usage: v [env_name] (for ~/venvs) or 'v' (for ./venv)" >&2
+	return 1
 }
 
-# Crear entorno virtual en ~/venvs/ (más robusto)
+## Create virtual environment in ~/venvs/ (more robust)
 function mkvenv() {
-  if [ -z "$1" ]; then
-    echo "Uso: mkvenv <nombre>" >&2
-    return 1
-  fi
+	if [ -z "$1" ]; then
+		echo "Usage: mkvenv <name>" >&2
+		return 1
+	fi
 
-  local VENV_PATH="$HOME/venvs/$1"
+	local VENV_PATH="$HOME/venvs/$1"
 
-  # Añadida verificación para no sobrescribir
-  if [ -d "$VENV_PATH" ]; then
-    echo "Error: El entorno '$1' ya existe en $VENV_PATH" >&2
-    return 1
-  fi
+	# Added check to avoid overwriting
+	if [ -d "$VENV_PATH" ]; then
+		echo "Error: Environment '$1' already exists at $VENV_PATH" >&2
+		return 1
+	fi
 
-  echo "Creando entorno '$1' en $VENV_PATH..."
-  python3 -m venv "$VENV_PATH" && echo "¡Entorno '$1' creado exitosamente!"
+	echo "Creating environment '$1' at $VENV_PATH..."
+	python3 -m venv "$VENV_PATH" && echo "Environment '$1' created successfully!"
 }
 
+# Git Function
 
-# ---| Función de Git |---
-
-# Automatiza el flujo de git add, commit y push (prompt mejorado)
+## Automates the git add, commit, and push flow (improved prompt)
 function gpush() {
-  if [ -z "$1" ]; then
-    echo "Error: Debes proporcionar un mensaje de commit." >&2
-    echo "Uso: gpush \"Tu mensaje de commit\"" >&2
-    return 1
-  fi
+	if [ -z "$1" ]; then
+		echo "Error: You must provide a commit message." >&2
+		echo "Usage: gpush \"Your commit message\"" >&2
+		return 1
+	fi
 
-  echo "Añadiendo todos los archivos modificados con 'git add --all'..."
-  git add --all
+	echo "Adding all modified files with 'git add --all'..."
+	git add --all
 
-  echo "Realizando commit con el mensaje: '$1'"
-  git commit -m "$1"
+	echo "Committing with message: '$1'"
+	git commit -m "$1"
 
-  # Verificación de error de commit
-  if [ $? -ne 0 ]; then
-    echo "El commit falló. No se realizará el push." >&2
-    return 1
-  fi
+	# Commit error check
+	if [ $? -ne 0 ]; then
+		echo "Commit failed. Push will not be performed." >&2
+		return 1
+	fi
 
-  echo "\nResumen de los cambios a subir:"
-  git --no-pager log -1 --stat
+	echo "\nSummary of changes to be pushed:"
+	git --no-pager log -1 --stat
 
-  # Prompt de confirmación nativo de Zsh (espera una tecla y/n)
-  read -q "reply?¿Estás seguro de que quieres hacer 'git push'? (y/n): "
-  echo # Añade un salto de línea después de la tecla
+	# Native Zsh confirmation prompt (waits for y/n key)
+	read -q "reply?Are you sure you want to 'git push'? (y/n): "
+	echo # Adds a newline after the keypress
 
-  if [[ $reply =~ ^[Yy]$ ]]; then
-    echo "Realizando 'git push'..."
-    git push
-  else
-    echo "Operación cancelada. No se realizó el push."
-  fi
+	if [[ $reply =~ ^[Yy]$ ]]; then
+		echo "Performing 'git push'..."
+		git push
+	else
+		echo "Operation cancelled. Push was not performed."
+	fi
 }
 
+# ⚡ Aliases
 
-# ------------------------------------------------------------------------------
-## ⚡ Alias
-# ------------------------------------------------------------------------------
-
-# Alias para buscar e instalar paquetes de CachyOS (Optimizado)
-# NOTA: Sincroniza tu base de datos manualmente con 'sudo pacman -Sy'
-# cuando quieras listas de paquetes actualizadas.
-# (Se eliminó 'sudo pacman -Syyq' y 'Fyq' para velocidad instantánea)
+## Alias to search and install CachyOS packages (Optimized)
 alias pacs="pacman -Slq cachyos cachyos-extra cachyos-testing | fzf -m --preview 'cat <(pacman -Si {1}) <(pacman -Fl {1} | awk \"{print \$2}\")' | xargs -ro sudo pacman -S"
 
-# Aliases de 'eza' (como estaban, ¡son geniales!)
+## 'eza' aliases
 alias ls='eza -lF --git --icons'
 alias ll='eza -alF --git --icons'
 
+# Shell Configuration
 
-# ------------------------------------------------------------------------------
-## ⚙️ Configuración del Shell (Zsh)
-# ------------------------------------------------------------------------------
-
-# ---| Paths de Caché |--- #
-# ¡CORRECCIÓN CRÍTICA! Esto debe definirse ANTES de usarse en zstyle.
+## Cache Paths
 typeset -g comppath="$HOME/.cache"
 typeset -g compfile="$comppath/.zcompdump"
 [[ -d "$comppath" ]] || mkdir -p "$comppath"
 [[ -w "$compfile" ]] || rm -f "$compfile" &>/dev/null
 
-# ---| Estilos de Autocompletado |--- #
+## Autocompletion Styles
 zstyle ':completion:*:correct:*' original true
 zstyle ':completion:*:correct:*' insert-unambiguous true
 zstyle ':completion:*:approximate:*' max-errors 'reply=($(( ($#PREFIX + $#SUFFIX) / 3 )) numeric)'
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "$comppath" # Ahora la variable existe
+zstyle ':completion:*' cache-path "$comppath"
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' verbose true
 zstyle ':completion:*' insert-tab false
@@ -187,9 +162,9 @@ zstyle ':completion:*:manuals.*' insert-sections true
 zstyle ':completion:*:manuals' separate-sections true
 zstyle ':completion:*' completer _complete _match _approximate _ignored
 zstyle ':completion:*' matcher-list \
-  'm:{a-zA-Z}={A-Za-z}' \
-  'r:|[._-]=* r:|=*' \
-  'l:|=* r:|=*'
+	'm:{a-zA-Z}={A-Za-z}' \
+	'r:|[._-]=* r:|=*' \
+	'l:|=* r:|=*'
 zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*:matches' group 'yes'
@@ -201,25 +176,28 @@ zstyle ':completion:*:messages' format ' %F{green}->%F{purple} %d%f'
 zstyle ':completion:*:descriptions' format ' %F{green}->%F{yellow} %d%f'
 zstyle ':completion:*:warnings' format ' %F{green}->%F{red} no matches%f'
 
-# ---| Shell Interno |--- #
+# Internal Shell
 SHELL=$(command -v zsh || echo '/bin/zsh')
 KEYTIMEOUT=1
 SAVEHIST=10000
 HISTSIZE=10000
-HISTFILE="$comppath/.zsh_history" # Usa la misma ruta de caché
+HISTFILE="$comppath/.zsh_history" # Use the same cache path
 
-# ---| Inicialización de módulos |--- #
-autoload -U compinit; compinit -u -d "$compfile"
-autoload -U promptinit; promptinit
+# Module Initialization
+autoload -U compinit
+compinit -u -d "$compfile"
+autoload -U promptinit
+promptinit
 autoload -U terminfo
 zmodload -i zsh/complist
 
-# ---| Opciones del Shell |--- #
+# Shell Options
 setopt CORRECT
 setopt NO_NOMATCH
 setopt LIST_PACKED
 setopt ALWAYS_TO_END
 setopt GLOB_COMPLETE
+
 # setopt COMPLETE_ES
 setopt COMPLETE_IN_WORD
 setopt AUTO_CD
@@ -234,21 +212,19 @@ setopt EXTENDED_GLOB
 setopt TRANSIENT_RPROMPT
 setopt INTERACTIVE_COMMENTS
 
-# ---| History Navigation Mejorada |--- #
-autoload -U up-line-or-beginning-search; zle -N up-line-or-beginning-search
-autoload -U down-line-or-beginning-search; zle -N down-line-or-beginning-search
+# Improved History Navigation
+autoload -U up-line-or-beginning-search
+zle -N up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N down-line-or-beginning-search
 
-# ---| Fix para teclas especiales |--- #
-if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
-  zle-line-init() { echoti smkx }
-  zle -N zle-line-init
-  zle-line-finish() { echoti rmkx }
-  zle -N zle-line-finish
-fi
-
-# ------------------------------------------------------------------------------
-## 🎨 Carga del Prompt (Powerlevel10k)
-# ------------------------------------------------------------------------------
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# Esto debe ir al final, después de todas las configuraciones.
+# Prompt Loading Powerlevel10k
+## To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Starship Prompt
+if ! command -v starship &>/dev/null; then
+	echo "Instalando Starship..."
+	curl -sS https://starship.rs/install.sh | sh
+fi
+eval "$(starship init zsh)"
