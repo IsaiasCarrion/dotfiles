@@ -158,6 +158,15 @@ function gpush() {
   fi
 }
 
+#Yazi
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
 
 # ------------------------------------------------------------------------------
 ## ⚡ Aliases
@@ -169,11 +178,35 @@ function gpush() {
 # (Removed 'sudo pacman -Syyq' and 'Fyq' for instant speed)
 alias pacs="pacman -Slq cachyos cachyos-extra cachyos-testing | fzf -m --preview 'cat <(pacman -Si {1}) <(pacman -Fl {1} | awk \"{print \$2}\")' | xargs -ro sudo pacman -S"
 
+#General
+alias rm='rm -i'  # Te pregunta antes de borrar.
+alias cp='cp -i'  # Te pregunta antes de sobrescribir.
+alias mv='mv -i'  # Te pregunta antes de mover sobre algo existente.
+
+# Recargar tu configuración después de editarla (Zsh)
+alias reload='source ~/.zshrc' 
+
+# Mi IP pública (útil para servidores/redes)
+alias myip='curl http://ipecho.net/plain; echo'
+
+# Limpiar pantalla rápido
+alias c='clear'
+
 # 'eza' aliases (as they were, they are great!)
 alias ls='eza -lF --git --icons'
 alias ll='eza -alF --git --icons'
 
+# Dir
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 
+# Git
+alias gs='git status'
+alias glog="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
+
+# Desactivar control de flujo
+stty -ixon
 # ------------------------------------------------------------------------------
 ## ⚙️ Shell Configuration (Zsh)
 # ------------------------------------------------------------------------------
