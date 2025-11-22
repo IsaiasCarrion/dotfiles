@@ -27,14 +27,14 @@ IGNORE_DIRS=(".git" ".github" "scripts" "README.md" "install.sh" "LICENSE")
 # Iterar sobre cada carpeta en dotfiles
 for folder in */ ; do
     app_name=$(basename "$folder")
-    
+
     # Verificar si está en la lista de ignorados
     if [[ " ${IGNORE_DIRS[*]} " =~ " ${app_name} " ]]; then
         continue
     fi
 
     echo -e "   -> Conectando: ${GREEN}$app_name${NC}"
-    
+
     # --restow: re-aplica enlaces si cambiaron
     # --target: asegura que apunte a tu Home real
     stow --restow --target="$HOME" "$app_name"

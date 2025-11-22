@@ -47,14 +47,14 @@
     br = branch
     ci = commit
     df = diff
-    
+
     # Logs que sí se entienden (Árbol gráfico con colores)
     lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all
-    
+
     # Utilidades de Pánico
     undo = reset HEAD~1 --mixed   # Deshace el último commit pero deja los archivos editados (por si la cagaste en el mensaje).
     wip = commit -am "WIP"        # "Work In Progress" rápido para salvar estado.
-    
+
     # Limpieza
     nuke = !git clean -fdX && git reset --hard HEAD  # Borra TODO lo que no esté commiteado. Peligroso. Útil.
 
