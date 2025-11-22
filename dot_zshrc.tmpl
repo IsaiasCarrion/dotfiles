@@ -1,0 +1,63 @@
+# =================================================================
+# ZSH MASTER CONFIG :: Role: {{ .machine_role }}
+# =================================================================
+
+# --- 1. SEGURIDAD Y AGENTE (GPG/SSH) ---
+{{ if .gpg_enabled -}}
+export GPG_TTY=$(tty)
+gpg-connect-agent UPDATESTARTUPTTY /bye >/dev/null 2>&1
+if [ -f "${HOME}/.gpg-agent-info" ]; then
+    . "${HOME}/.gpg-agent-info"
+    export GPG_AGENT_INFO
+    export SSH_AUTH_SOCK
+fi
+{{ end -}}
+
+# --- 2. ALIASES Y CORE UTILS ---
+
+# Editor adaptable (Vim en server, Nvim en GUI)
+export EDITOR={{ .editor_preferred }}
+alias v='$EDITOR'
+alias vi='vim'
+
+# Navegación Moderna
+eval "$(zoxide init zsh)"
+
+# FZF (Filtrado Rápido)
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# Yazi (File Manager con contexto de salida)
+function ya() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXX")"
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
+
+# --- 3. ENTORNO DE DESARROLLO (Solo GUI/Dev) ---
+{{ if ne .machine_role "server" -}}
+# UV & Python Tools
+export PATH="${HOME}/.cargo/bin:${PATH}"
+export PATH="${HOME}/.local/bin:${PATH}"
+
+# Aliases de mantenimiento CachyOS/Arch
+alias update='yay -Syu --noconfirm'
+alias cleanup='yay -Yc'
+{{ end -}}
+
+# --- 4. PROMPT Y ESTÉTICA ---
+{{ if .is_gui -}}
+    # Starship: Contexto visual rico para desarrollo
+    eval "$(starship init zsh)"
+{{ else -}}
+    # Minimal: Rendimiento puro para servidores/SSH
+    export PROMPT='%F{red}[{{ .machine_role }}]%f %F{green}%n@%m%f:%F{blue}%~%f$ '
+{{ end -}}
+
+# --- 5. ADVERTENCIAS DE ROL ---
+{{ if eq .machine_role "server" -}}
+echo "⚠️  PRECAUCIÓN: Estás en el servidor {{ .chezmoi.hostname }}. Los cambios son inmediatos."
+{{ end -}}
