@@ -1,12 +1,9 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# ------------------------------------------------------------------------------
+## 🚀 Base Configuration
+# ------------------------------------------------------------------------------
 
 # Load the CachyOS base configuration
-source /usr/share/cachyos-zsh-config/cachyos-config.zsh
+# source /usr/share/cachyos-zsh-config/cachyos-config.zsh
 
 # ------------------------------------------------------------------------------
 ## 🛠️ Custom Functions
@@ -189,14 +186,12 @@ function y() {
 # Alias to search and install CachyOS packages (Optimized)
 # NOTE: Synchronize your database manually with 'sudo pacman -Sy'
 # when you want updated package lists.
-# (Removed 'sudo pacman -Syyq' and 'Fyq' for instant speed)
 alias pacs="pacman -Slq cachyos cachyos-extra cachyos-testing | fzf -m --preview 'cat <(pacman -Si {1}) <(pacman -Fl {1} | awk \"{print \$2}\")' | xargs -ro sudo pacman -S"
 
 #General
 alias rm='rm -i'  # Te pregunta antes de borrar.
 alias cp='cp -i'  # Te pregunta antes de sobrescribir.
 alias mv='mv -i'  # Te pregunta antes de mover sobre algo existente.
-
 
 # Recargar tu configuración después de editarla (Zsh)
 alias reload='source ~/.zshrc'
@@ -222,6 +217,7 @@ alias glog="git log --graph --abbrev-commit --decorate --format=format:'%C(bold 
 
 # Desactivar control de flujo
 stty -ixon
+
 # ------------------------------------------------------------------------------
 ## ⚙️ Shell Configuration (Zsh)
 # ------------------------------------------------------------------------------
@@ -238,7 +234,7 @@ zstyle ':completion:*:correct:*' original true
 zstyle ':completion:*:correct:*' insert-unambiguous true
 zstyle ':completion:*:approximate:*' max-errors 'reply=($(( ($#PREFIX + $#SUFFIX) / 3 )) numeric)'
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "$comppath" # Now the variable exists
+zstyle ':completion:*' cache-path "$comppath"
 zstyle ':completion:*' rehash true
 zstyle ':completion:*' verbose true
 zstyle ':completion:*' insert-tab false
@@ -271,7 +267,7 @@ SHELL=$(command -v zsh || echo '/bin/zsh')
 KEYTIMEOUT=1
 SAVEHIST=10000
 HISTSIZE=10000
-HISTFILE="$comppath/.zsh_history" # Use the same cache path
+HISTFILE="$comppath/.zsh_history"
 
 # ---| Module Initialization |--- #
 autoload -U compinit; compinit -u -d "$compfile"
@@ -311,17 +307,14 @@ if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
   zle -N zle-line-finish
 fi
 
-# ------------------------------------------------------------------------------
-## 🎨 Prompt Loading (Powerlevel10k)
-# ------------------------------------------------------------------------------
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# This must go at the end, after all other configurations.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# ---| Prompt & Environments |--- #
 
-# ---| Starship Prompt |--- #
+# Starship (Prompt)
 eval "$(starship init zsh)"
 
-. "$HOME/.local/bin/env"
+# Env personalizado (Comentado porque daba error 'no such file')
+# Si el archivo existe y lo necesitas, descomenta la siguiente línea:
+# . "$HOME/.local/bin/env"
 
-# ---| Zoxide Prompt | --- #
+# Zoxide (Smarter cd)
 eval "$(zoxide init zsh)"
