@@ -1,223 +1,203 @@
 {
-    // ===========================
-    //  SETTINGS.JSON PORTABLE
-    //  Perfil: Analista de Datos
-    //  SO: Arch Linux / Windows
-    // ===========================
-    // --- 🧩 General ---
-    "telemetry.telemetryLevel": "off",
-    "update.mode": "manual",
-    "extensions.autoUpdate": false,
-    "extensions.ignoreRecommendations": true,
-    "workbench.startupEditor": "none",
-    "workbench.iconTheme": "material-icon-theme",
-    "workbench.editor.enablePreview": false,
-    "workbench.editor.highlightModifiedTabs": true,
-    "editor.bracketPairColorization.enabled": true,
-    "editor.guides.bracketPairs": true,
-    "editor.guides.indentation": true,
-    "editor.guides.highlightActiveIndentation": true,
-    "window.restoreWindows": "none",
-    "window.title": "${activeEditorShort}${separator}${rootName}",
-    "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 1200,
-    "files.trimTrailingWhitespace": true,
-    "files.insertFinalNewline": true,
-    "files.exclude": {
-        "**/__pycache__": true,
-        "**/.pytest_cache": true,
-        "**/.ipynb_checkpoints": true
+  "telemetry.telemetryLevel": "off",
+
+  "update.mode": "manual",
+
+  "extensions.autoUpdate": false,
+  "extensions.ignoreRecommendations": true,
+
+  "workbench.startupEditor": "none",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.sideBar.location": "right",
+
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.highlightModifiedTabs": true,
+
+  "window.restoreWindows": "none",
+  "window.title": "${activeEditorShort}${separator}${rootName}",
+
+  "editor.fontFamily": "JetBrainsMono Nerd Font",
+  "editor.fontLigatures": true,
+
+  "editor.lineNumbers": "on",
+  "editor.tabSize": 4,
+
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+
+  "editor.inlineSuggest.enabled": true,
+
+  "editor.minimap.enabled": false,
+
+  "editor.wordWrap": "on",
+
+  "editor.cursorBlinking": "smooth",
+  "editor.cursorSmoothCaretAnimation": "on",
+
+  "editor.bracketPairColorization.enabled": true,
+
+  "editor.guides.bracketPairs": true,
+  "editor.guides.highlightActiveIndentation": true,
+
+  "editor.renderWhitespace": "selection",
+
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": false
+  },
+
+  "editor.suggestOnTriggerCharacters": true,
+
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1200,
+
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.ipynb_checkpoints": true,
+    "**/.mypy_cache": true,
+    "**/.ruff_cache": true,
+    "**/.venv": true
+  },
+
+  "search.followSymlinks": false,
+  "search.useIgnoreFiles": true,
+
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.autoReveal": false,
+  "explorer.sortOrder": "type",
+
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "git.openRepositoryInParentFolders": "always",
+
+  "gitlens.hovers.currentLine.over": "line",
+  "gitlens.telemetry.enabled": false,
+
+  "python.defaultInterpreterPath": "python",
+
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.typeCheckingMode": "basic",
+
+  "python.analysis.inlayHints.variableTypes": true,
+  "python.analysis.inlayHints.functionReturnTypes": true,
+
+  "python.terminal.activateEnvironment": true,
+
+  "jupyter.askForKernelRestart": false,
+  "jupyter.themeMatplotlibPlots": true,
+  "jupyter.textOutputLimit": 3000,
+
+  "notebook.lineNumbers": "on",
+
+  "notebook.cellToolbarLocation": {
+    "default": "right"
+  },
+
+  "notebook.insertToolbarLocation": "betweenCells",
+  "notebook.output.textLineLimit": 500,
+
+  "docker.showStartPage": false,
+  "docker.explorerRefreshInterval": 120000,
+
+  "terminal.integrated.defaultProfile.linux": "zsh",
+
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "/usr/bin/bash",
+      "args": ["--login"]
     },
-    "python.defaultInterpreterPath": "python",
-    "python.analysis.autoImportCompletions": true,
-    "python.analysis.typeCheckingMode": "basic",
-    "python.languageServer": "Pylance",
-    "python.formatting.provider": "black",
-    "python.formatting.blackArgs": [
-        "--line-length",
-        "88"
-    ],
-    "python.linting.enabled": true,
-    "python.linting.flake8Enabled": true,
-    "python.linting.mypyEnabled": false,
-    "python.linting.pylintEnabled": false,
-    "python.terminal.activateEnvironment": true,
-    "jupyter.askForKernelRestart": false,
-    "jupyter.themeMatplotlibPlots": true,
-    "jupyter.textOutputLimit": 3000,
-    // --- 🧮 Data Science ---
-    "datawrangler.autoPreview": false,
-    "datawrangler.maxRows": 1000,
-    "notebook.output.textLineLimit": 500,
-    "notebook.cellToolbarLocation": {
-        "default": "right"
+
+    "zsh": {
+      "path": "/usr/bin/zsh",
+      "args": ["--login"]
     },
-    "notebook.lineNumbers": "on",
-    "notebook.insertToolbarLocation": "betweenCells",
-    "notebook.formatOnSave.enabled": true,
-    // --- 🐋 Docker / Containers ---
-    "docker.explorerRefreshInterval": 120000,
-    "docker.showStartPage": false,
-    "docker.containers.labelFormat": "Both",
-    "docker.containers.groupBy": "Compose Project",
-    "remote.containers.logLevel": "off",
-    "remote.containers.defaultExtensions": [
-        "ms-python.python",
-        "ms-toolsai.jupyter",
-        "mtxr.sqltools"
-    ],
-    "remote.containers.dockerPath.linux": "/usr/bin/docker",
-    "remote.containers.dockerPath.windows": "C:\\\\Program Files\\\\Docker\\\\Docker\\\\resources\\\\bin\\\\docker.exe",
-    // --- 💾 SQLTools Optimizado ---
-    "sqltools.useNodeRuntime": false,
-    "sqltools.disableNodeDetect": true,
-    "sqltools.autoConnectTo": "",
-    "sqltools.telemetry": false,
-    "sqltools.showStatusBar": true,
-    "sqltools.connectionsSortOrder": "groupedByDriver",
-    "sqltools.results.fontFamily": "JetBrainsMono Nerd Font, monospace",
-    "sqltools.results.fontSize": 12,
-    "sqltools.results.showQuery": false,
-    "sqltools.results.maxRows": 5000,
-    "sqltools.results.limitMessages": true,
-    "sqltools.results.copyAs": "CSV",
-    "sqltools.queryHistory.capture": true,
-    "sqltools.queryHistory.limit": 50,
-    "sqltools.format": {
-        "language": "sql",
-        "indentation": 2,
-        "upperKeywords": true,
-        "linesBetweenQueries": 1
-    },
-    // --- ⚙️ Terminal / Shell ---
-    "terminal.integrated.profiles.linux": {
-        "bash": {
-            "path": "/usr/bin/bash",
-            "args": [
-                "--login"
-            ]
-        },
-        "zsh": {
-            "path": "/usr/bin/zsh",
-            "args": [
-                "--login"
-            ]
-        },
-        "fish": {
-            "path": "/usr/bin/fish"
-        }
-    },
-    "terminal.integrated.defaultProfile.linux": "zsh",
-    "terminal.integrated.profiles.windows": {
-        "PowerShell": {
-            "path": "C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe"
-        },
-        "WSL": {
-            "path": "C:\\\\Windows\\\\System32\\\\wsl.exe"
-        },
-        "Git Bash": {
-            "path": "C:\\\\Program Files\\\\Git\\\\bin\\\\bash.exe"
-        }
-    },
-    "terminal.integrated.defaultProfile.windows": "PowerShell",
-    "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
-    "terminal.integrated.cursorBlinking": true,
-    "terminal.integrated.cursorStyle": "underline",
-    "terminal.integrated.smoothScrolling": true,
-    // --- 🧹 Editor UX ---
-    "editor.minimap.enabled": false,
-    "editor.fontFamily": "JetBrainsMono Nerd Font, Hack Nerd Font",
-    "editor.fontLigatures": true,
-    "editor.cursorBlinking": "smooth",
-    "editor.cursorSmoothCaretAnimation": "on",
-    "editor.lineNumbers": "on",
-    "editor.tabSize": 4,
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
-    "editor.smoothScrolling": true,
-    "editor.renderWhitespace": "selection",
-    "editor.wordWrap": "on",
-    "editor.guides.indentation": false,
-    "editor.codeLens": false,
-    // --- 🔍 Search & Explorer ---
-    "search.followSymlinks": false,
-    "search.useIgnoreFiles": true,
-    "explorer.confirmDragAndDrop": false,
-    "explorer.confirmDelete": false,
-    "explorer.sortOrder": "type",
-    "explorer.autoReveal": false,
-    // --- 📦 Git ---
-    "git.autofetch": true,
-    "git.confirmSync": false,
-    "git.enableSmartCommit": true,
-    "git.openRepositoryInParentFolders": "always",
-    "gitlens.hovers.currentLine.over": "line",
-    "gitlens.telemetry.enabled": false,
-    // --- 🪶 Portable Paths ---
-    "python.globalModuleInstallation": false,
-    "terminal.integrated.env.linux": {
-        "PATH": "${workspaceFolder}/.venv/bin:${env:PATH}"
-    },
-    "terminal.integrated.env.windows": {
-        "PATH": "${workspaceFolder}\\\\.venv\\\\Scripts;${env:PATH}"
-    },
-    "database-client.autoSync": true,
-    "workbench.sideBar.location": "right",
-    "gitlens.ai.model": "vscode",
-    "gitlens.ai.vscode.model": "copilot:gpt-4.1",
-    "settingsSync.ignoredExtensions": [
-        "akamud.vscode-theme-onedark",
-        "eamodio.gitlens",
-        "ms-mssql.mssql",
-        "ms-mssql.data-workspace-vscode",
-        "ms-mssql.sql-bindings-vscode",
-        "ms-mssql.sql-database-projects-vscode",
-        "kevinrose.vsc-python-indent",
-        "oderwat.indent-rainbow",
-        "foxundermoon.shell-format",
-        "shakram02.bash-beautify"
-    ],
-    "mssql.connectionGroups": [
-        {
-            "name": "ROOT",
-            "id": "476233DF-8D86-42E4-BE5A-FE7C9FC102C5"
-        }
-    ],
-    "sqltools.connections": [
-        {
-            "mysqlOptions": {
-                "authProtocol": "default",
-                "enableSsl": "Disabled"
-            },
-            "ssh": "Disabled",
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 3306,
-            "driver": "MySQL",
-            "database": "root",
-            "username": "root",
-            "name": "127.0.0.1",
-            "group": "127.0.0.1"
-        },
-        {
-            "mysqlOptions": {
-                "authProtocol": "default",
-                "enableSsl": "Disabled"
-            },
-            "ssh": "Disabled",
-            "previewLimit": 50,
-            "server": "localhost",
-            "port": 3306,
-            "driver": "MySQL",
-            "database": "curso",
-            "username": "root",
-            "name": "curso",
-            "group": "curso"
-        }
-    ],
-    "workbench.colorTheme": "Afterglow",
-    "indentRainbow.indicatorStyle": "light",
-    "[markdown]": {
-        "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+
+    "fish": {
+      "path": "/usr/bin/fish"
     }
+  },
+
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+    },
+
+    "WSL": {
+      "path": "C:\\Windows\\System32\\wsl.exe"
+    },
+
+    "Git Bash": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe"
+    }
+  },
+
+  "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
+
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.cursorStyle": "underline",
+
+  "terminal.integrated.smoothScrolling": true,
+
+  "terminal.integrated.env.linux": {
+    "PATH": "${workspaceFolder}/.venv/bin:${env:PATH}"
+  },
+
+  "terminal.integrated.env.windows": {
+    "PATH": "${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
+  },
+
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+
+  "[yaml]": {
+    "editor.tabSize": 2
+  },
+
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+
+  "sqltools.useNodeRuntime": false,
+  "sqltools.disableNodeDetect": true,
+
+  "sqltools.telemetry": false,
+
+  "sqltools.showStatusBar": true,
+
+  "sqltools.connectionsSortOrder": "groupedByDriver",
+
+  "sqltools.results.fontFamily": "JetBrainsMono Nerd Font, monospace",
+  "sqltools.results.fontSize": 12,
+
+  "sqltools.results.showQuery": false,
+  "sqltools.results.maxRows": 5000,
+
+  "sqltools.results.limitMessages": true,
+
+  "sqltools.results.copyAs": "CSV",
+
+  "sqltools.queryHistory.capture": true,
+  "sqltools.queryHistory.limit": 50,
+
+  "remote.SSH.remotePlatform": {
+    "192.168.1.25": "linux"
+  }
 }

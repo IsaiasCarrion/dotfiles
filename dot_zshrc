@@ -1,0 +1,652 @@
+# ==============================================================================
+# 🚀 ZSH CONFIG — CACHYOS POWER USER EDITION
+# ==============================================================================
+# Filosofía:
+#
+# 1. CORE
+#    Variables, historial, shell options, completion.
+#
+# 2. ALWAYS LOADED
+#    Starship, zoxide, syntax highlight, autosuggestions.
+#
+# 3. LAZY / CONDITIONAL
+#    Docker, uv, atuin, previews, fzf integrations.
+#
+# 4. PERFORMANCE
+#    Fast compinit
+#    Lazy checks
+#    Conditional binaries
+#    Minimal subshells
+#
+# ==============================================================================
+
+# ==============================================================================
+## 🧠 CORE ENV
+# ==============================================================================
+
+export SHELL="$(command -v zsh)"
+export EDITOR="zeditor"
+export VISUAL="$EDITOR"
+
+# Cache
+typeset -g ZCACHE="${HOME}/.cache/zsh"
+typeset -g compfile="${ZCACHE}/.zcompdump"
+typeset -g HISTFILE="${ZCACHE}/history"
+
+mkdir -p "$ZCACHE"
+
+# History
+HISTSIZE=100000
+SAVEHIST=100000
+
+setopt APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_VERIFY
+setopt EXTENDED_HISTORY
+
+# Shell behavior
+setopt AUTO_CD
+setopt AUTO_CONTINUE
+setopt COMPLETE_IN_WORD
+setopt ALWAYS_TO_END
+setopt INTERACTIVE_COMMENTS
+setopt EXTENDED_GLOB
+setopt GLOB_COMPLETE
+setopt NO_NOMATCH
+setopt LIST_PACKED
+setopt TRANSIENT_RPROMPT
+
+KEYTIMEOUT=1
+
+# Disable flow control
+stty -ixon
+
+# ==============================================================================
+## ⚡ FAST COMPINIT
+# ==============================================================================
+
+autoload -Uz compinit
+
+if [[ ! -f "$compfile" || $(find "$compfile" -mtime +1 2>/dev/null) ]]; then
+    compinit -u -d "$compfile"
+else
+    compinit -C -u -d "$compfile"
+fi
+
+zmodload -i zsh/complist
+
+# ==============================================================================
+## 🎨 COMPLETION STYLES
+# ==============================================================================
+
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$ZCACHE"
+zstyle ':completion:*' menu select
+zstyle ':completion:*' verbose true
+zstyle ':completion:*' insert-tab false
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' squeeze-slashes true
+
+zstyle ':completion:*' matcher-list \
+    'm:{a-zA-Z}={A-Za-z}' \
+    'r:|[._-]=* r:|=*' \
+    'l:|=* r:|=*'
+
+zstyle ':completion:*' completer \
+    _complete \
+    _match \
+    _approximate \
+    _ignored
+
+zstyle ':completion:*:descriptions' format ' %F{green}→ %d%f'
+zstyle ':completion:*:warnings' format ' %F{red}no matches%f'
+
+# ==============================================================================
+## 🔍 FZF GLOBAL
+# ==============================================================================
+
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+
+export FZF_DEFAULT_OPTS='
+--height=40%
+--layout=reverse
+--border
+--ansi
+--cycle
+--info=inline
+--prompt=❯
+--pointer=▶
+--marker=✓
+--preview-window=right:60%
+--bind=ctrl-u:preview-half-page-up
+--bind=ctrl-d:preview-half-page-down
+--bind=ctrl-f:preview-page-down
+--bind=ctrl-b:preview-page-up
+'
+
+if command -v bat &>/dev/null; then
+    export FZF_CTRL_T_OPTS="
+    --preview 'bat --color=always --style=numbers --line-range=:500 {}'
+  "
+fi
+
+# ==============================================================================
+## ⚡ ALWAYS LOADED
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+## ⭐ Starship
+# ------------------------------------------------------------------------------
+
+if command -v starship &>/dev/null; then
+    eval "$(starship init zsh)"
+fi
+
+# ------------------------------------------------------------------------------
+## ⚡ Zoxide
+# ------------------------------------------------------------------------------
+
+if command -v zoxide &>/dev/null; then
+    eval "$(zoxide init zsh)"
+fi
+
+# ------------------------------------------------------------------------------
+## 💡 Autosuggestions
+# ------------------------------------------------------------------------------
+
+if [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+    source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+    ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+
+    bindkey '^[[C' autosuggest-accept
+    bindkey '^ ' autosuggest-accept
+fi
+
+# ------------------------------------------------------------------------------
+## 🎨 Syntax Highlighting
+# ------------------------------------------------------------------------------
+
+if [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+    source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+    ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
+
+    ZSH_HIGHLIGHT_STYLES[command]='fg=green,bold'
+    ZSH_HIGHLIGHT_STYLES[builtin]='fg=cyan,bold'
+    ZSH_HIGHLIGHT_STYLES[alias]='fg=magenta,bold'
+    ZSH_HIGHLIGHT_STYLES[function]='fg=blue,bold'
+    ZSH_HIGHLIGHT_STYLES[path]='fg=blue,underline'
+    ZSH_HIGHLIGHT_STYLES[globbing]='fg=red,bold'
+    ZSH_HIGHLIGHT_STYLES[comment]='fg=8,italic'
+    # ZSH_HIGHLIGHT_STYLES[unknown - token]='fg=red,bold'
+fi
+
+# ==============================================================================
+## 🚀 FZF-TAB
+# ==============================================================================
+
+if [[ ! -f "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.plugin.zsh" ]]; then
+    git clone https://github.com/Aloxaf/fzf-tab \
+        "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab" \
+        &>/dev/null
+fi
+
+if [[ -f "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.plugin.zsh" ]]; then
+    source "${HOME}/.oh-my-zsh/custom/plugins/fzf-tab/fzf-tab.plugin.zsh"
+
+    zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+    zstyle ':fzf-tab:*' show-group full
+
+    zstyle ':fzf-tab:complete:cd:*' \
+        fzf-preview 'eza --tree --level=2 --icons --color=always $realpath'
+
+    zstyle ':fzf-tab:complete:*:*' \
+        fzf-preview 'bat --color=always --style=numbers --line-range=:300 ${realpath#--*=} 2>/dev/null'
+
+    zstyle ':fzf-tab:complete:kill:*' \
+        fzf-preview 'ps --pid=$word -o cmd --no-headers'
+
+    zstyle ':fzf-tab:complete:systemctl-*:*' \
+        fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
+fi
+
+# ==============================================================================
+## 📜 ATUIN
+# ==============================================================================
+
+if command -v atuin &>/dev/null; then
+    export ATUIN_NOBIND="true"
+
+    eval "$(atuin init zsh)"
+
+    bindkey '^R' atuin-search
+    bindkey '^S' atuin-search
+fi
+
+# ==============================================================================
+## 🛠️ FUNCTIONS
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+## 🐍 Python Venvs
+# ------------------------------------------------------------------------------
+
+function v() {
+    if [[ -n "$1" ]]; then
+        local venv="${HOME}/venvs/$1"
+
+        if [[ -f "$venv/bin/activate" ]]; then
+            source "$venv/bin/activate"
+            return
+        fi
+
+        echo "Environment not found: $1"
+        return 1
+    fi
+
+    for env in venv .venv; do
+        if [[ -f "$env/bin/activate" ]]; then
+            source "$env/bin/activate"
+            return
+        fi
+    done
+
+    echo "No virtual environment found."
+}
+
+function mkvenv() {
+    [[ -z "$1" ]] && {
+        echo "Usage: mkvenv <name>"
+        return 1
+    }
+
+    local target="${HOME}/venvs/$1"
+
+    [[ -d "$target" ]] && {
+        echo "Already exists."
+        return 1
+    }
+
+    uv venv "$target"
+}
+
+# ------------------------------------------------------------------------------
+## 📦 UV
+# ------------------------------------------------------------------------------
+
+function _uv_run() {
+    local cmd="$1"
+    shift
+
+    (($# == 0)) && {
+        echo "Usage: uv${cmd} <package>"
+        return 1
+    }
+
+    uv pip "$cmd" "$@"
+}
+
+function uvi() { _uv_run install "$@"; }
+function uvu() { _uv_run uninstall "$@"; }
+function uvf() { uv pip freeze; }
+
+function uvs() {
+    local req="${1:-requirements.txt}"
+
+    [[ ! -f "$req" ]] && {
+        echo "requirements not found"
+        return 1
+    }
+
+    uv pip sync "$req"
+}
+
+function uvx() { uv tool install "$@"; }
+function uvr() { uv tool run "$@"; }
+function uvl() { uv tool list; }
+function uvux() { uv tool uninstall "$@"; }
+
+# ------------------------------------------------------------------------------
+## 📁 Smart mkdir
+# ------------------------------------------------------------------------------
+
+function mkpaths() {
+    for item in "$@"; do
+        if [[ "$item" == *.* ]]; then
+            mkdir -p "$(dirname "$item")"
+            touch "$item"
+        else
+            mkdir -p "$item"
+        fi
+    done
+}
+
+# ------------------------------------------------------------------------------
+## 🚀 Git Push
+# ------------------------------------------------------------------------------
+
+function gpush() {
+    if [[ -z "$1" ]]; then
+        echo 'Usage: gpush "mensaje del commit"'
+        return 1
+    fi
+
+    local branch remote
+
+    branch=$(git branch --show-current)
+
+    if [[ -z "$branch" ]]; then
+        echo "❌ No se pudo determinar la rama actual."
+        return 1
+    fi
+
+    remote=$(git config --get "branch.${branch}.remote")
+    remote=${remote:-origin}
+
+    git add --all || return 1
+
+    git commit -m "$1" || {
+        echo "❌ Commit cancelado o sin cambios."
+        return 1
+    }
+
+    echo
+    echo "Último commit:"
+    git --no-pager log -1 --oneline --stat
+
+    echo
+    echo "📍 Rama  : $branch"
+    echo "🚀 Remote: $remote"
+    echo "🎯 Push a: ${remote}/${branch}"
+    echo
+
+    read -q "REPLY?¿Continuar con el push? [y/N]: "
+    echo
+
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+        git push "$remote" "$branch"
+    else
+        echo "Push cancelado."
+    fi
+}
+
+# ------------------------------------------------------------------------------
+## 📂 Yazi
+# ------------------------------------------------------------------------------
+
+function y() {
+    local tmp cwd
+
+    tmp="$(mktemp -t yazi-cwd.XXXXXX)"
+
+    yazi "$@" --cwd-file="$tmp"
+
+    cwd="$(<"$tmp")"
+
+    [[ -n "$cwd" && "$cwd" != "$PWD" ]] && cd "$cwd"
+
+    rm -f "$tmp"
+}
+
+# ------------------------------------------------------------------------------
+## 📦 Smart Extract
+# ------------------------------------------------------------------------------
+
+function extract() {
+    if [[ -f "$1" ]]; then
+        case "$1" in
+        *.tar.bz2) tar xjf "$1" ;;
+        *.tar.gz) tar xzf "$1" ;;
+        *.bz2) bunzip2 "$1" ;;
+        *.rar) unrar x "$1" ;;
+        *.gz) gunzip "$1" ;;
+        *.tar) tar xf "$1" ;;
+        *.tbz2) tar xjf "$1" ;;
+        *.tgz) tar xzf "$1" ;;
+        *.zip) unzip "$1" ;;
+        *.7z) 7z x "$1" ;;
+        *) echo "Cannot extract '$1'" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# ------------------------------------------------------------------------------
+## ⚡ Zoxide + FZF History
+# ------------------------------------------------------------------------------
+
+function zzf() {
+    local dir
+
+    dir=$(
+        zoxide query -ls |
+            fzf \
+                --height 50% \
+                --layout reverse \
+                --prompt="📁 " \
+                --preview 'eza --icons --tree --level=2 --color=always {2..}'
+    ) || return
+
+    cd "${dir#* }"
+}
+
+# Shortcut MUY cómodo
+bindkey '^G' zzf
+
+# ==============================================================================
+## 📦 PACKAGE HELPERS
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+## 📦 CachyOS Package Browser
+# ------------------------------------------------------------------------------
+
+function pacs() {
+    local -a repos
+    local pkg
+
+    repos=(
+        $(pacman-conf --repo-list | grep '^cachyos')
+    )
+
+    pkg=$(
+        pacman -Slq "${repos[@]}" |
+            sort -u |
+            fzf \
+                --multi \
+                --ansi \
+                --height=80% \
+                --layout=reverse \
+                --border \
+                --prompt='📦 CachyOS > ' \
+                --preview '
+        pacman -Si {} 2>/dev/null
+
+        echo
+        echo "────────────────────────"
+
+        pacman -Fl {} 2>/dev/null | head -200
+      ' \
+                --preview-window=right:70%
+    ) || return
+
+    sudo pacman -S $pkg
+}
+
+# ------------------------------------------------------------------------------
+## 🗑️ Remove Installed Packages (Interactive)
+# ------------------------------------------------------------------------------
+
+function pacrm() {
+    local pkgs
+
+    pkgs=$(
+        pacman -Qq |
+            fzf \
+                --multi \
+                --ansi \
+                --height=80% \
+                --layout=reverse \
+                --border \
+                --prompt='🗑️ Remove > ' \
+                --preview '
+        pacman -Qi {} 2>/dev/null
+
+        echo
+        echo "────────────────────────"
+
+        pactree -r {} 2>/dev/null | head -50
+      ' \
+                --preview-window=right:70%
+    ) || return
+
+    echo
+    echo "Packages selected:"
+    echo "$pkgs"
+    echo
+
+    read -q "REPLY?Remove selected packages? [y/N]: "
+    echo
+
+    [[ "$REPLY" =~ ^[Yy]$ ]] || return
+
+    sudo pacman -Rns $pkgs
+}
+
+# ------------------------------------------------------------------------------
+## 🐍 Python Packages Browser
+# ------------------------------------------------------------------------------
+
+function pypacs() {
+    local pkg
+
+    pkg=$(
+        curl -s https://pypi.org/simple/ |
+            sed -E 's/<[^>]+>//g' |
+            sed '/^\s*$/d' |
+            fzf \
+                --height=80% \
+                --layout=reverse \
+                --border \
+                --prompt='🐍 ' \
+                --preview '
+        curl -s https://pypi.org/pypi/{}/json |
+        jq -r "
+          .info.name,
+          \"\",
+          \"Version: \(.info.version)\",
+          \"\",
+          .info.summary,
+          \"\",
+          \"Home: \(.info.home_page)\",
+          \"\",
+          .info.author
+        "
+      ' \
+                --preview-window=right:60%
+    ) || return
+
+    echo "Installing: $pkg"
+
+    if command -v uv &>/dev/null; then
+        uv pip install "$pkg"
+    else
+        pip install "$pkg"
+    fi
+}
+
+# ==============================================================================
+## ⚡ ALIASES
+# ==============================================================================
+
+# Safety
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# General
+alias reload='source ~/.zshrc'
+alias myip='curl -s http://ipecho.net/plain; echo'
+alias c='clear'
+
+# Eza
+alias ls='eza -lF --git --icons'
+alias ll='eza -alF --git --icons'
+
+# Directories
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# Git
+alias gs='git status'
+
+alias glog="git log \
+--graph \
+--abbrev-commit \
+--decorate \
+--format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' \
+--all"
+
+# Editor
+alias zed='zeditor'
+
+# Zoxide
+alias zz='z'
+alias zzi='zi'
+alias zza='z -a'
+alias zzl='z -l'
+alias zzd='z -d'
+alias zzr='zoxide remove'
+
+# SSH
+# Proxmox (192.168.1.20)
+alias server='ssh izzy@192.168.1.10'
+# Docker Lab VM (192.168.1.30)
+alias dockerlab='ssh dockerlab@192.168.1.30'
+
+# ==============================================================================
+## 🔥 OPTIONAL LAZY LOADS
+# ==============================================================================
+
+# Docker
+if command -v docker &>/dev/null; then
+    alias dps='docker ps'
+    alias dcu='docker compose up'
+    alias dcd='docker compose down'
+fi
+
+# GitHub CLI
+if command -v gh &>/dev/null; then
+    eval "$(gh completion -s zsh)"
+fi
+
+# Bun
+if command -v bun &>/dev/null; then
+    export BUN_INSTALL="$HOME/.bun"
+    export PATH="$BUN_INSTALL/bin:$PATH"
+fi
+
+# ==============================================================================
+## 🚀 FINAL
+# ==============================================================================
+
+# Faster line search
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
+
+# EOF
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/go/bin:$PATH"

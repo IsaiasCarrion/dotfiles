@@ -1,62 +1,123 @@
 [user]
-    name = Isaias Carrion
-    email = carrionisaias@gmail.com
-    # Usar tu clave GPG para firmar commits si la tienes (recomendado a futuro)
-    # signingkey = TU_KEY_ID
+name = Isaias Carrion
+email = [carrionisaias@gmail.com](mailto:carrionisaias@gmail.com)
 
 [core]
-    editor = nvim              # Tu editor real.
-    pager = delta              # Usar delta para diffs hermosos.
-    autocrlf = input           # Linux puro. Evita basura de Windows (\r\n).
-    whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+editor = zed -w
+pager = delta
+autocrlf = input
+whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+excludesfile = ~/.gitignore_global
 
 [init]
-    defaultBranch = main       # Estándar moderno. Adiós 'master'.
-
-[delta]
-    navigate = true            # Usa 'n' para saltar entre cambios en el diff.
-    light = false              # Tema oscuro.
-    side-by-side = true        # Diffs lado a lado (tipo VSCode).
-    line-numbers = true
-
-[interactive]
-    diffFilter = delta --color-only
-
-[merge]
-    conflictstyle = diff3      # Muestra: Lo tuyo, lo de ellos y la BASE (crítico para resolver conflictos).
-
-[pull]
-    rebase = true              # CRÍTICO. Evita los commits inútiles de "Merge branch..." al hacer pull. Mantiene la historia lineal.
-
-[push]
-    autoSetupRemote = true     # Te ahorra escribir 'git push -u origin...' la primera vez. Solo 'git push' y listo.
-    default = simple
-
-[credential "https://github.com"]
-    helper = !/usr/bin/gh auth git-credential
-
-[credential "https://gist.github.com"]
-    helper = !/usr/bin/gh auth git-credential
-
-# --- ALIAS: Aquí es donde ganas velocidad ---
-[alias]
-    # Básicos cortos
-    s = status -sb             # Status minimalista.
-    st = status
-    co = checkout
-    br = branch
-    ci = commit
-    df = diff
-
-    # Logs que sí se entienden (Árbol gráfico con colores)
-    lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all
-
-    # Utilidades de Pánico
-    undo = reset HEAD~1 --mixed   # Deshace el último commit pero deja los archivos editados (por si la cagaste en el mensaje).
-    wip = commit -am "WIP"        # "Work In Progress" rápido para salvar estado.
-
-    # Limpieza
-    nuke = !git clean -fdX && git reset --hard HEAD  # Borra TODO lo que no esté commiteado. Peligroso. Útil.
+defaultBranch = main
 
 [color]
-    ui = auto
+ui = auto
+
+[help]
+autocorrect = prompt
+
+[column]
+ui = auto
+
+[fetch]
+prune = true
+pruneTags = true
+
+[pull]
+rebase = true
+ff = only
+
+[push]
+autoSetupRemote = true
+default = simple
+followTags = true
+
+[rebase]
+autoStash = true
+updateRefs = true
+
+[rerere]
+enabled = true
+autoupdate = true
+
+[merge]
+conflictstyle = zdiff3
+
+[diff]
+algorithm = histogram
+colorMoved = default
+
+[delta]
+navigate = true
+light = false
+side-by-side = true
+line-numbers = true
+syntax-theme = ansi
+
+[interactive]
+diffFilter = delta --color-only
+
+[credential "https://github.com"]
+helper = !/usr/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+helper = !/usr/bin/gh auth git-credential
+
+[commit]
+verbose = true
+
+[tag]
+sort = version:refname
+
+[alias]
+
+```
+; Estado
+s = status -sb
+st = status
+aa = add --all
+
+; Navegación
+co = checkout
+sw = switch
+br = branch
+
+; Commits
+ci = commit
+amend = commit --amend
+wip = !git add -A && git commit -m "WIP"
+
+; Diff
+df = diff
+dc = diff --cached
+
+; Historial
+lg = log --graph --abbrev-commit --decorate --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'
+last = log -1 HEAD --stat
+contributors = shortlog -sn
+
+; Sincronización
+up = pull --rebase --autostash
+publish = push -u origin HEAD
+
+; Stash
+ss = stash push
+sl = stash list
+sp = stash pop
+
+; Utilidades
+undo = reset --mixed HEAD~1
+unstage = restore --staged .
+discard = restore .
+
+; Limpieza extrema
+nuke = !git clean -fdx && git reset --hard HEAD
+```
+
+[gpg]
+format = ssh
+
+[gpg "ssh"]
+program = /usr/bin/ssh-keygen

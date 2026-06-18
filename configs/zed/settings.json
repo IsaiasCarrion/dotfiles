@@ -1,0 +1,76 @@
+{
+  "agent": {
+    "default_model": {
+      "provider": "ollama",
+      "model": "fredrezones55/Qwopus3.5:9b",
+      "enable_thinking": true
+    },
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "theme": "VSCode Dark Modern",
+
+  "base_keymap": "VSCode",
+  "vim_mode": false,
+
+  "buffer_font_family": "JetBrainsMono Nerd Font",
+  "buffer_font_size": 14,
+  "ui_font_size": 15,
+
+  "autosave": "on_focus_change",
+  "format_on_save": "on",
+
+  "show_completions_on_input": false,
+  "show_edit_predictions": true,
+
+  "edit_predictions": {
+    "provider": "ollama",
+    "mode": "subtle",
+
+    "disabled_globs": [
+      "**/.git/**",
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/.venv/**",
+    ],
+
+    "ollama": {
+      "api_url": "http://localhost:11434",
+      "model": "qwen2.5-coder:7b-base",
+      "prompt_format": "infer",
+      "max_output_tokens": 128,
+    },
+  },
+
+  "telemetry": {
+    "metrics": false,
+    "diagnostics": false,
+  },
+
+  "minimap": {
+    "show": "never",
+  },
+
+  "scrollbar": {
+    "show": "never",
+  },
+
+  "tabs": {
+    "git_status": true,
+  },
+
+  "project_panel": {
+    "dock": "right",
+  },
+
+  "terminal": {
+    "font_family": "JetBrainsMono Nerd Font",
+    "cursor_shape": "underline",
+    "blinking": "on",
+  },
+
+  "show_whitespaces": "boundary",
+
+  "wrap_guides": [80, 120],
+}
