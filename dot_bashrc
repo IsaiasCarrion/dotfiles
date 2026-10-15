@@ -1,0 +1,452 @@
+# ==============================================================================
+# CORE ENV
+# ==============================================================================
+
+export EDITOR="zeditor"
+export VISUAL="$EDITOR"
+export PATH="$HOME/.local/bin:$HOME/go/bin:$PATH"
+
+# Bash interactivo únicamente.
+[[ $- == *i* ]] || return
+
+# Historial persistente.
+export HISTFILE="${HOME}/.bash_history"
+export HISTSIZE=100000
+export HISTFILESIZE=100000
+export HISTCONTROL=ignoreboth:erasedups
+export HISTTIMEFORMAT='%F %T  '
+
+shopt -s histappend
+shopt -s checkwinsize
+shopt -s autocd
+shopt -s cdspell
+shopt -s dirspell
+shopt -s globstar
+shopt -s expand_aliases
+shopt -s cmdhist
+shopt -s interactive_comments
+
+# Agregar el historial de esta sesión al archivo al ejecutar cada prompt.
+__bash_history_sync() { history -a; }
+if [[ ";${PROMPT_COMMAND:-};" != *";__bash_history_sync;"* ]]; then
+    PROMPT_COMMAND="__bash_history_sync${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+fi
+
+# Desactivar control de flujo de terminal (Ctrl+S / Ctrl+Q).
+if [[ -t 0 ]]; then
+    stty -ixon 2>/dev/null
+fi
+
+# ==============================================================================
+# FZF
+# ==============================================================================
+
+if command -v fd >/dev/null 2>&1; then
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    elif command -v fdfind >/dev/null 2>&1; then
+    export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --exclude .git'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+else
+    export FZF_DEFAULT_COMMAND='find . -type f -not -path "*/.git/*" -not -path "*/.cache/*"'
+fi
+
+export FZF_DEFAULT_OPTS='
+--height=40%
+--layout=reverse
+--border
+--ansi
+--cycle
+--info=inline
+--prompt=❯
+--pointer=▶
+--marker=✓
+--preview-window=right:60%
+--bind=ctrl-u:preview-half-page-up
+--bind=ctrl-d:preview-half-page-down
+--bind=ctrl-f:preview-page-down
+--bind=ctrl-b:preview-page-up
+'
+
+if command -v bat >/dev/null 2>&1; then
+    export FZF_CTRL_T_OPTS='--preview "bat --color=always --style=numbers --line-range=:500 {}"'
+elif command -v batcat >/dev/null 2>&1; then
+    export FZF_CTRL_T_OPTS='--preview "batcat --color=always --style=numbers --line-range=:500 {}"'
+fi
+
+# Integración oficial de fzf (Ctrl+R, Ctrl+T, Alt+C).
+if command -v fzf >/dev/null 2>&1; then
+    if [[ -f /usr/share/fzf/shell/key-bindings.bash ]]; then
+        source /usr/share/fzf/shell/key-bindings.bash
+    elif [[ -f /usr/share/fzf/key-bindings.bash ]]; then
+        source /usr/share/fzf/key-bindings.bash
+    elif [[ -f /usr/share/bash-completion/completions/fzf ]]; then
+        source /usr/share/bash-completion/completions/fzf
+    fi
+fi
+
+# ==============================================================================
+# STARSHIP
+# ==============================================================================
+
+if command -v starship >/dev/null 2>&1; then
+    eval "$(starship init bash)"
+fi
+
+# ==============================================================================
+# ZOXIDE
+# ==============================================================================
+
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init bash)"
+fi
+
+# ==============================================================================
+# PYTHON / UV
+# ==============================================================================
+
+# Activar ~/venvs/nombre o ./venv / ./.venv.
+v() {
+    local venv
+    if [[ -n "${1:-}" ]]; then
+        venv="${HOME}/venvs/$1"
+        if [[ -f "$venv/bin/activate" ]]; then
+            source "$venv/bin/activate"
+            return 0
+        fi
+        printf 'Entorno no encontrado: %s\n' "$venv" >&2
+        return 1
+    fi
+
+    for venv in venv .venv; do
+        if [[ -f "$venv/bin/activate" ]]; then
+            source "$venv/bin/activate"
+            return 0
+        fi
+    done
+
+    echo "No se encontró venv ni .venv."
+    return 1
+}
+
+mkvenv() {
+    if [[ -z "${1:-}" ]]; then
+        echo "Uso: mkvenv <nombre>"
+        return 1
+    fi
+    if [[ "$1" == */* || "$1" == "." || "$1" == ".." ]]; then
+        echo "Usá un nombre simple, sin rutas."
+        return 1
+    fi
+
+    local target="${HOME}/venvs/$1"
+    [[ -e "$target" ]] && { echo "Ya existe: $target"; return 1; }
+
+    command -v uv >/dev/null 2>&1 || { echo "uv no está instalado."; return 127; }
+    uv venv "$target"
+}
+
+_uv_run() {
+    local action="$1"
+    shift
+    (($# > 0)) || { printf 'Uso: uv%s <paquete>\n' "$action"; return 1; }
+    command -v uv >/dev/null 2>&1 || { echo "uv no está instalado."; return 127; }
+    [[ -n "${VIRTUAL_ENV:-}" ]] || {
+        echo "Activá un entorno virtual primero con v."
+        return 1
+    }
+    uv pip "$action" "$@"
+}
+
+uvi()  { _uv_run install "$@"; }
+uvu()  { _uv_run uninstall "$@"; }
+uvf()  { uv pip freeze; }
+
+uvs() {
+    local req="${1:-requirements.txt}"
+    [[ -f "$req" ]] || { echo "No se encontró: $req"; return 1; }
+    [[ -n "${VIRTUAL_ENV:-}" ]] || {
+        echo "Activá un entorno virtual primero con v."
+        return 1
+    }
+    uv pip sync "$req"
+}
+
+uvx()  { uv tool install "$@"; }
+uvr()  { uv tool run "$@"; }
+uvl()  { uv tool list; }
+uvux() { uv tool uninstall "$@"; }
+
+# ==============================================================================
+# DIRECTORIOS Y ARCHIVOS
+# ==============================================================================
+
+# Crear directorios y/o archivos a partir de rutas.
+mkpaths() {
+    (($# > 0)) || { echo "Uso: mkpaths ruta/directorio ruta/archivo.ext"; return 1; }
+    local item
+    for item in "$@"; do
+        if [[ "$item" == */* ]]; then
+            mkdir -p -- "$(dirname -- "$item")" || return
+        fi
+        if [[ "$item" == *.* ]]; then
+            [[ -d "$item" ]] && { echo "Es un directorio: $item" >&2; return 1; }
+            [[ -e "$item" ]] || touch -- "$item" || return
+        else
+            mkdir -p -- "$item" || return
+        fi
+    done
+}
+
+# Extraer archivos comprimidos.
+extract() {
+    [[ $# -eq 1 && -f "$1" ]] || { echo "Uso: extract archivo.tar.gz"; return 1; }
+    case "$1" in
+        *.tar.bz2|*.tbz2) tar -xjf -- "$1" ;;
+        *.tar.gz|*.tgz)   tar -xzf -- "$1" ;;
+        *.tar.xz|*.txz)   tar -xJf -- "$1" ;;
+        *.tar.zst)        tar --zstd -xf "$1" ;;
+        *.tar)            tar -xf -- "$1" ;;
+        *.bz2)            bunzip2 -- "$1" ;;
+        *.gz)             gunzip -- "$1" ;;
+        *.zip)            unzip -- "$1" ;;
+        *.7z)             7z x -- "$1" ;;
+        *.rar)             unrar x -- "$1" ;;
+        *) printf "Formato no soportado: %s\n" "$1"; return 1 ;;
+    esac
+}
+
+# ==============================================================================
+# GIT
+# ==============================================================================
+
+alias gs='git status'
+alias gdiff='git diff'
+alias gdc='git diff --cached'
+alias glog="git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
+
+gpush() {
+    [[ $# -gt 0 ]] || { echo 'Uso: gpush "mensaje del commit"'; return 1; }
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || {
+        echo "No estás dentro de un repositorio Git."
+        return 1
+    }
+
+    local branch remote answer
+    branch=$(git branch --show-current) || return 1
+    [[ -n "$branch" ]] || { echo "No se pudo determinar la rama actual."; return 1; }
+
+    remote=$(git config --get "branch.${branch}.remote")
+    remote="${remote:-origin}"
+    git remote get-url "$remote" >/dev/null 2>&1 || {
+        echo "No existe el remoto: $remote"
+        return 1
+    }
+
+    git add --all || return 1
+    git commit -m "$1" || {
+        echo "Commit cancelado o sin cambios."
+        return 1
+    }
+
+    echo
+    echo "Último commit:"
+    git --no-pager log -1 --oneline --stat
+    printf '\nRama: %s\nRemote: %s\nPush a: %s/%s\n\n' "$branch" "$remote" "$remote" "$branch"
+
+    read -r -p "¿Continuar con el push? [y/N]: " answer
+    case "$answer" in
+        [yY]|[yY][eE][sS]|[sS]|[sS][iI]) git push "$remote" "$branch" ;;
+        *) echo "Push cancelado. El commit local se conserva." ;;
+    esac
+}
+
+# ==============================================================================
+# PODMAN (COMPATIBILIDAD CON COMANDOS DOCKER)
+# ==============================================================================
+
+# # Fedora/Arch con Podman: permite reutilizar comandos y tutoriales de Docker.
+# alias docker='podman'
+# alias dps='docker ps'
+# alias dpsa='docker ps -a'
+# alias dcu='docker compose up'
+# alias dcud='docker compose up -d'
+# alias dcd='docker compose down'
+# alias dcl='docker compose logs -f'
+# alias dcp='docker compose ps'
+# alias dimg='docker images'
+# alias dvol='docker volume ls'
+# alias dnet='docker network ls'
+# alias dlog='docker logs -f'
+
+# ==============================================================================
+# PACKAGE HELPERS — CACHYOS / PACMAN
+# ==============================================================================
+
+# Navegador de paquetes de repositorios CachyOS.
+pacs() {
+    command -v fzf >/dev/null 2>&1 || { echo "Instalá fzf."; return 127; }
+    command -v pacman-conf >/dev/null 2>&1 || { echo "No se encontró pacman-conf."; return 127; }
+
+    local -a repos
+    local pkg
+    mapfile -t repos < <(pacman-conf --repo-list | grep '^cachyos')
+
+    ((${#repos[@]} > 0)) || { echo "No se encontraron repositorios CachyOS."; return 1; }
+
+    pkg=$(
+        pacman -Slq "${repos[@]}" | sort -u |
+            fzf --multi --height=80% --layout=reverse --border \
+                --prompt='📦 CachyOS > ' \
+                --preview='pacman -Si {} 2>/dev/null; echo; echo "────────────"; pacman -Fl {} 2>/dev/null | head -200' \
+                --preview-window=right:70%
+    ) || return
+
+    [[ -n "$pkg" ]] || return 0
+    local -a packages
+    mapfile -t packages <<< "$pkg"
+    sudo pacman -S -- "${packages[@]}"
+}
+
+# Elegir paquetes instalados y eliminarlos tras confirmación.
+pacrm() {
+    command -v fzf >/dev/null 2>&1 || { echo "Instalá fzf."; return 127; }
+
+    local pkgs answer
+    local -a packages
+    pkgs=$(
+        pacman -Qq |
+            fzf --multi --height=80% --layout=reverse --border \
+                --prompt='🗑️ Remove > ' \
+                --preview='pacman -Qi {} 2>/dev/null; echo; echo "────────────"; pactree -r {} 2>/dev/null | head -50' \
+                --preview-window=right:70%
+    ) || return
+
+    [[ -n "$pkgs" ]] || return 0
+    echo
+    printf 'Paquetes seleccionados:\n%s\n\n' "$pkgs"
+    read -r -p "¿Eliminar los paquetes seleccionados? [y/N]: " answer
+    [[ "$answer" =~ ^[Yy]$ ]] || { echo "Operación cancelada."; return 0; }
+
+    mapfile -t packages <<< "$pkgs"
+    sudo pacman -Rns -- "${packages[@]}"
+}
+
+# ==============================================================================
+# PYTHON PACKAGE BROWSER — PYPI
+# ==============================================================================
+
+pypacs() {
+    command -v fzf >/dev/null 2>&1 || { echo "Instalá fzf."; return 127; }
+    command -v curl >/dev/null 2>&1 || { echo "Instalá curl."; return 127; }
+    command -v jq >/dev/null 2>&1 || { echo "Instalá jq."; return 127; }
+
+    local pkg
+    pkg=$(
+        curl -fsSL https://pypi.org/simple/ |
+            sed -E 's/<[^>]+>//g' |
+            sed '/^[[:space:]]*$/d' |
+            fzf --height=80% --layout=reverse --border --prompt='🐍 PyPI > ' \
+                --preview='curl -fsSL "https://pypi.org/pypi/{}/json" | jq -r ".info.name, \"\", \"Version: \\(.info.version)\", \"\", .info.summary, \"\", \"Home: \\(.info.home_page)\", \"\", .info.author"' \
+                --preview-window=right:60%
+    ) || return
+
+    [[ -n "$pkg" ]] || return 0
+    echo "Paquete seleccionado: $pkg"
+
+    if command -v uv >/dev/null 2>&1; then
+        if [[ -n "${VIRTUAL_ENV:-}" ]]; then
+            uv pip install "$pkg"
+        else
+            echo "Activá primero un entorno virtual con v, o usá uv tool para herramientas CLI."
+            return 1
+        fi
+    else
+        echo "Recomendación: instalá uv y activá un entorno virtual antes de instalar paquetes."
+        return 127
+    fi
+}
+
+# ==============================================================================
+# ALIASES GENERALES
+# ==============================================================================
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+alias reload='source ~/.bashrc'
+alias myip='curl -fsS https://ipecho.net/plain; echo'
+alias c='clear'
+
+if command -v eza >/dev/null 2>&1; then
+    alias ls='eza -lF --git --icons'
+    alias ll='eza -alF --git --icons'
+    alias lt='eza --tree --level=2 --icons'
+fi
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+alias zed='zeditor'
+
+if command -v zoxide >/dev/null 2>&1; then
+    alias zz='z'
+    alias zzi='zi'
+    alias zza='z -a'
+    alias zzl='z -l'
+    alias zzd='z -d'
+    alias zzr='zoxide remove'
+fi
+
+# SSH — revisar IP y usuario según tu configuración actual.
+alias server='ssh izzy@192.168.1.10'
+alias dockerlab='ssh dockerlab@192.168.1.30'
+
+# GitHub CLI completion para Bash, si está instalado.
+if command -v gh >/dev/null 2>&1; then
+    if [[ -f /usr/share/bash-completion/completions/gh ]]; then
+        source /usr/share/bash-completion/completions/gh
+    elif [[ -f /etc/bash_completion.d/gh ]]; then
+        source /etc/bash_completion.d/gh
+    fi
+fi
+
+# ==============================================================================
+# KEY BINDINGS
+# ==============================================================================
+
+# Flechas arriba/abajo: buscar historial que empieza con lo ya escrito.
+__history_search_up() {
+    local line="${READLINE_LINE}"
+    local point="${READLINE_POINT}"
+    history -n
+    READLINE_LINE=$(HISTTIMEFORMAT= builtin history | sed 's/^[[:space:]]*[0-9]*[[:space:]]*//' |
+        awk -v prefix="$line" 'index($0, prefix) == 1 { result=$0 } END { if (result != "") print result }')
+    READLINE_POINT=${#READLINE_LINE}
+}
+# La búsqueda incremental del historial la proporciona fzf con Ctrl+R.
+# Ctrl+G busca directorios con la función zzf (definida más abajo).
+
+zzf() {
+    command -v zoxide >/dev/null 2>&1 || { echo "zoxide no está instalado."; return 127; }
+    command -v fzf >/dev/null 2>&1 || { echo "fzf no está instalado."; return 127; }
+
+    local selected dir
+    selected=$(
+        zoxide query -ls |
+            fzf --height=50% --layout=reverse --border --prompt='📁 Directorio > ' \
+                --preview='eza --icons --tree --level=2 --color=always {2..} 2>/dev/null || ls -la {2..} 2>/dev/null'
+    ) || return
+
+    [[ -n "$selected" ]] || return 0
+    dir="${selected#* }"
+    [[ -d "$dir" ]] && cd -- "$dir"
+}
+
+bind 'set completion-ignore-case on'
+bind 'set completion-map-case on'
+
+# Ctrl+G ejecuta zzf en Bash interactivo.
+bind -x '"\C-g": zzf'
