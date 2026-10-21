@@ -1,0 +1,6 @@
+# Respaldos y archivos locales: nunca al repositorio.
+*.pre-stow
+*.bak
+*.local
+.env
+.env.*

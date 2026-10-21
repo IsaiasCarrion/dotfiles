@@ -1,0 +1,18 @@
+# ~/.gitignore_global — paquete "git".
+# Ignorado en TODOS los repos. Es una red de seguridad contra subir secretos
+# por accidente (por ejemplo con `git add --all`), no un reemplazo del
+# .gitignore de cada proyecto.
+
+# Secretos y variables de entorno
+.env
+.env.*
+!.env.example
+
+# Entornos virtuales y cachés de Python
+.venv/
+venv/
+__pycache__/
+
+# Temporales de editores
+*.swp
+*~

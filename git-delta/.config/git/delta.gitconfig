@@ -1,0 +1,16 @@
+# ~/.config/git/delta.gitconfig — paquete "git-delta" (opcional, solo escritorio).
+# Desplegalo SOLO si delta está instalado (`command -v delta`); si no, git
+# falla al intentar usarlo como pager. Lo incluye ~/.gitconfig.
+
+[core]
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	light = false
+	side-by-side = true
+	line-numbers = true
+	syntax-theme = ansi

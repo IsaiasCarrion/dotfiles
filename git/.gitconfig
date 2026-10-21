@@ -1,0 +1,104 @@
+# ~/.gitconfig — paquete "git" (portable).
+#
+# - Identidad (nombre, correo, firma) y ajustes por equipo: ~/.gitconfig.local
+#   (no versionado). Se incluye al final para que pueda pisar lo de acá.
+# - El editor lo define $VISUAL/$EDITOR (ver .bashrc), no este archivo.
+# - delta es opcional: paquete "git-delta".
+# - Algunas opciones piden Git reciente (zdiff3 >= 2.35, autocorrect=prompt >= 2.40,
+#   updateRefs >= 2.38). Revisá `git --version` en servidores viejos.
+
+[core]
+	autocrlf = input
+	whitespace = -indent-with-non-tab,trailing-space,cr-at-eol
+	excludesfile = ~/.gitignore_global
+
+[init]
+	defaultBranch = main
+
+[help]
+	autocorrect = prompt
+
+[column]
+	ui = auto
+
+[fetch]
+	prune = true
+	pruneTags = true
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = true
+	followTags = true
+
+[rebase]
+	autoStash = true
+	updateRefs = true
+
+[rerere]
+	enabled = true
+	autoupdate = true
+
+[merge]
+	conflictstyle = zdiff3
+
+[diff]
+	algorithm = histogram
+	colorMoved = default
+
+[commit]
+	verbose = true
+
+[tag]
+	sort = version:refname
+
+[credential "https://github.com"]
+	helper = !gh auth git-credential
+
+[credential "https://gist.github.com"]
+	helper = !gh auth git-credential
+
+[alias]
+	# Estado
+	s = status -sb
+	st = status
+	aa = add --all
+
+	# Navegación
+	co = checkout
+	sw = switch
+	br = branch
+
+	# Commits (ojo: wip agrega TODO con add -A)
+	ci = commit
+	amend = commit --amend
+	wip = !git add -A && git commit -m "WIP"
+
+	# Diff
+	df = diff
+	dc = diff --cached
+
+	# Historial
+	lg = log --graph --abbrev-commit --decorate --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'
+	last = log -1 HEAD --stat
+	contributors = shortlog -sn
+
+	# Sincronización (pull ya hace rebase + autostash por la configuración de arriba)
+	up = pull
+	publish = push -u origin HEAD
+
+	# Stash
+	ss = stash push
+	sl = stash list
+	sp = stash pop
+
+	# Utilidades (ojo: discard descarta cambios sin commitear, sin vuelta atrás)
+	undo = reset --mixed HEAD~1
+	unstage = restore --staged .
+	discard = restore .
+
+# Git ignora sin error los includes cuya ruta no existe.
+[include]
+	path = ~/.config/git/delta.gitconfig
+	path = ~/.gitconfig.local
