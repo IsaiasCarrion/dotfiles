@@ -1,0 +1,6 @@
+# Fedora-specific base packages.
+# The desktop stack (niri, DMS, Ghostty, Dux) lives in packages/dms.txt.
+# Development toolchains and third-party options live in packages/optional.txt.
+
+dnf-plugins-core
+flatpak

@@ -1,0 +1,25 @@
+# Portable CLI baseline (Fedora package names).
+# One package per line. Comments and blank lines are ignored.
+# Installed only when missing; already-installed packages are never touched.
+
+bash
+git
+stow
+curl
+jq
+ripgrep
+fzf
+fd-find
+bat
+eza
+zoxide
+git-delta
+tree
+unzip
+7zip
+tmux
+neovim
+python3
+python3-pip
+uv
+gh

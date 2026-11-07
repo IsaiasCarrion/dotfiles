@@ -1,0 +1,7 @@
+# Third-party DNF repositories required before packages are installed.
+# Format: owner/project (dnf copr enable owner/project)
+# Only enable repositories you trust. DMS and niri are required for this desktop.
+
+duxlabs/dms
+duxlabs/dux-repo
+yalter/niri

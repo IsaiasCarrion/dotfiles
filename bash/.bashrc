@@ -1,8 +1,18 @@
 # ~/.bashrc — paquete "bash" (portable: escritorio, notebook, VMs, servidores).
 #
 # - Las herramientas opcionales se activan solo si están instaladas.
-# - Lo específico de Arch/CachyOS vive en el paquete "bash-pacman".
+# - Lo específico de Fedora vive en el paquete "bash-dnf".
 # - Lo privado o propio de un equipo va en ~/.bashrc.local (no versionado).
+
+# ==============================================================================
+# FEDORA: configuración global del sistema
+# ==============================================================================
+
+# Mantiene aliases, prompt y ajustes de /etc/bashrc en Fedora.
+# Si el archivo no existe (otra distro), se ignora.
+if [[ -r /etc/bashrc ]]; then
+    . /etc/bashrc
+fi
 
 # ==============================================================================
 # PATH (también en shells no interactivas, p. ej. `ssh host comando`)
@@ -19,6 +29,14 @@ __path_prepend "$HOME/go/bin"
 __path_prepend "$HOME/.local/bin"
 unset -f __path_prepend
 export PATH
+
+# Fragmentos locales del sistema (convención Fedora: ~/.bashrc.d/*.sh).
+if [[ -d "$HOME/.bashrc.d" ]]; then
+    for _bashrc_fragment in "$HOME"/.bashrc.d/*; do
+        [[ -r "$_bashrc_fragment" ]] && . "$_bashrc_fragment"
+    done
+    unset _bashrc_fragment
+fi
 
 # A partir de acá, solo shells interactivas.
 [[ $- == *i* ]] || return
@@ -313,7 +331,7 @@ if command -v eza >/dev/null 2>&1; then
     alias lt='eza --tree --level=2 --icons'
 fi
 
-# `zed` solo como atajo si el binario real se llama zeditor (Arch).
+# `zed` solo como atajo si el binario real se llama zeditor.
 if command -v zeditor >/dev/null 2>&1 && ! command -v zed >/dev/null 2>&1; then
     alias zed='zeditor'
 fi
@@ -341,11 +359,11 @@ bind '"\eOA": history-search-backward'
 bind '"\eOB": history-search-forward'
 
 # ==============================================================================
-# PACMAN (solo Arch/CachyOS: paquete "bash-pacman")
+# DNF (Fedora: paquete "bash-dnf")
 # ==============================================================================
 
-if [[ -r "$HOME/.config/bash/pacman.sh" ]]; then
-    source "$HOME/.config/bash/pacman.sh"
+if [[ -r "$HOME/.config/bash/dnf.sh" ]]; then
+    source "$HOME/.config/bash/dnf.sh"
 fi
 
 # ==============================================================================

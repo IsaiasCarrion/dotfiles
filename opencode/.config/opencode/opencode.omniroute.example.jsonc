@@ -1,0 +1,30 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Example only. Merge this "providers" entry into opencode.jsonc after an
+  // OmniRoute gateway is running locally. Never hard-code an API key here.
+  "providers": {
+    "omniroute": {
+      "package": "aisdk:@ai-sdk/openai-compatible",
+      "name": "OmniRoute",
+      "settings": {
+        "baseURL": "http://127.0.0.1:20128/v1",
+        "apiKey": "{env:OMNIROUTE_API_KEY}"
+      },
+      "models": {
+        "auto": {
+          "name": "Auto"
+        },
+        "auto/coding": {
+          "name": "Auto (coding)"
+        },
+        "auto/fast": {
+          "name": "Auto (fast)"
+        },
+        "auto/cheap": {
+          "name": "Auto (cheap)"
+        }
+      }
+    }
+  }
+}

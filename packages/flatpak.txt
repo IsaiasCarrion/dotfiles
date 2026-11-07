@@ -1,0 +1,6 @@
+# Flatpak applications (Flathub, system installation).
+# Only apps that were present before the migration are listed.
+
+com.mattjakeman.ExtensionManager
+it.mijorus.gearlever
+md.obsidian.Obsidian

@@ -1,6 +1,23 @@
 # Respaldos y archivos locales: nunca al repositorio.
 *.pre-stow
+*.orig
 *.bak
 *.local
 .env
 .env.*
+!.env.example
+
+# Secretos y estado de OpenCode (la configuración versionada sí se incluye).
+**/service.json
+**/auth.json
+opencode/.config/opencode/dcp-prompts/
+
+# Claves y credenciales.
+*.pem
+*.key
+id_rsa
+id_ed25519
+*.kdbx
+
+# Respaldos creados por scripts/deploy-dotfiles.sh (viven fuera del repo).
+.dotfiles-backup/
