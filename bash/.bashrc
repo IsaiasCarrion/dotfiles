@@ -326,9 +326,10 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 
 if command -v eza >/dev/null 2>&1; then
-    alias ls='eza -lF --git --icons'
-    alias ll='eza -alF --git --icons'
-    alias lt='eza --tree --level=2 --icons'
+    alias ls='eza -lF --git --icons=always'
+    alias ll='eza -alF --git --icons=always'
+    alias lt='eza --tree --level=2 --icons=always'
+
 fi
 
 # `zed` solo como atajo si el binario real se llama zeditor.
@@ -357,6 +358,43 @@ bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 bind '"\eOA": history-search-backward'
 bind '"\eOB": history-search-forward'
+
+# ── Podman (Docker alternative) ──────────────────────
+alias docker='podman'
+alias d='podman'
+
+# Containers
+alias dps='podman ps'
+alias dpa='podman ps -a'
+alias dstart='podman start'
+alias dstop='podman stop'
+alias drestart='podman restart'
+alias drm='podman rm'
+alias drmf='podman rm -f'
+alias dex='podman exec -it'
+alias dlog='podman logs -f'
+
+# Images
+alias di='podman images'
+alias dpull='podman pull'
+alias dpush='podman push'
+alias drmi='podman rmi'
+
+# Volumes & networks
+alias dvol='podman volume'
+alias dnet='podman network'
+
+# Compose
+alias dc='podman compose'
+alias dcu='podman compose up -d'
+alias dcd='podman compose down'
+alias dcl='podman compose logs -f'
+alias dcb='podman compose build'
+
+# System
+alias dprune='podman system prune'
+alias dinfo='podman info'
+alias dver='podman version'
 
 # ==============================================================================
 # DNF (Fedora: paquete "bash-dnf")

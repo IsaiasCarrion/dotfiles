@@ -4,3 +4,19 @@
 
 dnf-plugins-core
 flatpak
+
+# Diagnostics and hardware integration installed by default on Fedora.
+# fwupd: firmware updates; mokutil/pciutils: Secure Boot and GPU diagnostics;
+# bluez: Bluetooth; fuse: AppImages; cifs-utils/samba-client: SMB shares.
+fwupd
+mokutil
+pciutils
+bluez
+fuse
+fuse-libs
+cifs-utils
+samba-client
+
+# Prompt. Fedora main does not ship starship; install-packages.sh enables the
+# Terra repository automatically when this package is missing.
+starship

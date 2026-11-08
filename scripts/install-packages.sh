@@ -77,6 +77,43 @@ ensure_coprs() {
     done < <(manifest_packages "$REPO_ROOT/packages/copr.txt")
 }
 
+starship_in_fedora() {
+    dnf -q repoquery --available --repo=fedora --repo=updates starship 2>/dev/null | grep -q .
+}
+
+ensure_starship_repo() {
+    pkg_installed starship && return 0
+    if starship_in_fedora; then
+        return 0
+    fi
+    if repo_enabled | grep -qx terra; then
+        info "Terra repository already enabled (needed by starship)."
+        return 0
+    fi
+
+    # Terra's key ships in Fedora's distribution-gpg-keys package. Installing
+    # that Fedora-signed package first lets DNF verify terra-release instead of
+    # disabling GPG checks.
+    local rel key
+    rel="$(rpm -E %fedora)"
+    key="/usr/share/distribution-gpg-keys/terra/RPM-GPG-KEY-terra${rel}"
+
+    log "Installing distribution-gpg-keys (Fedora-provided Terra key)."
+    sudo_run dnf install -y distribution-gpg-keys
+
+    if (( ! DRY_RUN )) && [[ ! -r "$key" ]]; then
+        die "Terra GPG key not found at $key."
+    fi
+
+    log "Importing the Terra GPG key."
+    sudo_run rpm --import "$key"
+
+    log "Enabling the Terra repository (GPG verification enabled)."
+    sudo_run dnf install -y \
+        --repofrompath "terra,https://repos.fyralabs.com/terra${rel}" \
+        terra-release
+}
+
 install_flatpaks() {
     (( WITH_FLATPAK )) || return 0
 
@@ -120,6 +157,9 @@ main() {
     mapfile -t dms_pkgs < <(manifest_packages "$REPO_ROOT/packages/dms.txt")
     mapfile -t optional_pkgs < <(manifest_packages "$REPO_ROOT/packages/optional.txt")
 
+    # starship lives in Terra, which is not a Fedora/COPR repository.
+    ensure_starship_repo
+
     local -a wanted=("${fedora_pkgs[@]}" "${common_pkgs[@]}" "${dms_pkgs[@]}")
     local -a missing=()
     local pkg
@@ -160,13 +200,6 @@ main() {
             local -a opt_install=()
             for pkg in "${opt_missing[@]}"; do
                 case "$pkg" in
-                    starship)
-                        if grep -qx terra <<<"$enabled"; then
-                            opt_install+=("$pkg")
-                        else
-                            warn "Skipping starship: the Terra repository is not enabled (https://terra.fyralabs.com)."
-                        fi
-                        ;;
                     ffmpeg|gstreamer1-plugins-*)
                         if grep -qx rpmfusion-free <<<"$enabled"; then
                             opt_install+=("$pkg")

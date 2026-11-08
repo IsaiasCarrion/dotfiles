@@ -31,8 +31,8 @@ a un respaldo y se puede volver a ejecutar sin miedo.
 - Conexión a Internet.
 - Acceso a los COPR `duxlabs/dms`, `duxlabs/dux-repo` y `yalter/niri` (el script los habilita
   si faltan) y a Flathub para las aplicaciones Flatpak.
-- `Terra` y `RPM Fusion` son **opcionales** y solo se usan con `--with-optional`; no se habilitan
-  automáticamente por ser repositorios de terceros.
+- `Terra` se habilita automáticamente **solo si falta `starship`**, porque Fedora no empaqueta
+  ese programa. `RPM Fusion` sigue siendo opcional y solo se usa con `--with-optional`.
 
 ## Estructura
 
@@ -41,11 +41,18 @@ dotfiles/
 ├── bootstrap.sh                     # entrada: ./bootstrap.sh [opciones]
 ├── scripts/
 │   ├── lib.sh                       # helpers (dry-run, sudo, backups, manifiestos)
-│   ├── bootstrap.sh                 # orquestador de los 4 pasos
+│   ├── bootstrap.sh                 # orquestador de los 5 pasos
 │   ├── install-packages.sh          # DNF + COPR + Flatpak, solo lo ausente
 │   ├── install-opencode.sh          # CLI de OpenCode V2
+│   ├── install-zed.sh               # Zed estable (instalador oficial)
+│   ├── install-obsidian.sh          # Obsidian AppImage oficial
 │   ├── deploy-dotfiles.sh           # Stow con respaldo de conflictos
-│   ├── verify.sh                    # enlaces, sintaxis, JSONC, DMS/Ghostty, secretos
+│   ├── verify.sh                    # enlaces, sintaxis, JSONC, apps y sistema
+│   ├── diagnose-system.sh           # diagnóstico de solo lectura
+│   ├── configure-dnf.sh             # opcional: ajustes de rendimiento DNF5
+│   ├── install-multimedia.sh        # opcional: RPM Fusion + códecs
+│   ├── install-docker.sh            # opcional: Docker CE
+│   ├── install-netbird.sh           # opcional: NetBird
 │   ├── install-addy-skills.sh       # opcional, commit fijado
 │   └── install-graphify.sh          # opcional, versión fijada
 ├── packages/
@@ -57,6 +64,7 @@ dotfiles/
 │   └── optional.txt                 # toolchains, Starship, códecs
 ├── bash/.bashrc                     # -> ~/.bashrc
 ├── bash-dnf/.config/bash/dnf.sh     # -> ~/.config/bash/dnf.sh
+├── starship/.config/starship.toml   # -> ~/.config/starship.toml
 ├── git/.gitconfig                   # -> ~/.gitconfig
 ├── git/.gitignore_global            # -> ~/.gitignore_global
 ├── git-delta/.config/git/delta.gitconfig  # opcional, solo si delta existe
@@ -71,7 +79,11 @@ dotfiles/
 │   └── opencode.omniroute.example.jsonc
 ├── docs/
 │   ├── dms.md
-│   └── opencode.md
+│   ├── opencode.md
+│   ├── fedora-post-install.md       # DNF5, firmware, Flatpak, módulos opcionales
+│   ├── applications.md              # Zed, Obsidian y apps opcionales
+│   ├── fedora-reinstall.md          # recuperar el entorno desde cero
+│   └── security-hardening.md        # evidencia Linaudit y acciones propuestas
 ├── AUDIT.md
 ├── .stowrc                          # --no-folding
 └── .gitignore                       # secretos, respaldos y archivos locales
@@ -83,6 +95,7 @@ dotfiles/
 |---|---|---|---|
 | `bash` | `.bashrc` portable: PATH, historial, fzf, zoxide, Starship, venvs, Git | **Portable** | bash |
 | `bash-dnf` | `pkgs`, `pkgrm`, `dnfup`, `pkgclean` para Fedora | Fedora | `dnf`, `fzf` |
+| `starship` | Prompt compacto, sin iconos ni comandos externos | **Portable** | `starship` |
 | `git` | `.gitconfig`, aliases, `.gitignore_global` | **Portable** | git ≥ 2.40 |
 | `git-delta` | delta como pager de Git | Escritorio, opcional | `delta` |
 | `ghostty` | Configuración principal de Ghostty | Escritorio | `ghostty` |
@@ -110,6 +123,7 @@ Notas:
 | `--with-optional` | Instala `packages/optional.txt` |
 | `--no-packages` | No toca RPM/COPR/Flatpak |
 | `--no-opencode` | No intenta instalar el CLI de OpenCode |
+| `--no-apps` | No instala Zed ni Obsidian |
 | `--no-deploy` | No ejecuta Stow |
 | `--no-verify` | No ejecuta las verificaciones finales |
 | `--help` | Ayuda |
@@ -126,14 +140,19 @@ Los pasos son independientes, así que también se pueden ejecutar sueltos:
 ### Qué instala
 
 - **RPM base** (`packages/fedora.txt` + `packages/common.txt`): `dnf-plugins-core`, `flatpak`,
-  `stow`, `git`, `curl`, `jq`, `ripgrep`, `fzf`, `fd-find`, `bat`, `eza`, `zoxide`,
-  `git-delta`, `tree`, `unzip`, `7zip`, `tmux`, `neovim`, `python3`, `python3-pip`, `uv`, `gh`.
+  `starship` (Terra; se habilita solo si falta), `fwupd`, `mokutil`, `pciutils`, `bluez`, `fuse`,
+  `fuse-libs`, `cifs-utils`, `samba-client`, `stow`, `git`, `curl`, `jq`, `ripgrep`, `fzf`,
+  `fd-find`, `bat`, `eza`, `zoxide`, `git-delta`, `tree`, `unzip`, `7zip`, `tmux`, `neovim`,
+  `python3`, `python3-pip`, `uv`, `gh`.
 - **Stack DMS** (`packages/dms.txt`, COPR): `niri`, `dms`, `ghostty`, `quickshell`, `matugen`,
   `dux-greeter`, `dux-search`, `dux-calendar`, `dux-files`.
-- **Flatpak** (`packages/flatpak.txt`): Extension Manager, Gearlever y Obsidian.
-- **Opcionales** (`packages/optional.txt`): `gcc`, `make`, `golang`, `rust`, `cargo`; `starship`
-  (Terra); `ffmpeg` y plugins de GStreamer (RPM Fusion). Si el repo no está habilitado, el script
-  avisa y omite ese paquete en lugar de habilitar repositorios de terceros por su cuenta.
+- **Flatpak** (`packages/flatpak.txt`): Extension Manager y Gearlever. Obsidian se instala como
+  AppImage oficial, no como Flatpak en equipos nuevos.
+- **Aplicaciones obligatorias** (paso 3/5): Zed con el instalador oficial y Obsidian con el
+  AppImage oficial. Si ya existen, no se duplican; ver [docs/applications.md](docs/applications.md).
+- **Opcionales** (`packages/optional.txt`): `gcc`, `make`, `golang`, `rust`, `cargo`;
+  `ffmpeg`, plugins de GStreamer (RPM Fusion) y `obs-studio`. Si el repo no está habilitado, el
+  script avisa y omite ese paquete en lugar de habilitar repositorios de terceros por su cuenta.
 
 ### Qué protege
 
@@ -144,25 +163,44 @@ Los pasos son independientes, así que también se pueden ejecutar sueltos:
 - `--dry-run` jamás crea respaldos, instala paquetes ni escribe enlaces.
 - No stowea ni edita archivos administrados por DMS (ver [docs/dms.md](docs/dms.md)).
 
+## Aplicaciones y post-instalación
+
+El bootstrap deja listos Zed y Obsidian. Los demás módulos son opcionales y no se
+ejecutan solos:
+
+| Necesidad | Comando | Documentación |
+|---|---|---|
+| Zed / Obsidian | `install-zed.sh`, `install-obsidian.sh` | [docs/applications.md](docs/applications.md) |
+| DNF5, firmware, Flatpak, AppImage, Bluetooth | `diagnose-system.sh` | [docs/fedora-post-install.md](docs/fedora-post-install.md) |
+| Ajustes de rendimiento DNF5 | `configure-dnf.sh` | [docs/fedora-post-install.md](docs/fedora-post-install.md) |
+| Códecs RPM Fusion | `install-multimedia.sh` | [docs/fedora-post-install.md](docs/fedora-post-install.md) |
+| Docker CE | `install-docker.sh` | [docs/fedora-post-install.md](docs/fedora-post-install.md) |
+| NetBird y SMB | `install-netbird.sh` | [docs/fedora-post-install.md](docs/fedora-post-install.md) |
+| OBS Studio | `./bootstrap.sh --with-optional` | [docs/applications.md](docs/applications.md) |
+| Recuperar desde cero | — | [docs/fedora-reinstall.md](docs/fedora-reinstall.md) |
+| Revisión de seguridad | `linaudit` | [docs/security-hardening.md](docs/security-hardening.md) |
+
+`diagnose-system.sh` es de solo lectura: no instala, habilita ni edita nada.
+
 ## Stow: uso manual
 
 Primero simulá y después aplicá:
 
 ```bash
 cd ~/dotfiles
-stow -n -v bash bash-dnf git ghostty opencode   # simulación
-stow -v    bash bash-dnf git ghostty opencode   # aplicar
+stow -n -v bash bash-dnf git ghostty opencode starship   # simulación
+stow -v    bash bash-dnf git ghostty opencode starship   # aplicar
 ```
 
 Combinaciones habituales:
 
 ```bash
 # Escritorio Fedora completo
-stow -v bash bash-dnf git ghostty opencode
+stow -v bash bash-dnf git ghostty opencode starship
 command -v delta && stow -v git-delta
 
 # Servidor o VM sin escritorio
-stow -v bash git
+stow -v bash git starship
 ```
 
 Rehacer enlaces después de agregar o renombrar archivos dentro de un paquete:
@@ -182,7 +220,7 @@ Verificar:
 ```bash
 ls -l ~/.bashrc ~/.gitconfig ~/.config/ghostty/config
 find ~ -maxdepth 4 -type l -lname '*dotfiles/*'
-stow -n -v bash bash-dnf git ghostty opencode    # no debe listar LINK/UNLINK
+stow -n -v bash bash-dnf git ghostty opencode starship    # no debe listar LINK/UNLINK
 ```
 
 ### Reglas de Stow
@@ -220,6 +258,30 @@ ghostty +validate-config
 ```
 
 WezTerm **no** forma parte de la migración y no se reinstala. El tema `dankcolors` es de DMS.
+
+## Prompt (Starship)
+
+`starship/.config/starship.toml` se enlaza a `~/.config/starship.toml`. El prompt es de una sola
+línea y muestra directorio, rama y estado de Git, duración de comandos de más de 2 s, código de
+salida y la versión de Python/Node/Rust/Go solo dentro de sus proyectos. No usa iconos ni Nerd
+Font, y no ejecuta comandos externos.
+
+`bash/.bashrc` inicializa Starship una sola vez:
+
+```bash
+eval "$(starship init bash)"
+```
+
+Aplicar cambios:
+
+```bash
+cd ~/dotfiles
+stow -R -v starship
+exec bash            # o: source ~/.bashrc
+```
+
+`starship` viene de Terra porque Fedora no lo empaqueta. `scripts/install-packages.sh` habilita ese
+repositorio solo cuando el paquete falta; si ya está habilitado, no lo toca.
 
 ## OpenCode V2
 
@@ -259,6 +321,8 @@ git pull --ff-only
 sudo dnf upgrade --refresh
 sudo flatpak update
 opencode upgrade           # o: ~/.local/bin/opencode upgrade
+./scripts/install-zed.sh --update
+./scripts/install-obsidian.sh --update
 ```
 
 - Después de cambiar archivos de un paquete: `stow -R -v <paquete>`.
@@ -317,9 +381,12 @@ Los respaldos viven fuera del repositorio y están cubiertos por `.gitignore`.
 - En `opencode.jsonc` usá `{env:VARIABLE}` o `{file:ruta}`; nunca escribas claves.
 - `scripts/verify.sh` busca archivos sensibles y patrones obvios de secretos en los archivos
   versionados.
-- Habilitar COPR, Terra o RPM Fusion es una decisión de confianza. El bootstrap solo habilita los
-  COPR de DMS/Dux que el escritorio necesita; Terra y RPM Fusion quedan bajo `--with-optional` y
-  solo si ya están configurados.
+- Habilitar COPR, Terra o RPM Fusion es una decisión de confianza. El bootstrap habilita los COPR
+  de DMS/Dux que el escritorio necesita y Terra solo cuando falta `starship` (no está en Fedora).
+  RPM Fusion queda bajo `--with-optional` y solo si ya está configurado.
+- El bootstrap **no aplica endurecimiento**. PAM, repositorios, sysctl, umask y políticas de
+  contraseñas requieren revisión y aprobación: ver
+  [docs/security-hardening.md](docs/security-hardening.md).
 
 ## Problemas frecuentes
 
@@ -328,8 +395,11 @@ Los respaldos viven fuera del repositorio y están cubiertos por `.gitignore`.
 | `existing target is neither a link nor a directory` | Archivo real en el destino. Usá `./scripts/deploy-dotfiles.sh` (respalda) o `mv archivo archivo.orig`. |
 | `stow: command not found` | `sudo dnf install stow`; el paso de paquetes lo instala. |
 | Un paquete DMS no aparece | Verificá `dnf repolist --enabled`, luego `sudo dnf copr enable duxlabs/dms` y `duxlabs/dux-repo`. |
-| `starship` no se instala | Requiere Terra; habilitalo desde <https://terra.fyralabs.com> o quitá `--with-optional`. |
-| Códecs no se instalan | Requieren RPM Fusion Free; habilitalo desde <https://rpmfusion.org>. |
+| `starship` no se instala | Fedora no lo empaqueta; el bootstrap habilita Terra automáticamente. Si falla, revisá `dnf repolist --enabled | grep terra` y <https://terra.fyralabs.com>. |
+| Códecs no se instalan | Requieren RPM Fusion Free; usá `./scripts/install-multimedia.sh` o habilitalo desde <https://rpmfusion.org>. |
+| Un AppImage no arranca | Verificá `/dev/fuse`, `fuse`/`fuse-libs` y `chmod +x`; ver [docs/fedora-post-install.md](docs/fedora-post-install.md). |
+| Obsidian no aparece | El script detecta Flatpak/AppImage; revisá `./scripts/install-obsidian.sh --dry-run` y `~/.local/share/applications/obsidian.desktop`. |
+| Zed no se actualiza | `./scripts/install-zed.sh --update`; la configuración en `~/.config/zed` se conserva. |
 | `opencode` no está en PATH | `./scripts/install-opencode.sh` crea `~/.local/bin/opencode`; abrí una shell nueva o `source ~/.bashrc`. |
 | `opencode plugin list` dice “No plugins found” | El servicio aún no arrancó o falta red para descargar DCP; `opencode plugin list` tras el primer inicio. |
 | DMS cambia el tema de Ghostty | Es esperado: `dankcolors` es administrado por DMS. El fallback solo cubre el primer arranque. |

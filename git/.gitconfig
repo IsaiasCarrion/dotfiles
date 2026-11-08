@@ -104,3 +104,7 @@
 [include]
 	path = ~/.config/git/delta.gitconfig
 	path = ~/.gitconfig.local
+[user]
+	mail = carrionsaias@gmail.com
+	name = Isaias Carrion
+	email = carrionsaias@gmail.com

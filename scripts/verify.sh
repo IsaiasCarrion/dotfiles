@@ -117,7 +117,7 @@ check_stow() {
         return
     fi
 
-    local -a packages=(bash bash-dnf git ghostty opencode)
+    local -a packages=(bash bash-dnf git ghostty opencode starship)
     if have delta; then
         packages+=(git-delta)
     fi
@@ -153,6 +153,44 @@ check_shell() {
     done
 }
 
+check_starship() {
+    local config="$HOME/.config/starship.toml"
+
+    if have starship; then
+        info "starship executable: $(starship --version | head -n1)"
+        if starship prompt --status 0 >/dev/null 2>&1; then
+            info "Starship renders the prompt."
+        else
+            fail "starship is installed but failed to render the prompt."
+        fi
+    else
+        fail "starship is not installed."
+    fi
+
+    if [[ ! -f "$config" ]]; then
+        fail "Missing Starship config: ${config/#$HOME/~}"
+    elif python3 - "$config" <<'PY'
+import sys
+import tomllib
+
+with open(sys.argv[1], "rb") as handle:
+    tomllib.load(handle)
+PY
+    then
+        info "Starship config is valid TOML: ${config/#$HOME/~}"
+    else
+        fail "Invalid Starship TOML: ${config/#$HOME/~}"
+    fi
+
+    local count
+    count="$(grep -cF 'eval "$(starship init bash)"' "$REPO_ROOT/bash/.bashrc" || true)"
+    if [[ "$count" == 1 ]]; then
+        info "Starship Bash initialization is present exactly once."
+    else
+        fail "Starship Bash initialization found $count time(s) in bash/.bashrc (expected 1)."
+    fi
+}
+
 check_ghostty() {
     if ! have ghostty; then
         info "ghostty not installed; skipping config validation."
@@ -179,6 +217,61 @@ check_niri() {
     else
         fail "niri reported an invalid config (run: niri validate -c ~/.config/niri/config.kdl)."
     fi
+}
+
+check_apps() {
+    local zed_bin obsidian_file
+
+    if zed_bin="$(command -v zed 2>/dev/null)" && [[ -n "$zed_bin" ]]; then
+        info "Zed: $("$zed_bin" --version 2>/dev/null | head -n1)"
+    elif [[ -x "$HOME/.local/zed.app/bin/zed" ]]; then
+        info "Zed: $("$HOME/.local/zed.app/bin/zed" --version 2>/dev/null | head -n1)"
+    else
+        warn "Zed not found (bootstrap installs it with the official installer)."
+    fi
+
+    if have flatpak && flatpak info md.obsidian.Obsidian >/dev/null 2>&1; then
+        info "Obsidian (Flatpak): $(flatpak info md.obsidian.Obsidian 2>/dev/null | awk -F': *' '/Version:/{print $2; exit}')"
+    elif have obsidian; then
+        info "Obsidian: $(command -v obsidian)"
+    else
+        for obsidian_file in "$HOME/Applications"/Obsidian-*.AppImage; do
+            if [[ -x "$obsidian_file" ]]; then
+                info "Obsidian (AppImage): ${obsidian_file/#$HOME/~}"
+                return 0
+            fi
+        done
+        warn "Obsidian not found (bootstrap installs the official AppImage)."
+    fi
+}
+
+check_system() {
+    if [[ -r /etc/fedora-release ]]; then
+        info "$(cat /etc/fedora-release)"
+    else
+        warn "Not running on Fedora (/etc/fedora-release missing)."
+    fi
+
+    local dnf_version
+    dnf_version="$(dnf --version 2>/dev/null || true)"
+    if grep -q '^dnf5' <<<"$dnf_version"; then
+        info "DNF5 detected."
+    else
+        warn "DNF5 not detected."
+    fi
+
+    [[ -e /dev/fuse ]] && info "/dev/fuse present (AppImages)." || warn "/dev/fuse missing (AppImages need FUSE)."
+
+    if have flatpak && flatpak remotes --columns=name 2>/dev/null | grep -qx flathub; then
+        info "Flathub remote present."
+    else
+        warn "Flathub remote not found."
+    fi
+
+    local pkg
+    for pkg in fwupd cifs-utils samba-client; do
+        pkg_installed "$pkg" && info "$pkg installed." || warn "$pkg is not installed."
+    done
 }
 
 check_secrets() {
@@ -233,8 +326,11 @@ main() {
 
     check_stow
     check_shell
+    check_starship
     check_ghostty
     check_niri
+    check_apps
+    check_system
     check_jsonc "$HOME/.config/opencode/opencode.jsonc"
     check_jsonc "$HOME/.config/opencode/dcp.jsonc"
     check_jsonc "$HOME/.config/opencode/opencode.omniroute.example.jsonc"
@@ -244,6 +340,7 @@ main() {
     check_link "$HOME/.gitignore_global" "$REPO_ROOT/git/.gitignore_global"
     check_link "$HOME/.config/bash/dnf.sh" "$REPO_ROOT/bash-dnf/.config/bash/dnf.sh"
     check_link "$HOME/.config/ghostty/config" "$REPO_ROOT/ghostty/.config/ghostty/config"
+    check_link "$HOME/.config/starship.toml" "$REPO_ROOT/starship/.config/starship.toml"
     check_link "$HOME/.config/opencode/opencode.jsonc" "$REPO_ROOT/opencode/.config/opencode/opencode.jsonc"
     check_link "$HOME/.config/opencode/AGENTS.md" "$REPO_ROOT/opencode/.config/opencode/AGENTS.md"
     check_link "$HOME/.config/opencode/dcp.jsonc" "$REPO_ROOT/opencode/.config/opencode/dcp.jsonc"

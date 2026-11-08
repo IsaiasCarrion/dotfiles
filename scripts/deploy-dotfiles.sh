@@ -40,7 +40,7 @@ main() {
         fi
     fi
 
-    local -a packages=(bash bash-dnf git ghostty opencode)
+    local -a packages=(bash bash-dnf git ghostty opencode starship)
 
     if have delta; then
         packages+=(git-delta)

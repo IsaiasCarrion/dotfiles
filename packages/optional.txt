@@ -9,10 +9,10 @@ golang
 rust
 cargo
 
-# Starship prompt (Terra repository, not Fedora main).
-starship
-
 # RPM Fusion media codecs (requires RPM Fusion to be enabled first).
 ffmpeg
 gstreamer1-plugins-bad-freeworld
 gstreamer1-plugins-ugly
+
+# Optional creative application. Installed only with --with-optional.
+obs-studio

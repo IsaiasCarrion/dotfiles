@@ -4,8 +4,9 @@
 # Default flow (each step is idempotent):
 #   1. install missing RPM packages, COPR repositories and Flatpaks
 #   2. make the OpenCode V2 CLI available
-#   3. deploy the Stow packages (backing up conflicting files)
-#   4. verify links, syntax, JSONC, Ghostty, niri and secrets
+#   3. install the required applications (Zed, Obsidian)
+#   4. deploy the Stow packages (backing up conflicting files)
+#   5. verify links, syntax, JSONC, Ghostty, niri and secrets
 #
 # Nothing is installed when it is already present. Existing real files are
 # moved to ~/.dotfiles-backup/<timestamp>/ instead of being overwritten.
@@ -19,9 +20,10 @@ Usage: ./bootstrap.sh [options]
 Options:
   --dry-run        Show every action without changing the system.
   --yes, -y        Assume yes for the conflict backup (unattended runs).
-  --with-optional  Install packages/optional.txt (toolchains, Starship, codecs).
+  --with-optional  Install packages/optional.txt (toolchains, codecs, OBS Studio).
   --no-packages    Skip RPM/COPR/Flatpak installation.
   --no-opencode    Skip making the OpenCode V2 CLI available.
+  --no-apps        Skip Zed and Obsidian installation.
   --no-deploy      Skip the Stow deployment.
   --no-verify      Skip the final verification.
   -h, --help       Show this help.
@@ -38,6 +40,7 @@ ASSUME_YES=0
 WITH_OPTIONAL=0
 DO_PACKAGES=1
 DO_OPENCODE=1
+DO_APPS=1
 DO_DEPLOY=1
 DO_VERIFY=1
 
@@ -48,6 +51,7 @@ while (($#)); do
         --with-optional) WITH_OPTIONAL=1 ;;
         --no-packages) DO_PACKAGES=0 ;;
         --no-opencode) DO_OPENCODE=0 ;;
+        --no-apps) DO_APPS=0 ;;
         --no-deploy) DO_DEPLOY=0 ;;
         --no-verify) DO_VERIFY=0 ;;
         -h|--help) usage; exit 0 ;;
@@ -83,6 +87,17 @@ step_opencode() {
     "$REPO_ROOT/scripts/install-opencode.sh" "${args[@]}"
 }
 
+step_apps() {
+    local -a args=()
+    if (( DRY_RUN )); then args+=(--dry-run); fi
+
+    log "Zed"
+    "$REPO_ROOT/scripts/install-zed.sh" "${args[@]}"
+
+    log "Obsidian"
+    "$REPO_ROOT/scripts/install-obsidian.sh" "${args[@]}"
+}
+
 step_deploy() {
     local -a args=()
     if (( DRY_RUN )); then args+=(--dry-run); fi
@@ -102,17 +117,22 @@ main() {
     print_plan
 
     if (( DO_PACKAGES )); then
-        log "Step 1/4: packages"
+        log "Step 1/5: packages"
         step_packages
     fi
 
     if (( DO_OPENCODE )); then
-        log "Step 2/4: OpenCode CLI"
+        log "Step 2/5: OpenCode CLI"
         step_opencode
     fi
 
+    if (( DO_APPS )); then
+        log "Step 3/5: required applications"
+        step_apps
+    fi
+
     if (( DO_DEPLOY )); then
-        log "Step 3/4: Stow deployment"
+        log "Step 4/5: Stow deployment"
         step_deploy
     fi
 
@@ -120,7 +140,7 @@ main() {
         if (( DRY_RUN )); then
             info "Dry run: verification will run after a real deployment."
         else
-            log "Step 4/4: verification"
+            log "Step 5/5: verification"
             step_verify
         fi
     fi
@@ -131,6 +151,9 @@ main() {
     fi
     if (( DO_VERIFY == 0 )); then
         info "Verification was skipped; run: ./scripts/verify.sh"
+    fi
+    if (( DO_APPS == 0 )); then
+        info "Applications were skipped; run: ./scripts/install-zed.sh && ./scripts/install-obsidian.sh"
     fi
 }
 
