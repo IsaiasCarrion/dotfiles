@@ -1,107 +1,48 @@
-# ~/.config/starship.toml
-# Prompt para Linux / SysAdmin / DevOps / SRE
-# Compacto, sin Nerd Fonts ni comandos externos.
-
-format = """
-$directory$git_branch$git_status$terraform$aws$kubernetes$python$golang$rust$nodejs$jobs$cmd_duration$status
-$character"""
-
+scan_timeout = 60
 add_newline = false
 
-# Prompt principal
-[character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
-vimcmd_symbol = "[❮](bold yellow)"
-
-# Directorio actual
-[directory]
-style = "bold cyan"
-format = "[$path]($style)[$read_only]($read_only_style) "
-truncation_length = 3
-truncate_to_repo = true
-truncation_symbol = "…/"
-read_only = " ro"
-read_only_style = "bold red"
-
-# Git
-[git_branch]
-symbol = ""
-style = "bold purple"
-format = "[$branch]($style) "
-
-[git_status]
-style = "bold red"
-format = "([$all_status$ahead_behind]($style) )"
-conflicted = "!"
-ahead = "↑"
-behind = "↓"
-diverged = "↕"
-untracked = "?"
-modified = "!"
-staged = "+"
-renamed = "r"
-deleted = "x"
-
-# Terraform
-[terraform]
-symbol = ""
-style = "bold purple"
-format = "[tf $version]($style) "
-
-# AWS
-[aws]
-symbol = ""
-style = "bold yellow"
-format = "[aws $profile]($style) "
-
-# Kubernetes
-[kubernetes]
+[line_break]
 disabled = false
-symbol = ""
-style = "bold cyan"
-format = "[k8s $context(::$namespace)]($style) "
 
-# Python
-[python]
-symbol = ""
-style = "bold yellow"
-format = "[py $version]($style) "
-
-# Go
-[golang]
-symbol = ""
-style = "bold cyan"
-format = "[go $version]($style) "
-
-# Rust
-[rust]
-symbol = ""
-style = "bold red"
-format = "[rust $version]($style) "
-
-# Node.js
-[nodejs]
-symbol = ""
-style = "bold green"
-format = "[node $version]($style) "
-
-# Procesos en segundo plano
-[jobs]
-symbol = ""
-number_threshold = 1
+[directory]
 style = "bold blue"
-format = "[jobs $number]($style) "
 
-# Duración de comandos
 [cmd_duration]
-min_time = 2000
-show_milliseconds = false
-style = "bold yellow"
 format = "[$duration]($style) "
 
-# Código de salida
 [status]
 disabled = false
-style = "bold red"
-format = "[exit $status]($style) "
+format = "[$symbol $status]($style) "
+not_found_symbol = ""
+not_executable_symbol = ""
+sigint_symbol = "ﭦ"
+map_symbol = true
+
+[git_branch]
+format = "[$symbol$branch]($style) "
+
+[package]
+format = "[$symbol$version]($style) "
+symbol = " "
+
+[python]
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+symbol = " "
+
+[nodejs]
+format = "[$symbol($version )]($style)"
+
+[php]
+format = "[$symbol($version )]($style)"
+symbol = " "
+
+[java]
+format = "[${symbol}(${version} )]($style)"
+symbol = " "
+
+[rust]
+format = "[$symbol($version )]($style)"
+
+[golang]
+format = "[$symbol($version )]($style)"
+symbol = " "
