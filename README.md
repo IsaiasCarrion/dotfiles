@@ -23,8 +23,10 @@ cd ~/dotfiles
 gh auth login              # única autenticación manual necesaria
 ```
 
-Después del bootstrap, cerrá la sesión y volvé a entrar (o ejecutá `exec bash`)
-para que Bash quede como shell de login y se cargue la configuración nueva.
+Después del bootstrap, cerrá la sesión por completo y volvé a entrar (o
+reiniciá) para que Bash quede como shell de login y el entorno de systemd deje
+de arrastrar `SHELL=/bin/fish`. `exec bash` cambia solo esa terminal: no
+actualiza la sesión ni el entorno que usan Ghostty/DMS.
 
 ### Requisitos
 
@@ -170,6 +172,12 @@ GNOME/KDE. Si CachyOS ya los tiene, quedan intactos.
 Bash es el shell principal. `bash/.bashrc` es la configuración interactiva y
 `bash/.bash_profile` carga `~/.bashrc` en shells de login. No hay una segunda
 inicialización de Starship, zoxide o fzf.
+
+Ghostty fija `command = /usr/bin/bash` en `ghostty/.config/ghostty/config`.
+Eso evita que herede un `$SHELL` viejo (Fish) cuando se lanza desde una CLI o
+desde una sesión anterior al cambio de shell. El `--posix` que aparece en `ps`
+es la integración oficial de Ghostty: `ghostty.bash` carga los startup files y
+ejecuta `set +o posix`, así que el shell interactivo **no** queda en modo POSIX.
 
 `scripts/set-shell.sh`:
 
@@ -356,18 +364,28 @@ Cada despliegue con conflictos crea:
 
 `~/.dotfiles-backup/LATEST` apunta al respaldo más reciente.
 
-Volver atrás:
+Volver atrás (quitar los enlaces no toca el repositorio; después se restauran
+solo los archivos que el manifiesto respaldó):
 
 ```bash
 cd ~/dotfiles
 stow -D -v bash bash-arch git ghostty opencode starship
+# si estaba desplegado:
+stow -D -v git-delta
 
 backup="$(readlink -f ~/.dotfiles-backup/LATEST)"
-cp -a "$backup/.bashrc"                    ~/.bashrc
-cp -a "$backup/.bash_profile"              ~/.bash_profile
-cp -a "$backup/.gitconfig"                 ~/.gitconfig
-cp -a "$backup/.config/ghostty/config"     ~/.config/ghostty/config
+while IFS= read -r line; do
+    orig="${line%% -> *}"
+    dest="${line#* -> }"
+    mkdir -p -- "$(dirname -- "$orig")"
+    cp -a -- "$dest" "$orig"
+done < "$backup/manifest.txt"
 ```
+
+El manifiesto tiene el formato `origen -> respaldo`. Revisalo antes de copiar:
+`cat "$backup/manifest.txt"`. El procedimiento sobrescribe el contenido actual
+de esas rutas, no borra archivos que no estén en el manifiesto y no usa
+`stow --adopt`.
 
 Los respaldos viven fuera del repositorio y están cubiertos por `.gitignore`.
 
@@ -391,6 +409,9 @@ Los respaldos viven fuera del repositorio y están cubiertos por `.gitignore`.
 | `starship`/`zoxide` no aparecen | Verificá que estén instalados y que `~/.bashrc` sea el enlace al repo. |
 | `git diff` falla por `delta` | Desplegaste `git-delta` sin tener `delta`. `stow -D git-delta` o instalá `git-delta`. |
 | DMS cambia el tema de Ghostty | Es esperado: `dankcolors` es administrado por DMS. El fallback solo cubre el primer arranque. |
+| `ghostty +show-config` muestra `/bin/fish` | `$SHELL` de la sesión está viejo. El repo fija `command = /usr/bin/bash`; cerrá sesión por completo y volvé a entrar. |
+| `ps` muestra `bash --posix` | Es la integración de shell de Ghostty; `ghostty.bash` ejecuta `set +o posix`. `ps -p $$ -o comm=` debe mostrar `bash`. |
+| `diagnose-system.sh` decía que no había driver NVIDIA | Corregido: usa `nvidia-smi`, `/sys/module/nvidia` y `lspci -k`, no solo paquetes o `lsmod`. |
 | `opencode plugin list` no muestra DCP | El servicio aún no arrancó o falta red; reintentá tras el primer inicio. |
 | Un AppImage no arranca | Verificá `/dev/fuse` y `fuse2`/`fuse3`. |
 | `gh` pide autenticación | `gh auth login` (única acción manual esperada). |
@@ -402,10 +423,15 @@ Antes de dar por buena una instalación:
 ```bash
 for f in bootstrap.sh scripts/*.sh bash/.bashrc bash/.bash_profile \
          bash-arch/.config/bash/pacman.sh; do bash -n "$f"; done
-shellcheck -x bootstrap.sh scripts/*.sh
+if command -v shellcheck >/dev/null; then shellcheck -x bootstrap.sh scripts/*.sh; fi
 ./bootstrap.sh --dry-run
 ./scripts/verify.sh
+./scripts/diagnose-system.sh
 ```
+
+`verify.sh` comprueba la configuración efectiva de Ghostty (`command` Bash y
+`theme = dankcolors`), no solo que el archivo exista. `diagnose-system.sh`
+distingue GPU detectada, driver instalado y driver activo.
 
 `--dry-run` no instala nada y no escribe enlaces. La verificación real requiere
 una sesión CachyOS/Arch con los paquetes instalados. Ver [AUDIT.md](AUDIT.md) para

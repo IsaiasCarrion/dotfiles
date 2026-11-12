@@ -143,7 +143,7 @@ main() {
     elif ! gh auth status >/dev/null 2>&1; then
         info "Next: gh auth login"
     fi
-    info "Open a new session (or run: exec bash) to load the new shell configuration."
+    info "Log out and back in so systemd/Ghostty refresh SHELL (exec bash only updates this terminal)."
 }
 
 main "$@"

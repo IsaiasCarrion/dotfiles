@@ -97,6 +97,10 @@ main() {
         local stamp backup_dir dest
         stamp="$(timestamp)"
         backup_dir="$BACKUP_ROOT/$stamp"
+        # Two runs in the same second must not share (and truncate) a backup.
+        if [[ -e "$backup_dir" ]]; then
+            backup_dir="$BACKUP_ROOT/$stamp-$$"
+        fi
 
         if (( DRY_RUN )); then
             info "Dry run: would create $backup_dir."
@@ -142,7 +146,7 @@ main() {
     # DMS owns ~/.config/ghostty/themes/dankcolors. Provide a fallback only when
     # DMS has not generated it yet; never overwrite the managed file.
     local theme="$HOME/.config/ghostty/themes/dankcolors"
-    if [[ -e "$theme" ]]; then
+    if [[ -e "$theme" || -L "$theme" ]]; then
         info "DMS Ghostty theme present; leaving it untouched."
     else
         log "Installing the Ghostty fallback theme (DMS will replace it later)."

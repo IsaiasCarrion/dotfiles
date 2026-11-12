@@ -42,14 +42,19 @@ Diagnóstico de solo lectura:
 ```bash
 mokutil --sb-state
 lspci -k | grep -iA3 -E 'vga|3d|display'
-lsmod | grep '^nvidia'
-pacman -Qq | grep -E '^nvidia'
+nvidia-smi --query-gpu=name,driver_version --format=csv,noheader
+pacman -Qq | grep -E '(^|-)nvidia(-|$)'
 ```
 
+- `nvidia-smi` respondiendo es la evidencia principal de un driver **activo**.
+  `/sys/module/nvidia` y `lspci -k` (`Kernel driver in use: nvidia`) son
+  respaldos válidos si `nvidia-smi` no está disponible.
+- Los paquetes `nvidia-utils` y `linux-*-nvidia-open` indican driver
+  **instalado**, no necesariamente cargado. No confundas ambos estados.
 - Si Secure Boot está deshabilitado, no se modifica: es una decisión de firmware.
-- Si hay GPU NVIDIA sin driver, usá la vía que provee CachyOS (por ejemplo
-  `nvidia-utils`/`nvidia-dkms` según el kernel). Este repositorio no instala
-  drivers ni firma módulos.
+- Si hay GPU NVIDIA sin driver activo, usá la vía que provee CachyOS (por
+  ejemplo `nvidia-utils`/`linux-cachyos-nvidia-open` según el kernel). Este
+  repositorio no instala drivers ni firma módulos.
 
 ## Flatpak (opcional)
 

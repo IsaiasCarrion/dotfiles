@@ -25,8 +25,11 @@ ghostty +validate-config
   claves ni rutas privadas.
 
 ```bash
-zed --version
+zeditor --version
 ```
+
+En Arch el paquete `zed` instala `/usr/bin/zeditor`; `~/.bashrc` crea el alias
+`zed` solo si ese nombre no existe.
 
 ## OpenCode
 

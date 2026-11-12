@@ -81,7 +81,9 @@ main() {
         local pkg
         while IFS= read -r pkg; do
             [[ -n "$pkg" ]] || continue
-            pkg_installed "$pkg" && continue
+            if pkg_installed "$pkg"; then
+                continue
+            fi
             if pkg_available "$pkg"; then
                 optional+=("$pkg")
             else

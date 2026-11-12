@@ -1,6 +1,9 @@
 # ~/.config/ghostty/config — paquete "ghostty".
 # El tema "dankcolors" lo genera DMS. Si todavía no existe, deploy-dotfiles.sh
 # copia assets/ghostty/dankcolors sin tocar el archivo administrado por DMS.
+# Shell principal: fijado para no heredar un SHELL obsoleto (p. ej. Fish).
+# Ghostty agrega --posix para su integración y el propio ghostty.bash lo desactiva.
+command = /usr/bin/bash
 
 # Font Configuration
 font-family = Hack Nerd Font
@@ -47,7 +50,7 @@ gtk-titlebar = false
 
 # Shell integration
 shell-integration = detect
-shell-integration-features = cursor,sudo,title,no-cursor
+shell-integration-features = no-cursor,sudo,title
 keybind = shift+enter=text:\n
 
 # Rando stuff

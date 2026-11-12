@@ -34,6 +34,11 @@ válido en el primer arranque, antes de que DMS lo genere.
 `scripts/deploy-dotfiles.sh` copia el fallback **únicamente si el archivo no
 existe**. Nunca sobrescribe el tema administrado.
 
+El comando de shell (`command = /usr/bin/bash`) sí está en la configuración que
+administra este repositorio; DMS solo administra el tema. Ghostty añade
+`--posix` para su integración y `ghostty.bash` lo desactiva al cargar los
+startup files.
+
 ## Instalación
 
 ```bash

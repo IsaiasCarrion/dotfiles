@@ -4,9 +4,11 @@ Fecha: 2026-11-12. Objetivo: dejar este repositorio autosuficiente para una
 instalación limpia de **CachyOS (Arch Linux)** con Bash, GNU Stow, Ghostty, Zed,
 OpenCode y el escritorio DMS/niri ya provisto por el sistema.
 
-> Esta auditoría **no ejecutó el bootstrap real**. Las validaciones estáticas se
-> hicieron en un host Fedora; todo lo que depende de pacman/Arch queda pendiente
-> de una prueba controlada en CachyOS (ver sección 7).
+> **Actualización 2026-11-12:** la auditoría final se ejecutó en el equipo real
+> CachyOS. No se instalaron paquetes ni se cambió la shell (ya era Bash), pero
+> se ejecutaron `--dry-run`, `verify.sh`, `diagnose-system.sh`, simulación Stow y
+> pruebas de idempotencia. Los resultados reales están en la sección 8; la
+> sección 7 conserva el plan original de validación.
 
 ## 1. Estado inicial encontrado
 
@@ -190,8 +192,8 @@ optional: gcc make go rust ffmpeg gst-plugins-good gst-plugins-bad
 | `deploy-dotfiles.sh --dry-run` con archivos reales en `$HOME` | **Verificado**: lista conflictos, no crea respaldos ni escribe enlaces, termina con código 0 |
 | Idempotencia de instalación/despliegue | **Verificado por diseño** y por simulación Stow; falta ejecución real con pacman/chsh |
 | Sintaxis JSONC de OpenCode | **Verificado** con el parser de `verify.sh` en modo lectura |
-| `gh auth status`, plugins y versiones de apps | **Pendiente** en CachyOS |
-| `pacman -S --needed`, `chsh`, enlaces Stow reales | **Pendiente** en CachyOS |
+| `gh auth status`, plugins y versiones de apps | `gh` sin autenticar; plugins no verificados por el aborto de `verify.sh`, corregido en la sección 8 |
+| `pacman -S --needed`, `chsh`, enlaces Stow reales | **Verificado en CachyOS**: paquetes ya instalados; enlaces reales correctos; `chsh` no fue necesario (la shell ya era Bash) |
 
 No se afirma que el bootstrap completo funcione en CachyOS hasta ejecutar la
 prueba de la sección 7.
@@ -275,3 +277,56 @@ no se instala ni se configura.
 - No se instala ni configura Zsh en esta etapa; la migración Bash → Zsh se
   auditará por separado.
 - No se hacen commits ni pushes.
+
+## 8. Auditoría final en CachyOS (2026-11-12)
+
+### 8.1 Hallazgos corregidos
+
+| # | Problema | Severidad | Corrección |
+|---|---|---|---|
+| 1 | `verify.sh` abortaba con `set -e` en `have zed && info` (`zed` no existe; el binario es `zeditor`) | Crítico | `if have zeditor/zed`, variables locales y resumen final |
+| 2 | NVIDIA falso negativo: solo buscaba paquetes `nvidia*` exactos y `lsmod` | Crítico | `nvidia-smi` como señal principal, `/sys/module/nvidia` y `lspci -k` como respaldos; paquetes aparte |
+| 3 | `install-packages.sh --with-optional` abortaba en `pkg_installed && continue` | Crítico | `if pkg_installed; then continue; fi` |
+| 4 | `ghostty +show-config` mostraba `/bin/fish` por `$SHELL` obsoleto | Importante | `command = /usr/bin/bash` en la config; documentado el refresco de sesión |
+| 5 | `--posix` en `ps` parecía un error | Importante | Es la integración de Ghostty; `ghostty.bash` ejecuta `set +o posix` |
+| 6 | `verify.sh` no comprobaba la config efectiva de Ghostty | Importante | Verifica `command` Bash y `theme = dankcolors` |
+| 7 | `cursor` y `no-cursor` contradictorios | Menor | Se dejó `no-cursor,sudo,title` |
+| 8 | Opcionales ausentes reportados como warning | Menor | `fwupd`, `mokutil`, `cifs`, `smbclient` y `bluez` pasan a informativos |
+| 9 | `pacman --version \| head -n1` mostraba una línea vacía | Menor | `grep -m1 .` |
+| 10 | Docs decían `zed --version` | Menor | `zeditor --version` |
+
+### 8.2 Estado verificado (no modificado)
+
+- `getent passwd xizzy` → `/usr/bin/bash`; Bash 5.3; login shell correcto.
+- Ghostty: `command = /usr/bin/bash`, `theme = dankcolors`; el proceso real es
+  `/usr/bin/bash --posix` (integración) y POSIX queda desactivado.
+- NVIDIA: RTX 3070 Ti, driver 620.70.06 activo (`nvidia-smi`), `/sys/module/nvidia`
+  presente, `lspci` reporta `Kernel driver in use: nvidia`.
+- Stow: enlaces correctos y simulación limpia.
+- `~/.config/ghostty/themes/dankcolors` existe como archivo real; el fallback no
+  lo tocó.
+- Niri y DMS no fueron modificados.
+
+### 8.3 Pruebas ejecutadas
+
+| Prueba | Resultado |
+|---|---|
+| `bash -n` en todos los scripts y configs Bash | OK |
+| ShellCheck | No instalado; no se agregó como dependencia |
+| `./bootstrap.sh --dry-run` | OK, sin cambios |
+| `./bootstrap.sh --with-optional --dry-run` | OK, ejercita el camino corregido |
+| `./scripts/verify.sh` | OK con advertencias esperadas (`gh` sin auth, `$SHELL` viejo) |
+| `./scripts/diagnose-system.sh` | OK; NVIDIA detectado como activo |
+| Simulación Stow (`stow -n -v`) | Limpia |
+| Enlaces `~/.bashrc`, `.bash_profile`, `.gitconfig`, Ghostty, Starship, OpenCode | Correctos |
+| Inicialización única de Starship/zoxide | Verificada |
+| Despliegue en `$HOME` temporal con conflicto y backup | Verificado (sin tocar el usuario real) |
+| Segunda ejecución de `--dry-run`/verify | Idempotente |
+
+### 8.4 Pendientes/manual
+
+- Cerrar sesión por completo y volver a entrar para refrescar `SHELL` en
+  systemd/Ghostty (no alcanza `exec bash`).
+- `gh auth login` (no automatizado).
+- ShellCheck no está instalado; ejecutarlo cuando esté disponible.
+- No se hizo commit ni push.

@@ -164,20 +164,32 @@ check_syntax() {
 }
 
 check_initializers() {
-    local file="$REPO_ROOT/bash/.bashrc" count
+    # Check the deployed file when it exists (it is normally a Stow symlink).
+    local file="$HOME/.bashrc" count
+    [[ -f "$file" ]] || file="$REPO_ROOT/bash/.bashrc"
 
-    count="$(grep -cF 'eval "$(starship init bash)"' "$file" || true)"
+    count="$(grep -cF 'starship init bash' "$file" || true)"
     if [[ "$count" == 1 ]]; then
         info "Starship initialization is present exactly once."
     else
-        fail "Starship initialization found $count time(s) in bash/.bashrc (expected 1)."
+        fail "Starship initialization found $count time(s) in ${file/#$HOME/~} (expected 1)."
     fi
 
-    count="$(grep -cF 'eval "$(zoxide init bash)"' "$file" || true)"
+    count="$(grep -cF 'zoxide init bash' "$file" || true)"
     if [[ "$count" == 1 ]]; then
         info "zoxide initialization is present exactly once."
     else
-        fail "zoxide initialization found $count time(s) in bash/.bashrc (expected 1)."
+        fail "zoxide initialization found $count time(s) in ${file/#$HOME/~} (expected 1)."
+    fi
+
+    # A private fragment must not initialize the same tools again.
+    if [[ -r "$HOME/.bashrc.local" ]]; then
+        if grep -qF 'starship init bash' "$HOME/.bashrc.local"; then
+            warn "$HOME/.bashrc.local also initializes Starship; remove the duplicate."
+        fi
+        if grep -qF 'zoxide init bash' "$HOME/.bashrc.local"; then
+            warn "$HOME/.bashrc.local also initializes zoxide; remove the duplicate."
+        fi
     fi
 }
 
@@ -221,6 +233,31 @@ check_ghostty() {
     else
         fail "Ghostty reported an invalid config (run: ghostty +validate-config)."
     fi
+
+    # The user-visible behaviour is the effective configuration, not the file
+    # alone: Ghostty falls back to $SHELL when launched from a CLI, and that
+    # variable can be stale after changing the login shell.
+    local effective cmd theme cmd_name
+    if ! effective="$(ghostty +show-config --no-pager 2>/dev/null)"; then
+        fail "Could not read the effective Ghostty configuration."
+        return
+    fi
+
+    cmd="$(printf '%s\n' "$effective" | sed -n 's/^command = //p' | head -n1 || true)"
+    cmd_name="${cmd%% *}"
+    cmd_name="${cmd_name#direct:}"
+    if [[ -n "$cmd_name" && "$(basename -- "$cmd_name")" == "bash" ]]; then
+        info "Ghostty effective command: $cmd"
+    else
+        fail "Ghostty would launch '${cmd:-<unset>}', not Bash (run: ghostty +show-config | grep '^command')."
+    fi
+
+    theme="$(printf '%s\n' "$effective" | sed -n 's/^theme = //p' | head -n1 || true)"
+    if [[ "$theme" == "dankcolors" ]]; then
+        info "Ghostty effective theme: $theme"
+    else
+        fail "Ghostty theme is '${theme:-<unset>}', expected dankcolors (managed by DMS)."
+    fi
 }
 
 check_niri() {
@@ -252,8 +289,18 @@ check_apps() {
         fi
     done
 
-    have opencode && info "OpenCode: $(opencode --version 2>/dev/null | head -n1)"
-    have zed && info "Zed: $(zed --version 2>/dev/null | head -n1)"
+    local version
+    if have opencode; then
+        version="$(opencode --version 2>/dev/null | head -n1 || true)"
+        info "OpenCode: ${version:-unknown}"
+    fi
+    if have zeditor; then
+        version="$(zeditor --version 2>/dev/null | head -n1 || true)"
+        info "Zed: ${version:-unknown}"
+    elif have zed; then
+        version="$(zed --version 2>/dev/null | head -n1 || true)"
+        info "Zed: ${version:-unknown}"
+    fi
 }
 
 check_system() {
@@ -267,7 +314,7 @@ check_system() {
     fi
 
     if have pacman; then
-        pacman_version="$(pacman --version 2>/dev/null | head -n1)"
+        pacman_version="$(pacman --version 2>/dev/null | grep -m1 . || true)"
         info "$pacman_version"
     else
         fail "pacman is not available."

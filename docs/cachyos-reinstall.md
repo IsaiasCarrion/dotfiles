@@ -109,7 +109,7 @@ modifica.
 
 ```bash
 ghostty --version
-zed --version
+zeditor --version
 opencode --version
 obsidian --version
 ```
