@@ -51,7 +51,7 @@ main() {
         elif have pipx; then
             info "[dry-run] pipx install graphifyy==$GRAPHIFY_VERSION"
         else
-            info "Dry run: uv/pipx is missing; the package step installs uv first."
+            info "Dry run: uv/pipx is missing; install uv with: sudo pacman -S uv"
         fi
         if [[ -n "$CONFIGURE_DIR" ]]; then
             info "[dry-run] (cd $CONFIGURE_DIR && graphify install --platform opencode)"
@@ -68,7 +68,7 @@ main() {
         log "Installing graphifyy==$GRAPHIFY_VERSION with pipx."
         run pipx install "graphifyy==$GRAPHIFY_VERSION"
     else
-        die "uv or pipx is required. Install it first: sudo dnf install uv"
+        die "uv or pipx is required. Install it first: sudo pacman -S uv"
     fi
 
     if [[ -n "$CONFIGURE_DIR" ]]; then

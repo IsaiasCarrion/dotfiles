@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # scripts/verify.sh — read-only checks for the deployed configuration.
 #
-# Checks Stow links, shell syntax, JSONC validity, Ghostty/niri configuration,
-# OpenCode's plugin view, and accidental secrets. It never modifies files.
+# Checks Stow links, shell syntax, JSONC validity, Starship, Ghostty, the
+# login shell, required applications, and accidental secrets.
+# It never modifies files.
 
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 
@@ -111,16 +112,22 @@ PY
     fi
 }
 
+stow_packages() {
+    local -a packages=(bash bash-arch git ghostty opencode starship)
+    if have delta; then
+        packages+=(git-delta)
+    fi
+    printf '%s\n' "${packages[@]}"
+}
+
 check_stow() {
     if ! have stow; then
         fail "stow is not installed; cannot verify links."
         return
     fi
 
-    local -a packages=(bash bash-dnf git ghostty opencode starship)
-    if have delta; then
-        packages+=(git-delta)
-    fi
+    local -a packages=()
+    mapfile -t packages < <(stow_packages)
 
     local output
     if ! output="$(cd -- "$REPO_ROOT" && stow -n -v -t "$HOME" "${packages[@]}" 2>&1)"; then
@@ -140,17 +147,38 @@ check_stow() {
     fi
 }
 
-check_shell() {
+check_syntax() {
     local file
     for file in \
+        "$REPO_ROOT/bootstrap.sh" \
+        "$REPO_ROOT"/scripts/*.sh \
         "$REPO_ROOT/bash/.bashrc" \
-        "$REPO_ROOT/bash-dnf/.config/bash/dnf.sh"; do
+        "$REPO_ROOT/bash/.bash_profile" \
+        "$REPO_ROOT/bash-arch/.config/bash/pacman.sh"; do
         if bash -n "$file"; then
             info "syntax OK: ${file#"$REPO_ROOT"/}"
         else
             fail "Bash syntax error: ${file#"$REPO_ROOT"/}"
         fi
     done
+}
+
+check_initializers() {
+    local file="$REPO_ROOT/bash/.bashrc" count
+
+    count="$(grep -cF 'eval "$(starship init bash)"' "$file" || true)"
+    if [[ "$count" == 1 ]]; then
+        info "Starship initialization is present exactly once."
+    else
+        fail "Starship initialization found $count time(s) in bash/.bashrc (expected 1)."
+    fi
+
+    count="$(grep -cF 'eval "$(zoxide init bash)"' "$file" || true)"
+    if [[ "$count" == 1 ]]; then
+        info "zoxide initialization is present exactly once."
+    else
+        fail "zoxide initialization found $count time(s) in bash/.bashrc (expected 1)."
+    fi
 }
 
 check_starship() {
@@ -181,14 +209,6 @@ PY
     else
         fail "Invalid Starship TOML: ${config/#$HOME/~}"
     fi
-
-    local count
-    count="$(grep -cF 'eval "$(starship init bash)"' "$REPO_ROOT/bash/.bashrc" || true)"
-    if [[ "$count" == 1 ]]; then
-        info "Starship Bash initialization is present exactly once."
-    else
-        fail "Starship Bash initialization found $count time(s) in bash/.bashrc (expected 1)."
-    fi
 }
 
 check_ghostty() {
@@ -213,65 +233,87 @@ check_niri() {
         return
     fi
     if niri validate -c "$HOME/.config/niri/config.kdl" >/dev/null 2>&1; then
-        info "niri config is valid."
+        info "niri config is valid (managed by the desktop, not this repo)."
     else
         fail "niri reported an invalid config (run: niri validate -c ~/.config/niri/config.kdl)."
     fi
 }
 
 check_apps() {
-    local zed_bin obsidian_file
+    local pkg
+    local -a apps=()
+    mapfile -t apps < <(manifest_packages "$REPO_ROOT/packages/apps.txt")
 
-    if zed_bin="$(command -v zed 2>/dev/null)" && [[ -n "$zed_bin" ]]; then
-        info "Zed: $("$zed_bin" --version 2>/dev/null | head -n1)"
-    elif [[ -x "$HOME/.local/zed.app/bin/zed" ]]; then
-        info "Zed: $("$HOME/.local/zed.app/bin/zed" --version 2>/dev/null | head -n1)"
-    else
-        warn "Zed not found (bootstrap installs it with the official installer)."
-    fi
+    for pkg in "${apps[@]}"; do
+        if pkg_installed "$pkg"; then
+            info "application installed: $pkg"
+        else
+            fail "Required application is not installed: $pkg"
+        fi
+    done
 
-    if have flatpak && flatpak info md.obsidian.Obsidian >/dev/null 2>&1; then
-        info "Obsidian (Flatpak): $(flatpak info md.obsidian.Obsidian 2>/dev/null | awk -F': *' '/Version:/{print $2; exit}')"
-    elif have obsidian; then
-        info "Obsidian: $(command -v obsidian)"
-    else
-        for obsidian_file in "$HOME/Applications"/Obsidian-*.AppImage; do
-            if [[ -x "$obsidian_file" ]]; then
-                info "Obsidian (AppImage): ${obsidian_file/#$HOME/~}"
-                return 0
-            fi
-        done
-        warn "Obsidian not found (bootstrap installs the official AppImage)."
-    fi
+    have opencode && info "OpenCode: $(opencode --version 2>/dev/null | head -n1)"
+    have zed && info "Zed: $(zed --version 2>/dev/null | head -n1)"
 }
 
 check_system() {
-    if [[ -r /etc/fedora-release ]]; then
-        info "$(cat /etc/fedora-release)"
+    local pretty pacman_version user login_shell bash_path shell_real login_real
+
+    pretty="$(os_release_field PRETTY_NAME || true)"
+    if [[ -n "$pretty" ]]; then
+        info "system: $pretty"
     else
-        warn "Not running on Fedora (/etc/fedora-release missing)."
+        fail "Could not read /etc/os-release."
     fi
 
-    local dnf_version
-    dnf_version="$(dnf --version 2>/dev/null || true)"
-    if grep -q '^dnf5' <<<"$dnf_version"; then
-        info "DNF5 detected."
+    if have pacman; then
+        pacman_version="$(pacman --version 2>/dev/null | head -n1)"
+        info "$pacman_version"
     else
-        warn "DNF5 not detected."
+        fail "pacman is not available."
     fi
 
-    [[ -e /dev/fuse ]] && info "/dev/fuse present (AppImages)." || warn "/dev/fuse missing (AppImages need FUSE)."
-
-    if have flatpak && flatpak remotes --columns=name 2>/dev/null | grep -qx flathub; then
-        info "Flathub remote present."
+    user="$(id -un)"
+    login_shell="$(getent passwd "$user" | cut -d: -f7)"
+    if [[ "$(basename -- "$login_shell")" == "bash" ]]; then
+        info "login shell of $user is Bash ($login_shell)."
     else
-        warn "Flathub remote not found."
+        fail "login shell of $user is $login_shell; run ./scripts/set-shell.sh."
     fi
 
-    local pkg
-    for pkg in fwupd cifs-utils samba-client; do
-        pkg_installed "$pkg" && info "$pkg installed." || warn "$pkg is not installed."
-    done
+    if [[ -n "${SHELL:-}" ]]; then
+        shell_real="$(readlink -f -- "$SHELL" 2>/dev/null || true)"
+        login_real="$(readlink -f -- "$login_shell" 2>/dev/null || true)"
+        if [[ -n "$shell_real" && -n "$login_real" && "$shell_real" != "$login_real" ]]; then
+            warn "This session uses SHELL=$SHELL; log out and back in to load the login shell."
+        fi
+    fi
+
+    bash_path="$(readlink -f -- "$(command -v bash)")"
+    local entry listed=0
+    while IFS= read -r entry; do
+        [[ -n "$entry" && "$entry" != \#* ]] || continue
+        if [[ "$(readlink -f -- "$entry" 2>/dev/null || true)" == "$bash_path" ]]; then
+            listed=1
+            break
+        fi
+    done </etc/shells 2>/dev/null || true
+
+    if (( listed )); then
+        info "Bash is listed in /etc/shells."
+    else
+        fail "Bash is not listed in /etc/shells; run ./scripts/set-shell.sh."
+    fi
+
+    if have gh; then
+        if gh auth status >/dev/null 2>&1; then
+            info "GitHub CLI is authenticated."
+        else
+            warn "GitHub CLI is installed but not authenticated; run: gh auth login"
+        fi
+    else
+        fail "GitHub CLI (gh) is not installed."
+    fi
 }
 
 check_secrets() {
@@ -301,14 +343,16 @@ check_secrets() {
 }
 
 check_opencode() {
-    local cli output
-    cli="$(opencode_cmd)" || {
-        warn "OpenCode CLI not found; skipping plugin check."
+    if ! have opencode; then
+        warn "OpenCode CLI not found; skipping the plugin check."
         return
-    }
+    fi
 
-    if ! output="$("$cli" plugin list 2>&1)"; then
-        warn "Could not list OpenCode plugins:"
+    info "OpenCode CLI: $(opencode --version 2>/dev/null | head -n1)"
+
+    local output
+    if ! output="$(opencode plugin list 2>&1)"; then
+        warn "Could not list OpenCode plugins (it may need network/first start):"
         printf '%s\n' "$output" | sed -n '1,6p' | sed 's/^/    /' >&2
         return
     fi
@@ -321,24 +365,43 @@ check_opencode() {
     fi
 }
 
+check_shell_config() {
+    if [[ -d "$HOME/.config/fish" ]]; then
+        warn "$HOME/.config/fish exists and is preserved (not managed); Bash is the supported shell."
+    fi
+
+    if [[ ! -f "$HOME/.bash_profile" ]]; then
+        fail "Missing $HOME/.bash_profile (login shells would not load ~/.bashrc)."
+    elif ! grep -qE '\.bashrc' "$HOME/.bash_profile"; then
+        fail "$HOME/.bash_profile does not source ~/.bashrc."
+    else
+        info "$HOME/.bash_profile loads ~/.bashrc."
+    fi
+}
+
 main() {
     log "Verifying deployed dotfiles."
 
+    check_system
+    check_syntax
     check_stow
-    check_shell
+    check_initializers
     check_starship
     check_ghostty
     check_niri
     check_apps
-    check_system
+    check_shell_config
     check_jsonc "$HOME/.config/opencode/opencode.jsonc"
     check_jsonc "$HOME/.config/opencode/dcp.jsonc"
     check_jsonc "$HOME/.config/opencode/opencode.omniroute.example.jsonc"
+    check_secrets
+    check_opencode
 
     check_link "$HOME/.bashrc" "$REPO_ROOT/bash/.bashrc"
+    check_link "$HOME/.bash_profile" "$REPO_ROOT/bash/.bash_profile"
     check_link "$HOME/.gitconfig" "$REPO_ROOT/git/.gitconfig"
     check_link "$HOME/.gitignore_global" "$REPO_ROOT/git/.gitignore_global"
-    check_link "$HOME/.config/bash/dnf.sh" "$REPO_ROOT/bash-dnf/.config/bash/dnf.sh"
+    check_link "$HOME/.config/bash/pacman.sh" "$REPO_ROOT/bash-arch/.config/bash/pacman.sh"
     check_link "$HOME/.config/ghostty/config" "$REPO_ROOT/ghostty/.config/ghostty/config"
     check_link "$HOME/.config/starship.toml" "$REPO_ROOT/starship/.config/starship.toml"
     check_link "$HOME/.config/opencode/opencode.jsonc" "$REPO_ROOT/opencode/.config/opencode/opencode.jsonc"
@@ -346,8 +409,9 @@ main() {
     check_link "$HOME/.config/opencode/dcp.jsonc" "$REPO_ROOT/opencode/.config/opencode/dcp.jsonc"
     check_link "$HOME/.config/opencode/opencode.omniroute.example.jsonc" "$REPO_ROOT/opencode/.config/opencode/opencode.omniroute.example.jsonc"
 
-    check_secrets
-    check_opencode
+    if have delta; then
+        check_link "$HOME/.config/git/delta.gitconfig" "$REPO_ROOT/git-delta/.config/git/delta.gitconfig"
+    fi
 
     if (( failures > 0 )); then
         die "Verification finished with $failures problem(s)."

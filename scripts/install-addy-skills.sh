@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # scripts/install-addy-skills.sh — optional, pinned Addy agent skills.
+# CachyOS/Arch: requires git (packages/base.txt).
 #
 # Installs a curated subset (default) or all skills from
 # https://github.com/addyosmani/agent-skills into the global OpenCode skill

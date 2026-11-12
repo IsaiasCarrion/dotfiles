@@ -1,0 +1,7 @@
+# Personal applications installed by the default bootstrap.
+# All of them are available in the official Arch/CachyOS repositories.
+
+ghostty
+zed
+opencode
+obsidian

@@ -1,17 +1,19 @@
+# shellcheck shell=bash
 # ~/.bashrc — paquete "bash" (portable: escritorio, notebook, VMs, servidores).
 #
 # - Las herramientas opcionales se activan solo si están instaladas.
-# - Lo específico de Fedora vive en el paquete "bash-dnf".
+# - Lo específico de Arch/CachyOS vive en el paquete "bash-arch".
 # - Lo privado o propio de un equipo va en ~/.bashrc.local (no versionado).
+# - Bash es el shell principal; no se instala Fish ni Zsh.
 
 # ==============================================================================
-# FEDORA: configuración global del sistema
+# ARCH/CACHYOS: configuración global del sistema
 # ==============================================================================
 
-# Mantiene aliases, prompt y ajustes de /etc/bashrc en Fedora.
-# Si el archivo no existe (otra distro), se ignora.
-if [[ -r /etc/bashrc ]]; then
-    . /etc/bashrc
+# Mantiene lo que el sistema define para shells interactivas.
+# Si el archivo no existe, se ignora.
+if [[ -r /etc/bash.bashrc ]]; then
+    . /etc/bash.bashrc
 fi
 
 # ==============================================================================
@@ -25,12 +27,13 @@ __path_prepend() {
         *) PATH="$1:$PATH" ;;
     esac
 }
-__path_prepend "$HOME/go/bin"
 __path_prepend "$HOME/.local/bin"
+__path_prepend "$HOME/.cargo/bin"
+__path_prepend "$HOME/go/bin"
 unset -f __path_prepend
 export PATH
 
-# Fragmentos locales del sistema (convención Fedora: ~/.bashrc.d/*.sh).
+# Fragmentos locales del sistema (~/.bashrc.d/*.sh; convención opcional).
 if [[ -d "$HOME/.bashrc.d" ]]; then
     for _bashrc_fragment in "$HOME"/.bashrc.d/*; do
         [[ -r "$_bashrc_fragment" ]] && . "$_bashrc_fragment"
@@ -42,12 +45,25 @@ fi
 [[ $- == *i* ]] || return
 
 # ==============================================================================
+# AUTOCOMPLETADO
+# ==============================================================================
+
+# bash-completion carga los completados del sistema (incluido gh) bajo demanda.
+if [[ -r /usr/share/bash-completion/bash_completion ]]; then
+    . /usr/share/bash-completion/bash_completion
+fi
+
+# ==============================================================================
 # EDITOR
 # ==============================================================================
 
 # Zed solo con sesión gráfica. --wait hace que git espere a que cierres el archivo.
 if [[ -n "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ]] && command -v zeditor >/dev/null 2>&1; then
     export EDITOR="zeditor --wait"
+elif [[ -n "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ]] && command -v zed >/dev/null 2>&1; then
+    export EDITOR="zed --wait"
+elif command -v nvim >/dev/null 2>&1; then
+    export EDITOR=nvim
 elif command -v vim >/dev/null 2>&1; then
     export EDITOR=vim
 elif command -v nano >/dev/null 2>&1; then
@@ -337,12 +353,10 @@ if command -v zeditor >/dev/null 2>&1 && ! command -v zed >/dev/null 2>&1; then
     alias zed='zeditor'
 fi
 
-# GitHub CLI: completado para Bash, si está instalado.
-if command -v gh >/dev/null 2>&1; then
-    if [[ -f /usr/share/bash-completion/completions/gh ]]; then
-        source /usr/share/bash-completion/completions/gh
-    elif [[ -f /etc/bash_completion.d/gh ]]; then
-        source /etc/bash_completion.d/gh
+# GitHub CLI: si bash-completion no está instalado, carga su completado puntual.
+if command -v gh >/dev/null 2>&1 && ! declare -F _gh >/dev/null 2>&1; then
+    if [[ -r /usr/share/bash-completion/completions/gh ]]; then
+        . /usr/share/bash-completion/completions/gh
     fi
 fi
 
@@ -360,48 +374,51 @@ bind '"\eOA": history-search-backward'
 bind '"\eOB": history-search-forward'
 
 # ── Podman (Docker alternative) ──────────────────────
-alias docker='podman'
-alias d='podman'
+# Solo si Podman existe; si no, `docker` queda apuntando al Docker real.
+if command -v podman >/dev/null 2>&1; then
+    alias docker='podman'
+    alias d='podman'
 
-# Containers
-alias dps='podman ps'
-alias dpa='podman ps -a'
-alias dstart='podman start'
-alias dstop='podman stop'
-alias drestart='podman restart'
-alias drm='podman rm'
-alias drmf='podman rm -f'
-alias dex='podman exec -it'
-alias dlog='podman logs -f'
+    # Containers
+    alias dps='podman ps'
+    alias dpa='podman ps -a'
+    alias dstart='podman start'
+    alias dstop='podman stop'
+    alias drestart='podman restart'
+    alias drm='podman rm'
+    alias drmf='podman rm -f'
+    alias dex='podman exec -it'
+    alias dlog='podman logs -f'
 
-# Images
-alias di='podman images'
-alias dpull='podman pull'
-alias dpush='podman push'
-alias drmi='podman rmi'
+    # Images
+    alias di='podman images'
+    alias dpull='podman pull'
+    alias dpush='podman push'
+    alias drmi='podman rmi'
 
-# Volumes & networks
-alias dvol='podman volume'
-alias dnet='podman network'
+    # Volumes & networks
+    alias dvol='podman volume'
+    alias dnet='podman network'
 
-# Compose
-alias dc='podman compose'
-alias dcu='podman compose up -d'
-alias dcd='podman compose down'
-alias dcl='podman compose logs -f'
-alias dcb='podman compose build'
+    # Compose
+    alias dc='podman compose'
+    alias dcu='podman compose up -d'
+    alias dcd='podman compose down'
+    alias dcl='podman compose logs -f'
+    alias dcb='podman compose build'
 
-# System
-alias dprune='podman system prune'
-alias dinfo='podman info'
-alias dver='podman version'
+    # System
+    alias dprune='podman system prune'
+    alias dinfo='podman info'
+    alias dver='podman version'
+fi
 
 # ==============================================================================
-# DNF (Fedora: paquete "bash-dnf")
+# PACMAN (Arch/CachyOS: paquete "bash-arch")
 # ==============================================================================
 
-if [[ -r "$HOME/.config/bash/dnf.sh" ]]; then
-    source "$HOME/.config/bash/dnf.sh"
+if [[ -r "$HOME/.config/bash/pacman.sh" ]]; then
+    source "$HOME/.config/bash/pacman.sh"
 fi
 
 # ==============================================================================

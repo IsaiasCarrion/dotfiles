@@ -1,0 +1,20 @@
+# Bootstrap/runtime dependencies (Arch/CachyOS official repositories).
+# One package per line. Comments and blank lines are ignored.
+# Installed only when missing; already-installed packages are never touched.
+
+bash
+git
+stow
+sudo
+curl
+ca-certificates
+jq
+util-linux
+tar
+gzip
+bzip2
+xz
+zstd
+unzip
+7zip
+findutils

@@ -1,25 +1,18 @@
-# Portable CLI baseline (Fedora package names).
-# One package per line. Comments and blank lines are ignored.
-# Installed only when missing; already-installed packages are never touched.
+# Portable CLI tools used by the Bash, Git, Starship, Ghostty and OpenCode
+# configurations. Official Arch/CachyOS repositories only.
 
-bash
-git
-stow
-curl
-jq
+bash-completion
 ripgrep
 fzf
-fd-find
+fd
 bat
 eza
 zoxide
-git-delta
+starship
 tree
-unzip
-7zip
 tmux
 neovim
-python3
-python3-pip
+python
 uv
-gh
+github-cli
+git-delta

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scripts/lib.sh — helpers shared by the bootstrap scripts.
+# scripts/lib.sh — helpers shared by the bootstrap scripts (CachyOS/Arch).
 # Sourced, never executed directly.
 
 set -Eeuo pipefail
@@ -45,6 +45,7 @@ sudo_run() {
     if (( EUID == 0 )); then
         "$@"
     else
+        have sudo || die "sudo is required for this step: $*"
         sudo "$@"
     fi
 }
@@ -52,7 +53,8 @@ sudo_run() {
 # Ask for confirmation unless --yes was passed.
 confirm() {
     local prompt="$1" answer
-    if (( ASSUME_YES )); then
+    # A dry run must never block on input, because nothing will change.
+    if (( ASSUME_YES || DRY_RUN )); then
         return 0
     fi
     [[ -t 0 ]] || die "Non-interactive shell; re-run with --yes to continue."
@@ -62,9 +64,29 @@ confirm() {
 
 timestamp() { date +%Y%m%d-%H%M%S; }
 
-require_fedora() {
-    [[ -r /etc/fedora-release ]] ||
-        die "This bootstrap targets Fedora; /etc/fedora-release was not found."
+os_release_field() {
+    local field="$1"
+    [[ -r /etc/os-release ]] || return 1
+    ( set +u; . /etc/os-release; printf '%s' "${!field:-}" )
+}
+
+# Accept CachyOS and any Arch-compatible distribution.
+require_arch() {
+    local id id_like
+    id="$(os_release_field ID || true)"
+    id_like="$(os_release_field ID_LIKE || true)"
+
+    case "$id" in
+        cachyos|arch|endeavouros|manjaro|garuda) ;;
+        *)
+            case " $id_like " in
+                *" arch "*) ;;
+                *) die "This bootstrap targets CachyOS/Arch (detected ID='${id:-unknown}')." ;;
+            esac
+            ;;
+    esac
+
+    have pacman || die "pacman was not found; this is not an Arch-compatible system."
 }
 
 require_cmd() {
@@ -78,15 +100,17 @@ manifest_packages() {
     sed -E 's/[[:space:]]*#.*$//' "$file" | tr -d '\r' | awk 'NF'
 }
 
-pkg_installed() { rpm -q "$1" >/dev/null 2>&1; }
+pkg_installed() { pacman -Qq -- "$1" >/dev/null 2>&1; }
+pkg_available() { pacman -Si -- "$1" >/dev/null 2>&1; }
 
-# Locate the OpenCode V2 CLI, including the binary bundled with the desktop RPM.
-opencode_cmd() {
-    if have opencode; then
-        printf 'opencode\n'
-    elif [[ -x /opt/OpenCode/resources/opencode-cli ]]; then
-        printf '%s\n' /opt/OpenCode/resources/opencode-cli
-    else
-        return 1
-    fi
+# Return the available AUR helper, if any. Never installs one implicitly.
+aur_helper() {
+    local helper
+    for helper in paru yay; do
+        if have "$helper"; then
+            printf '%s\n' "$helper"
+            return 0
+        fi
+    done
+    return 1
 }

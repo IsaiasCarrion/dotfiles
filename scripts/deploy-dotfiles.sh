@@ -36,11 +36,16 @@ main() {
         if (( DRY_RUN )); then
             warn "stow is not installed; skipping the Stow simulation (the package step would install it)."
         else
-            die "stow is not installed; run: sudo dnf install stow"
+            die "stow is not installed; run: sudo pacman -S stow"
         fi
     fi
 
-    local -a packages=(bash bash-dnf git ghostty opencode starship)
+    local -a packages=(bash bash-arch git ghostty opencode starship)
+    local pkg
+
+    for pkg in "${packages[@]}"; do
+        [[ -d "$REPO_ROOT/$pkg" ]] || die "Missing Stow package directory: $pkg"
+    done
 
     if have delta; then
         packages+=(git-delta)
@@ -49,7 +54,7 @@ main() {
     fi
 
     local -a conflicts=()
-    local pkg file rel target resolved expected
+    local file rel target resolved expected
 
     for pkg in "${packages[@]}"; do
         while IFS= read -r -d '' file; do
@@ -114,7 +119,7 @@ main() {
     fi
 
     log "Deploying Stow packages: ${packages[*]}"
-    cd -- "$REPO_ROOT"
+    cd -- "$REPO_ROOT" || die "Could not enter the repository: $REPO_ROOT"
 
     if ! have stow; then
         info "Dry run: would run stow -v -t \"$HOME\" ${packages[*]}"
@@ -123,9 +128,15 @@ main() {
     fi
 
     if (( DRY_RUN )); then
-        stow -n -v -t "$HOME" "${packages[@]}"
+        if ! stow -n -v -t "$HOME" "${packages[@]}"; then
+            if ((${#conflicts[@]})); then
+                info "Dry run: Stow stopped at the conflicts listed above; a real run backs them up first."
+            else
+                die "Stow simulation failed; review the output above."
+            fi
+        fi
     else
-        stow -v -t "$HOME" "${packages[@]}"
+        stow -v -t "$HOME" "${packages[@]}" || die "Stow failed; review the output above."
     fi
 
     # DMS owns ~/.config/ghostty/themes/dankcolors. Provide a fallback only when

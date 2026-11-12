@@ -5,27 +5,21 @@ El repositorio versiona solo la primera; la segunda es preferencia local de cada
 
 ## Instalación
 
-El equipo usa el RPM `opencode-2.2.6` y su CLI vive en:
-
-```
-/opt/OpenCode/resources/opencode-cli
-```
-
-`scripts/install-opencode.sh` lo enlaza a `~/.local/bin/opencode` si no existe. Si el bundle no
-está disponible, usa el instalador oficial de V2:
+OpenCode V2 es el paquete oficial `opencode` de los repositorios de Arch/CachyOS:
 
 ```bash
-curl -fsSL https://opencode.ai/v2/install | bash
+sudo pacman -S --needed opencode
+opencode --version     # opencode v2.x
 ```
 
-No se instala desde Terra: ese repositorio publica V1 (1.18.18), que no es compatible con la API
-de plugins V2.
+No se usa el RPM de Fedora, Terra ni un instalador remoto. El paquete ya deja el
+CLI en `PATH`; no hace falta enlazar nada en `~/.local/bin`.
 
 Verificación:
 
 ```bash
-~/.local/bin/opencode --version     # opencode v2.x
-~/.local/bin/opencode plugin list
+opencode --version
+opencode plugin list
 ```
 
 ## Archivos versionados
@@ -176,8 +170,8 @@ en todos los proyectos.
 ```bash
 cd ~/dotfiles
 ./scripts/verify.sh
-~/.local/bin/opencode plugin list
-~/.local/bin/opencode debug config
+opencode plugin list
+opencode debug config
 ```
 
 `verify.sh` parsea los JSONC, revisa los enlaces, busca secretos y comprueba que DCP sea visible.
@@ -187,7 +181,7 @@ cd ~/dotfiles
 
 | Síntoma | Solución |
 |---|---|
-| `opencode: command not found` | `./scripts/install-opencode.sh`; abrí una shell nueva o `source ~/.bashrc`. |
+| `opencode: command not found` | `sudo pacman -S opencode`; abrí una shell nueva o `source ~/.bashrc`. |
 | El plugin no aparece | Iniciá OpenCode una vez (`opencode`), luego `opencode plugin list`. Revisá la red. |
 | DCP no poda nada | Verificá `dcp.jsonc` y que el plugin figure en `plugins`; `opencode plugin list`. |
 | Error de JSONC | `./scripts/verify.sh`; los comentarios y comas finales son válidos, pero el resto debe ser JSON. |

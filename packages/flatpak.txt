@@ -1,9 +1,0 @@
-# Flatpak applications (Flathub, system installation).
-# Only apps that were present before the migration are listed.
-#
-# Obsidian is intentionally not listed: fresh installs use the official
-# AppImage via scripts/install-obsidian.sh. An existing Flatpak is detected and
-# never duplicated.
-
-com.mattjakeman.ExtensionManager
-it.mijorus.gearlever

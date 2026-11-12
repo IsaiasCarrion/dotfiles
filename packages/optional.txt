@@ -1,18 +1,20 @@
 # Optional packages: install with ./bootstrap.sh --with-optional.
-# Kept out of the default bootstrap to stay lightweight and avoid third-party
-# repositories on machines that do not need them.
+# Kept out of the default bootstrap to keep a fresh system lightweight.
 
-# Development toolchains (already present on the original desktop).
+# Development toolchains.
 gcc
 make
-golang
+go
 rust
-cargo
 
-# RPM Fusion media codecs (requires RPM Fusion to be enabled first).
+# Media codecs and the optional creative application.
 ffmpeg
-gstreamer1-plugins-bad-freeworld
-gstreamer1-plugins-ugly
-
-# Optional creative application. Installed only with --with-optional.
+gst-plugins-good
+gst-plugins-bad
+gst-plugins-ugly
+gst-libav
 obs-studio
+
+# NOTE: rust already provides cargo on Arch; do not list cargo separately.
+# NOTE: Docker is an optional module (scripts/install-docker.sh), not part of
+# this manifest, so there is only one installation path.

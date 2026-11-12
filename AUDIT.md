@@ -1,168 +1,277 @@
-# Auditoría y migración Arch → Fedora
+# Auditoría y migración a CachyOS
 
-Fecha: 2026-11-07
-Equipo auditado: Fedora 45 Workstation, DNF 5.4.7, niri 26.04, DMS 2.1.1,
-Ghostty 1.4.0, OpenCode 2.2.6.
+Fecha: 2026-11-12. Objetivo: dejar este repositorio autosuficiente para una
+instalación limpia de **CachyOS (Arch Linux)** con Bash, GNU Stow, Ghostty, Zed,
+OpenCode y el escritorio DMS/niri ya provisto por el sistema.
 
-Este documento registra qué se encontró, qué se cambió y por qué. El objetivo fue preservar la
-configuración que ya funcionaba y reemplazar la administración basada en Arch/pacman por un
-sistema reproducible con Fedora/DNF, GNU Stow y un único comando de arranque.
+> Esta auditoría **no ejecutó el bootstrap real**. Las validaciones estáticas se
+> hicieron en un host Fedora; todo lo que depende de pacman/Arch queda pendiente
+> de una prueba controlada en CachyOS (ver sección 7).
 
-## 1. Estado inicial
+## 1. Estado inicial encontrado
 
-### Repositorio
+- El repositorio estaba íntegramente orientado a **Fedora/DNF/COPR**:
+  `packages/fedora.txt`, `packages/dms.txt`, `packages/copr.txt`,
+  `packages/flatpak.txt`, `scripts/configure-dnf.sh`, `install-multimedia.sh`,
+  `install-zed.sh`, `install-obsidian.sh`, `install-opencode.sh`.
+- `scripts/lib.sh` y `scripts/install-packages.sh` usaban `dnf`, `rpm`, COPR,
+  Terra, RPM Fusion y Flatpak.
+- El bootstrap instalaba el **stack del escritorio** (`niri`, `dms`, `ghostty`,
+  `quickshell`, `matugen`, `dux-*`) desde COPR, en contradicción con la regla de
+  no instalar DMS/niri/entorno gráfico.
+- Zed y Obsidian se instalaban con instaladores propios/AppImage, aunque ambos
+  están en los repositorios oficiales de Arch/CachyOS. OpenCode se enlazaba desde
+  un RPM de Fedora o se instalaba con un script remoto.
+- La configuración de Bash cargaba `/etc/bashrc` (Fedora) y el paquete
+  `bash-dnf`. No existía `.bash_profile`.
+- La documentación describía Fedora 45, DNF5, COPR y RPM Fusion.
+- **No existía ningún archivo Fish** (`config.fish`, `conf.d/`, `functions/`,
+  variables universales), ni en el árbol actual ni en el historial Git. Tampoco
+  había referencias a Fish en scripts o documentación.
 
-- Remoto: `https://github.com/IsaiasCarrion/dotfiles` (rama `master`).
-- Árbol limpio, último commit `faa036e`.
-- Paquetes existentes: `bash`, `bash-pacman`, `git`, `git-delta`.
-- `README.md` describía únicamente Arch/CachyOS y `pacman`.
-- No había scripts de instalación, manifiestos de paquetes ni documentación de Fedora.
-- No había configuración de OpenCode, Ghostty ni DMS versionada.
+## 2. Problemas encontrados
 
-### Sistema
+| # | Problema | Riesgo | Corrección |
+|---|---|---|---|
+| 1 | Manifiestos y scripts exclusivos de Fedora (`dnf`, `rpm`, COPR) | El bootstrap falla en CachyOS | Reemplazados por manifiestos Arch y pacman |
+| 2 | Instalación del escritorio (niri/DMS/dux) | Viola el alcance y puede pisar CachyOS | Eliminados `dms.txt` y `copr.txt`; el repo no toca el escritorio |
+| 3 | Dos mecanismos para Zed/Obsidian/OpenCode | Duplicados y actualizaciones divergentes | Una sola vía: `packages/apps.txt` + pacman |
+| 4 | Script remoto de OpenCode y binario de RPM | Origen no reproducible en Arch | Paquete oficial `opencode` de `extra` |
+| 5 | `pacman`/AUR sin política ni detección | Instalaciones incompletas | `install-packages.sh` usa pacman; AUR solo en NetBird opcional |
+| 6 | `.bashrc` cargaba `/etc/bashrc` de Fedora | Configuración global incorrecta | Carga `/etc/bash.bashrc` si existe |
+| 7 | Faltaba `.bash_profile` | Un shell de login no cargaba `.bashrc` | Agregado al paquete `bash` |
+| 8 | Shell de login no se configuraba | Bash no quedaba como shell principal | Nuevo `scripts/set-shell.sh`, seguro e idempotente |
+| 9 | `common.txt` usaba nombres Fedora (`fd-find` por `fd`, `p7zip` por `7zip`) | Paquetes inexistentes o incorrectos | Nombres Arch verificados contra archlinux.org |
+| 10 | `cargo` listado aparte de `rust` | Duplicado: Arch lo incluye en `rust` | Eliminado de `optional.txt` |
+| 11 | Docker podía instalarse por dos vías | Duplicación | Solo `scripts/install-docker.sh` |
+| 12 | `verify.sh` comprobaba DNF/Flatpak/COPR y enlaces viejos | Falsos negativos en CachyOS | Reescrito para Arch, shell, apps y enlaces actuales |
+| 13 | `diagnose-system.sh` era de Fedora | Diagnóstico inútil | Reescrito para pacman/systemd/Arch |
+| 14 | Documentación desactualizada | El README prometía Fedora | README, AUDIT y docs reescritos |
+| 15 | Sin verificación de shell por defecto | El criterio de éxito no se comprobaba | `verify.sh` valida shell, `/etc/shells` y `.bash_profile` |
 
-- Fedora 45 Workstation con DNF5.
-- Escritorio niri + DMS 2.1.1; `dms` administra `~/.config/dms` y `~/.config/niri/dms`.
-- Ghostty 1.4.0 como terminal principal; `~/.config/ghostty/config` era un archivo real.
-- OpenCode instalado como RPM `opencode-2.2.6-1.x86_64`; el CLI ejecutable vive en
-  `/opt/OpenCode/resources/opencode-cli` y no estaba en `PATH`.
-- `~/.config/opencode/` solo contenía `service.json` (contraseña generada). No había
-  `opencode.jsonc`, `AGENTS.md`, plugins, skills ni configuración de Ponytail/DCP/Graphify.
-- `~/.bashrc` y `~/.gitconfig` eran archivos reales, no enlaces a dotfiles.
-- No existía `~/.gitignore_global`.
-- COPR habilitados: `duxlabs/dms`, `duxlabs/dux-repo`, `yalter/niri`.
-- Repositorios adicionales habilitados: RPM Fusion, Terra, Google Chrome, Flathub.
-- Flatpak instalados: Extension Manager, Gearlever y Obsidian (sistema, Flathub).
-- Faltaban: `stow`, `fzf`, `fd`, `eza`, `zoxide`, `starship`, `delta`, `ripgrep`, `uv`,
-  `node`, `pip`, `neovim`.
-
-### Respaldos
-
-Antes de tocar nada se creó:
-
-```
-~/.dotfiles-backup/20261107-180945/   (modo 700, fuera del repositorio)
-~/.dotfiles-backup/LATEST -> 20261107-180945
-```
-
-Incluye `.bashrc`, `.gitconfig`, `~/.config/ghostty/config`, `~/.config/opencode/service.json`,
-`~/.config/niri/config.kdl` y los archivos de DMS relevantes.
-
-## 2. Cambios realizados
-
-### Shell
-
-- `bash-pacman/` → `bash-dnf/`.
-- `pacman.sh` → `dnf.sh` con `pkgs` (buscar/instalar con fzf), `pkgrm`, `dnfup` y `pkgclean`.
-- `.bashrc` ahora:
-  - carga `/etc/bashrc` si existe (Fedora);
-  - carga fragmentos de `~/.bashrc.d/*`;
-  - agrega `~/.local/bin` y `~/go/bin` al `PATH`;
-  - mantiene todas las funciones portables (venvs, Git, archivos, etc.);
-  - carga `~/.config/bash/dnf.sh` solo si existe.
-- No se agregaron Fish, Zsh ni frameworks nuevos. Bash sigue siendo el shell.
-
-### Git
-
-- Se conservó `.gitconfig` y `.gitignore_global`.
-- Se limpiaron los helpers de credencial para que funcionen con `gh` sin rutas absolutas.
-- `git-delta` sigue siendo opcional y solo se despliega si `delta` está instalado.
-
-### Ghostty
-
-- Se versionó la configuración principal en `ghostty/.config/ghostty/config`.
-- El tema `dankcolors` es generado por DMS; el repo solo guarda un fallback en
-  `assets/ghostty/dankcolors`.
-- WezTerm no se migró ni se reinstaló.
-
-### OpenCode
-
-- Se creó `opencode.jsonc` con forma nativa V2: `model`, `plugins`, `tool_output`,
-  `compaction`, `watcher` y `permissions`.
-- Modelo por defecto: `opencode/big-pickle` (disponible sin configurar proveedores).
-- DCP fijado a `@tarquinen/opencode-dcp@3.2.0`, con `autoUpdate: false`.
-- Ponytail: el plugin `opencode-ponytail@4.7.3` es V1-only y no corre en V2. Se trasladó su
-  ruleset **Lite** a `AGENTS.md` y se eliminó la configuración muerta `~/.config/ponytail`.
-- OmniRoute queda como plantilla inactiva (`opencode.omniroute.example.jsonc`), sin claves.
-- `service.json`, `auth.json`, `.env` y material de claves quedan fuera de Git.
+## 3. Correcciones realizadas
 
 ### Paquetes
 
-Manifiestos nuevos, separados por origen:
+Manifiestos definitivos:
 
-- `packages/fedora.txt`: base Fedora.
-- `packages/common.txt`: CLI portable.
-- `packages/dms.txt`: stack DMS desde COPR.
-- `packages/copr.txt`: COPR necesarios.
-- `packages/flatpak.txt`: aplicaciones Flathub existentes.
-- `packages/optional.txt`: toolchains, Starship (Terra) y códecs (RPM Fusion).
+- `packages/base.txt`: bash, git, stow, sudo, curl, ca-certificates, jq,
+  util-linux, tar, gzip, bzip2, xz, zstd, unzip, 7zip, findutils.
+- `packages/common.txt`: bash-completion, ripgrep, fzf, fd, bat, eza, zoxide,
+  starship, tree, tmux, neovim, python, uv, github-cli, git-delta.
+- `packages/apps.txt`: ghostty, zed, opencode, obsidian.
+- `packages/optional.txt`: gcc, make, go, rust, ffmpeg, gst-plugins-good/bad/ugly,
+  gst-libav, obs-studio.
 
-El paso de paquetes instala **solo lo ausente**, no habilita Terra/RPM Fusion automáticamente y
-no reinstala lo que ya está.
+Todos los paquetes fueron consultados en la API de archlinux.org y están en
+`core`/`extra`. **No se requiere AUR** para la instalación normal.
 
-### Bootstrap y verificación
+### Instalación
 
-- `bootstrap.sh` + `scripts/`:
-  - detección de Fedora;
-  - `--dry-run`, `--yes`, `--with-optional` y pasos desactivables;
-  - instalación idempotente de RPM, COPR y Flatpak;
-  - enlace del CLI de OpenCode V2;
-  - despliegue con Stow y respaldo de conflictos;
-  - verificación de enlaces, sintaxis Bash, JSONC, Ghostty, niri, plugins y secretos.
-- Nunca se usa `stow --adopt`.
-- `.stowrc` mantiene `--no-folding`.
+- `install-packages.sh` detecta CachyOS/Arch, comprueba disponibilidad, instala
+  solo lo ausente con `pacman -S --needed --noconfirm`, y no actualiza el sistema
+  implícitamente. Si la base está vieja, indica `sudo pacman -Syu`.
+- No usa `--noconfirm` para operaciones destructivas; solo para instalar.
+- El único uso de AUR es `install-netbird.sh` (opcional). Detecta `paru`/`yay`,
+  no instala un helper y no ejecuta `netbird up`.
+
+### Stow
+
+- Paquete `bash-dnf` renombrado a `bash-arch`; `dnf.sh` reemplazado por
+  `pacman.sh`.
+- `deploy-dotfiles.sh` usa `bash bash-arch git ghostty opencode starship` y
+  agrega `git-delta` solo si `delta` existe.
+- Sigue sin usar `stow --adopt`; los conflictos se mueven a
+  `~/.dotfiles-backup/<timestamp>/`.
+- `.stowrc` conserva `--no-folding`.
+
+### Shell / Fish
+
+- **No había archivos Fish**, así que no hubo migración de funciones ni
+  variables. Las capacidades equivalentes ya estaban en Bash.
+- `bash/.bashrc` ahora carga `/etc/bash.bashrc`, agrega `~/.cargo/bin` al PATH,
+  inicializa bash-completion, mantiene una sola inicialización de fzf, zoxide y
+  Starship, y carga `~/.config/bash/pacman.sh`.
+- `bash/.bash_profile` carga `~/.bashrc` una sola vez.
+- `scripts/set-shell.sh`: verifica Bash y `/etc/shells`, lee la shell actual,
+  modifica solo al usuario que ejecuta el bootstrap (o `SUDO_USER`), pide
+  confirmación y avisa que hay que cerrar sesión.
+
+### OpenCode
+
+- La configuración V2 (`opencode.jsonc`, `AGENTS.md`, `dcp.jsonc`, plantilla
+  OmniRoute) se conservó sin cambios funcionales: modelo, plugins, permisos y
+  protecciones de secretos siguen igual.
+- Solo cambió la **instalación**: ahora es el paquete oficial `opencode` de
+  `extra` (V2), no el RPM/bundle de Fedora ni un script remoto.
+- No se agregaron plugins, proveedores ni credenciales.
 
 ### Documentación
 
-- `README.md` reescrito para Fedora, DMS, Ghostty y OpenCode.
-- `docs/dms.md`: límites de DMS y archivos que no se deben tocar.
-- `docs/opencode.md`: configuración V2, plugins, skills opcionales y secretos.
-- Este `AUDIT.md`.
+- `README.md` reescrito para CachyOS.
+- Nuevos `docs/cachyos-post-install.md` y `docs/cachyos-reinstall.md`.
+- `docs/applications.md`, `docs/opencode.md` y `docs/dms.md` actualizados.
+- Eliminado `docs/security-hardening.md` (auditoría Fedora 45, fuera del alcance
+  y sin relación con este bootstrap). El README ya no promete endurecimiento.
 
-## 3. Decisiones y justificaciones
+## 4. Archivos nuevos, modificados y eliminados
 
-| Decisión | Motivo |
-|---|---|
-| Fedora/DNF en lugar de Arch/pacman | El equipo real es Fedora 45; se elimina AUR/yay/paru. |
-| RPM, COPR, Flatpak y standalone separados | Permite auditar el origen y evita mezclar terceros con la base. |
-| Stow con `--no-folding` | Evita que directorios completos (`~/.config/git`) terminen dentro del repo. |
-| Respaldar en vez de pisar | Requisito de seguridad; los archivos existentes se conservan. |
-| No stowear DMS | DMS regenera `~/.config/dms`, `~/.config/niri/dms` y el tema de Ghostty. |
-| Ghostty principal, sin WezTerm | Ghostty ya era la terminal del escritorio. |
-| Ponytail Lite vía `AGENTS.md` | El plugin es V1-only; el ruleset sí es compatible con V2. |
-| DCP fijado | Evita actualizaciones silenciosas de un plugin que toca el contexto. |
-| Graphify/Addy opcionales y fijados | No se cargan si no aportan; el pin hace la instalación reproducible. |
-| No instalar OpenCode de Terra | Terra publica V1 (1.18.18); el equipo ya tiene V2.2.6. |
+### Nuevos
 
-## 4. Verificación
+- `bash/.bash_profile`
+- `bash-arch/.config/bash/pacman.sh`
+- `packages/base.txt`
+- `packages/apps.txt`
+- `scripts/set-shell.sh`
+- `docs/cachyos-post-install.md`
+- `docs/cachyos-reinstall.md`
 
-Comandos previstos después del despliegue:
+### Modificados
 
-```bash
-cd ~/dotfiles
-./scripts/verify.sh
-bash -n bash/.bashrc bash-dnf/.config/bash/dnf.sh
-stow -n -v bash bash-dnf git ghostty opencode
-ghostty +validate-config
-niri validate -c ~/.config/niri/config.kdl
-~/.local/bin/opencode plugin list
+- `bootstrap.sh`
+- `scripts/bootstrap.sh`
+- `scripts/lib.sh`
+- `scripts/install-packages.sh`
+- `scripts/deploy-dotfiles.sh`
+- `scripts/verify.sh`
+- `scripts/diagnose-system.sh`
+- `scripts/install-docker.sh`
+- `scripts/install-netbird.sh`
+- `scripts/install-graphify.sh`
+- `scripts/install-addy-skills.sh` (comentario)
+- `bash/.bashrc`
+- `packages/common.txt`
+- `packages/optional.txt`
+- `README.md`
+- `AUDIT.md`
+- `docs/applications.md`
+- `docs/opencode.md`
+- `docs/dms.md`
+
+### Eliminados
+
+- `bash-dnf/.config/bash/dnf.sh` (renombrado a `bash-arch/.../pacman.sh`)
+- `packages/fedora.txt`
+- `packages/copr.txt`
+- `packages/dms.txt`
+- `packages/flatpak.txt`
+- `scripts/configure-dnf.sh`
+- `scripts/install-multimedia.sh`
+- `scripts/install-zed.sh`
+- `scripts/install-obsidian.sh`
+- `scripts/install-opencode.sh`
+- `docs/fedora-post-install.md`
+- `docs/fedora-reinstall.md`
+- `docs/security-hardening.md`
+
+## 5. Manifiesto definitivo de paquetes
+
+```
+base:    bash git stow sudo curl ca-certificates jq util-linux tar gzip bzip2
+         xz zstd unzip 7zip findutils
+common:  bash-completion ripgrep fzf fd bat eza zoxide starship tree tmux
+         neovim python uv github-cli git-delta
+apps:    ghostty zed opencode obsidian
+optional: gcc make go rust ffmpeg gst-plugins-good gst-plugins-bad
+          gst-plugins-ugly gst-libav obs-studio
 ```
 
-`scripts/verify.sh` también parsea los JSONC, revisa que los enlaces apunten al repo y busca
-archivos/patrones sensibles.
+## 6. Validaciones realizadas
 
-## 5. Acciones pendientes
+| Comprobación | Resultado |
+|---|---|
+| `bash -n` en bootstrap, scripts, `.bashrc`, `.bash_profile`, `pacman.sh` | **Verificado**: sin errores |
+| `shellcheck -x` en bootstrap y scripts | **Verificado parcialmente**: sin errores; quedan avisos informativos (SC1091/SC2015 y variables usadas por archivos sourceados) |
+| Existencia de paquetes en Arch `core`/`extra` | **Verificado** contra archlinux.org |
+| Ausencia de referencias Fedora/DNF en scripts y paquetes | **Verificado** (solo quedan menciones opcionales a Flatpak en diagnóstico y post-instalación) |
+| Ausencia de archivos/referencias Fish | **Verificado** en árbol e historial |
+| Estructura de paquetes Stow y destinos únicos | **Verificado** estáticamente (sin destinos duplicados) |
+| Despliegue Stow y re-simulación en un `$HOME` temporal | **Verificado**: enlaces correctos y simulación posterior limpia |
+| `deploy-dotfiles.sh --dry-run` con archivos reales en `$HOME` | **Verificado**: lista conflictos, no crea respaldos ni escribe enlaces, termina con código 0 |
+| Idempotencia de instalación/despliegue | **Verificado por diseño** y por simulación Stow; falta ejecución real con pacman/chsh |
+| Sintaxis JSONC de OpenCode | **Verificado** con el parser de `verify.sh` en modo lectura |
+| `gh auth status`, plugins y versiones de apps | **Pendiente** en CachyOS |
+| `pacman -S --needed`, `chsh`, enlaces Stow reales | **Pendiente** en CachyOS |
 
-1. Instalar los paquetes ausentes con `./bootstrap.sh` (requiere contraseña de `sudo`).
-2. Desplegar los paquetes Stow; el primer despliegue moverá `.bashrc`, `.gitconfig` y
-   `~/.config/ghostty/config` al respaldo.
-3. Ejecutar `./scripts/verify.sh` y `ghostty +validate-config`.
-4. Opcional: `./scripts/install-addy-skills.sh`, `./scripts/install-graphify.sh` y activar
-   OmniRoute cuando el gateway esté disponible.
+No se afirma que el bootstrap completo funcione en CachyOS hasta ejecutar la
+prueba de la sección 7.
 
-## 6. Fuera de alcance
+## 7. Plan de validación en CachyOS
 
-- No se versionan `~/.ssh`, `~/.bash_history`, `~/.cache`, `~/.config/gh`, `~/venvs`, `~/.var`
-  ni secretos de OpenCode.
-- No se migran configuraciones administradas por DMS ni atajos de teclado.
-- No se reinstalan aplicaciones que no estaban presentes antes de la auditoría.
+### 7.1 Instalación y paquetes
+
+1. Clonar el repo en `~/dotfiles`.
+2. Ejecutar `./bootstrap.sh --dry-run` y revisar que no haya errores de pacman,
+   conflictos ni rutas.
+3. Ejecutar `./bootstrap.sh` (con `sudo` disponible).
+4. Confirmar que `pacman -S --needed` resolvió la base de datos y que no hubo
+   conflictos de paquetes.
+5. Verificar que DMS, niri y el display manager sigan intactos.
+6. Ejecutar `gh auth login`.
+
+### 7.2 Shell: Fish → Bash
+
+Estado actual: **Bash es la shell objetivo**. Este repositorio no contiene
+archivos Fish ni instala Fish. Si el equipo CachyOS tiene `~/.config/fish`, se
+conserva intacto hasta validar la migración. **Zsh queda fuera de esta etapa**:
+no se instala ni se configura.
+
+1. Comprobar la shell inicial:
+
+   ```bash
+   getent passwd "$USER" | cut -d: -f7
+   echo "$SHELL"
+   ps -p $$ -o comm=
+   ```
+
+2. Verificar que Bash exista y figure en `/etc/shells`:
+
+   ```bash
+   command -v bash
+   readlink -f "$(command -v bash)"
+   cat /etc/shells
+   ```
+
+3. Si existe configuración local de Fish, inventariarla antes de migrar:
+
+   ```bash
+   ls -la ~/.config/fish
+   grep -RInE 'alias|function|set -gx|fish_add_path|starship init|zoxide init|fzf' ~/.config/fish
+   ```
+
+   Comparar aliases, funciones, variables de entorno, PATH e inicializaciones
+   con `~/.bashrc` y `~/.bash_profile`. No borrar `~/.config/fish` durante la
+   validación.
+
+4. Ejecutar `./scripts/set-shell.sh` (o `./bootstrap.sh`) y confirmar el `chsh`.
+5. Cerrar sesión y volver a entrar.
+6. Verificar la shell efectiva:
+
+   ```bash
+   echo "$SHELL"
+   ps -p $$ -o comm=
+   getent passwd "$USER"
+   ```
+
+7. Confirmar que `~/.bash_profile` carga `~/.bashrc` y que Starship, zoxide y fzf
+   se inicializan una sola vez (`./scripts/verify.sh`).
+
+### 7.3 Verificación, aplicaciones y rollback
+
+8. Ejecutar `./scripts/verify.sh` y `./scripts/diagnose-system.sh`.
+9. Probar `starship`, `zoxide`, `fzf`, `eza`, `bat`, `gh`, `opencode`, `zed`,
+   `ghostty` y `obsidian`.
+10. Reejecutar `./bootstrap.sh` para confirmar idempotencia (sin instalaciones
+    ni enlaces nuevos).
+11. Probar la vuelta atrás de Stow en un usuario de prueba.
+
+## 8. Fuera de alcance
+
+- No se instala ni configura DMS, niri, display manager, GNOME, KDE, Waybar ni
+  componentes del escritorio.
+- No se versionan `~/.ssh`, historiales, `~/.cache`, `~/.config/gh`, `~/venvs`,
+  `~/.var` ni secretos de OpenCode.
+- No se modifican PAM, sysctl, repositorios del sistema ni políticas de contraseñas.
+- No se instala ni configura Zsh en esta etapa; la migración Bash → Zsh se
+  auditará por separado.
+- No se hacen commits ni pushes.

@@ -1,15 +1,16 @@
-# dotfiles — Fedora + DMS + Ghostty + OpenCode
+# dotfiles — CachyOS + DMS/Niri + Ghostty + Zed + OpenCode
 
-Configuración personal de Fedora administrada con [GNU Stow](https://www.gnu.org/software/stow/).
-Cada carpeta de primer nivel es un **paquete** que reproduce la ruta que tendrá bajo `$HOME`;
-Stow crea los enlaces simbólicos. No hay framework ni instalador opaco: Bash, Git, DNF y Stow.
+Configuración personal para **CachyOS (Arch Linux)** administrada con
+[GNU Stow](https://www.gnu.org/software/stow/). Cada carpeta de primer nivel es un
+**paquete** que reproduce la ruta que tendrá bajo `$HOME`; Stow crea los enlaces
+simbólicos. No hay framework ni instalador opaco: Bash, pacman y Stow.
 
-Este repositorio nació en Arch/CachyOS y fue migrado a **Fedora 45 (DNF5)**. El escritorio
-objetivo es **niri + DankMaterialShell (DMS) + Ghostty + OpenCode V2**. El detalle de la auditoría
-y de las decisiones está en [AUDIT.md](AUDIT.md).
+El escritorio (**DMS, niri, display manager**) ya viene instalado con CachyOS y
+**este repositorio no lo instala, no lo configura y no lo reemplaza**. El repo se
+encarga de las herramientas, aplicaciones y configuraciones personales.
 
-> **Regla de oro:** el repositorio vive en `~/dotfiles` y Stow se ejecuta **siempre desde esa
-> carpeta**. Stow usa la carpeta actual como origen, `~` como destino y lee `.stowrc`.
+> **Regla de oro:** Stow se ejecuta desde la raíz del repositorio. `bootstrap.sh`
+> resuelve esa ruta solo, así que podés invocarlo desde cualquier directorio.
 
 ## Inicio rápido
 
@@ -18,21 +19,21 @@ git clone https://github.com/IsaiasCarrion/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 
 ./bootstrap.sh --dry-run   # muestra todo sin cambiar nada
-./bootstrap.sh             # instala lo que falta y despliega
+./bootstrap.sh             # instala lo que falta, despliega y verifica
+gh auth login              # única autenticación manual necesaria
 ```
 
-`bootstrap.sh` es idempotente: solo instala paquetes ausentes, mueve los archivos que estorban
-a un respaldo y se puede volver a ejecutar sin miedo.
+Después del bootstrap, cerrá la sesión y volvé a entrar (o ejecutá `exec bash`)
+para que Bash quede como shell de login y se cargue la configuración nueva.
 
 ### Requisitos
 
-- Fedora 45 Workstation (el script aborta si no encuentra `/etc/fedora-release`).
-- `sudo` para instalar paquetes y habilitar COPR.
-- Conexión a Internet.
-- Acceso a los COPR `duxlabs/dms`, `duxlabs/dux-repo` y `yalter/niri` (el script los habilita
-  si faltan) y a Flathub para las aplicaciones Flatpak.
-- `Terra` se habilita automáticamente **solo si falta `starship`**, porque Fedora no empaqueta
-  ese programa. `RPM Fusion` sigue siendo opcional y solo se usa con `--with-optional`.
+- CachyOS o una distribución Arch compatible (`/etc/os-release` con
+  `ID=cachyos`, `ID=arch` o `ID_LIKE=arch`).
+- `sudo` para instalar paquetes y cambiar la shell de login.
+- Conexión a Internet para los repositorios oficiales.
+- No se requiere AUR para la instalación normal. El único módulo AUR es NetBird,
+  que es opcional y detecta `paru`/`yay` sin instalarlos.
 
 ## Estructura
 
@@ -41,50 +42,42 @@ dotfiles/
 ├── bootstrap.sh                     # entrada: ./bootstrap.sh [opciones]
 ├── scripts/
 │   ├── lib.sh                       # helpers (dry-run, sudo, backups, manifiestos)
-│   ├── bootstrap.sh                 # orquestador de los 5 pasos
-│   ├── install-packages.sh          # DNF + COPR + Flatpak, solo lo ausente
-│   ├── install-opencode.sh          # CLI de OpenCode V2
-│   ├── install-zed.sh               # Zed estable (instalador oficial)
-│   ├── install-obsidian.sh          # Obsidian AppImage oficial
+│   ├── bootstrap.sh                 # orquestador: paquetes → Stow → shell → verificación
+│   ├── install-packages.sh          # pacman, solo lo ausente
 │   ├── deploy-dotfiles.sh           # Stow con respaldo de conflictos
-│   ├── verify.sh                    # enlaces, sintaxis, JSONC, apps y sistema
+│   ├── set-shell.sh                 # Bash como shell de login (solo el usuario actual)
+│   ├── verify.sh                    # enlaces, sintaxis, JSONC, apps, shell y secretos
 │   ├── diagnose-system.sh           # diagnóstico de solo lectura
-│   ├── configure-dnf.sh             # opcional: ajustes de rendimiento DNF5
-│   ├── install-multimedia.sh        # opcional: RPM Fusion + códecs
-│   ├── install-docker.sh            # opcional: Docker CE
-│   ├── install-netbird.sh           # opcional: NetBird
+│   ├── install-docker.sh            # opcional: Docker
+│   ├── install-netbird.sh           # opcional: NetBird (AUR)
 │   ├── install-addy-skills.sh       # opcional, commit fijado
 │   └── install-graphify.sh          # opcional, versión fijada
 ├── packages/
-│   ├── fedora.txt                   # base Fedora
-│   ├── common.txt                   # CLI portable
-│   ├── dms.txt                      # stack DMS (COPR)
-│   ├── copr.txt                     # COPR requeridos
-│   ├── flatpak.txt                  # aplicaciones Flathub
-│   └── optional.txt                 # toolchains, Starship, códecs
+│   ├── base.txt                     # dependencias del bootstrap
+│   ├── common.txt                   # CLI usado por las configuraciones
+│   ├── apps.txt                     # aplicaciones personales por defecto
+│   └── optional.txt                 # toolchains, códecs y OBS (--with-optional)
 ├── bash/.bashrc                     # -> ~/.bashrc
-├── bash-dnf/.config/bash/dnf.sh     # -> ~/.config/bash/dnf.sh
+├── bash/.bash_profile               # -> ~/.bash_profile
+├── bash-arch/.config/bash/pacman.sh # -> ~/.config/bash/pacman.sh
 ├── starship/.config/starship.toml   # -> ~/.config/starship.toml
 ├── git/.gitconfig                   # -> ~/.gitconfig
 ├── git/.gitignore_global            # -> ~/.gitignore_global
 ├── git-delta/.config/git/delta.gitconfig  # opcional, solo si delta existe
-├── ghostty/
-│   └── .config/ghostty/config       # -> ~/.config/ghostty/config
-├── assets/
-│   └── ghostty/dankcolors           # fallback si DMS aún no generó el tema
+├── ghostty/.config/ghostty/config   # -> ~/.config/ghostty/config
+├── assets/ghostty/dankcolors        # fallback si DMS aún no generó el tema
 ├── opencode/.config/opencode/
 │   ├── opencode.jsonc               # configuración global V2
 │   ├── AGENTS.md                    # Ponytail Lite + reglas de tokens/seguridad
 │   ├── dcp.jsonc                    # DCP fijado y sin auto-update
 │   └── opencode.omniroute.example.jsonc
 ├── docs/
-│   ├── dms.md
-│   ├── opencode.md
-│   ├── fedora-post-install.md       # DNF5, firmware, Flatpak, módulos opcionales
+│   ├── dms.md                       # límites del escritorio administrado por CachyOS
+│   ├── opencode.md                  # configuración V2, plugins y skills
 │   ├── applications.md              # Zed, Obsidian y apps opcionales
-│   ├── fedora-reinstall.md          # recuperar el entorno desde cero
-│   └── security-hardening.md        # evidencia Linaudit y acciones propuestas
-├── AUDIT.md
+│   ├── cachyos-post-install.md      # post-instalación y módulos opcionales
+│   └── cachyos-reinstall.md         # recuperar el entorno desde cero
+├── AUDIT.md                         # auditoría y decisiones de esta migración
 ├── .stowrc                          # --no-folding
 └── .gitignore                       # secretos, respaldos y archivos locales
 ```
@@ -93,22 +86,22 @@ dotfiles/
 
 | Paquete | Qué aporta | Alcance | Requiere |
 |---|---|---|---|
-| `bash` | `.bashrc` portable: PATH, historial, fzf, zoxide, Starship, venvs, Git | **Portable** | bash |
-| `bash-dnf` | `pkgs`, `pkgrm`, `dnfup`, `pkgclean` para Fedora | Fedora | `dnf`, `fzf` |
-| `starship` | Prompt compacto, sin iconos ni comandos externos | **Portable** | `starship` |
+| `bash` | `.bashrc` portable + `.bash_profile` de login | **Portable** | bash |
+| `bash-arch` | `pkgs`, `pkgrm`, `pacup`, `pkgclean` para pacman | Arch/CachyOS | pacman, fzf |
+| `starship` | Prompt compacto | **Portable** | starship |
 | `git` | `.gitconfig`, aliases, `.gitignore_global` | **Portable** | git ≥ 2.40 |
-| `git-delta` | delta como pager de Git | Escritorio, opcional | `delta` |
-| `ghostty` | Configuración principal de Ghostty | Escritorio | `ghostty` |
-| `opencode` | Configuración global de OpenCode V2, DCP y reglas | Escritorio | OpenCode V2 |
+| `git-delta` | delta como pager de Git | Escritorio, opcional | git-delta |
+| `ghostty` | Configuración principal de Ghostty | Escritorio | ghostty |
+| `opencode` | Configuración global de OpenCode V2, DCP y reglas | Escritorio | opencode |
 
 Notas:
 
 - `bash` activa cada herramienta opcional solo si existe; funciona en un servidor mínimo.
-- `git` usa `merge.conflictstyle = zdiff3` (Git ≥ 2.35) y `help.autocorrect = prompt`
-  (Git ≥ 2.40). Revisá `git --version` en equipos viejos.
-- `git-delta` **solo** se despliega si `command -v delta` funciona; si no, Git fallaría al
-  usarlo como pager. `deploy-dotfiles.sh` lo decide automáticamente.
-- `bash-dnf` reemplazó al viejo `bash-pacman`; ya no hay comandos de `pacman`, `yay` ni AUR.
+- `git-delta` **solo** se despliega si `command -v delta` funciona. Si no, Git fallaría
+  al usarlo como pager. `deploy-dotfiles.sh` lo decide automáticamente.
+- `bash-arch` reemplazó al viejo `bash-dnf`; el bootstrap no usa `dnf`, `rpm`,
+  COPR ni Flatpak: los paquetes salen solo de pacman.
+- No se instala Fish. La configuración equivalente vive en Bash (ver más abajo).
 
 ## Bootstrap
 
@@ -119,68 +112,100 @@ Notas:
 | Opción | Efecto |
 |---|---|
 | `--dry-run` | Muestra comandos y conflictos; no modifica nada |
-| `--yes`, `-y` | No pregunta antes de mover archivos en conflicto |
+| `--yes`, `-y` | No pregunta antes de mover archivos o cambiar la shell |
 | `--with-optional` | Instala `packages/optional.txt` |
-| `--no-packages` | No toca RPM/COPR/Flatpak |
-| `--no-opencode` | No intenta instalar el CLI de OpenCode |
-| `--no-apps` | No instala Zed ni Obsidian |
+| `--no-packages` | No toca pacman |
+| `--no-apps` | No instala `packages/apps.txt` |
 | `--no-deploy` | No ejecuta Stow |
+| `--no-shell` | No cambia la shell de login |
 | `--no-verify` | No ejecuta las verificaciones finales |
 | `--help` | Ayuda |
 
-Los pasos son independientes, así que también se pueden ejecutar sueltos:
+Pasos:
+
+1. Verifica que sea CachyOS/Arch y que exista pacman.
+2. Instala solo los paquetes ausentes de `base.txt`, `common.txt` y `apps.txt`.
+3. Despliega los paquetes Stow, moviendo conflictos a `~/.dotfiles-backup/<timestamp>/`.
+4. Configura Bash como shell de login del usuario que ejecuta el bootstrap.
+5. Verifica enlaces, sintaxis, JSONC, aplicaciones, shell y secretos.
+
+Los pasos también se pueden ejecutar sueltos:
 
 ```bash
 ./scripts/install-packages.sh --dry-run
 ./scripts/install-packages.sh --with-optional
 ./scripts/deploy-dotfiles.sh --dry-run
+./scripts/set-shell.sh --dry-run
 ./scripts/verify.sh
 ```
 
 ### Qué instala
 
-- **RPM base** (`packages/fedora.txt` + `packages/common.txt`): `dnf-plugins-core`, `flatpak`,
-  `starship` (Terra; se habilita solo si falta), `fwupd`, `mokutil`, `pciutils`, `bluez`, `fuse`,
-  `fuse-libs`, `cifs-utils`, `samba-client`, `stow`, `git`, `curl`, `jq`, `ripgrep`, `fzf`,
-  `fd-find`, `bat`, `eza`, `zoxide`, `git-delta`, `tree`, `unzip`, `7zip`, `tmux`, `neovim`,
-  `python3`, `python3-pip`, `uv`, `gh`.
-- **Stack DMS** (`packages/dms.txt`, COPR): `niri`, `dms`, `ghostty`, `quickshell`, `matugen`,
-  `dux-greeter`, `dux-search`, `dux-calendar`, `dux-files`.
-- **Flatpak** (`packages/flatpak.txt`): Extension Manager y Gearlever. Obsidian se instala como
-  AppImage oficial, no como Flatpak en equipos nuevos.
-- **Aplicaciones obligatorias** (paso 3/5): Zed con el instalador oficial y Obsidian con el
-  AppImage oficial. Si ya existen, no se duplican; ver [docs/applications.md](docs/applications.md).
-- **Opcionales** (`packages/optional.txt`): `gcc`, `make`, `golang`, `rust`, `cargo`;
-  `ffmpeg`, plugins de GStreamer (RPM Fusion) y `obs-studio`. Si el repo no está habilitado, el
-  script avisa y omite ese paquete en lugar de habilitar repositorios de terceros por su cuenta.
+- **Base** (`packages/base.txt`): `bash`, `git`, `stow`, `sudo`, `curl`,
+  `ca-certificates`, `jq`, `util-linux`, `tar`, `gzip`, `bzip2`, `xz`, `zstd`,
+  `unzip`, `7zip`, `findutils`.
+- **CLI** (`packages/common.txt`): `bash-completion`, `ripgrep`, `fzf`, `fd`,
+  `bat`, `eza`, `zoxide`, `starship`, `tree`, `tmux`, `neovim`, `python`, `uv`,
+  `github-cli`, `git-delta`.
+- **Aplicaciones** (`packages/apps.txt`): `ghostty`, `zed`, `opencode`, `obsidian`.
+  Todas están en los repositorios oficiales de Arch/CachyOS.
+- **Opcionales** (`packages/optional.txt`): `gcc`, `make`, `go`, `rust`, `ffmpeg`,
+  plugins de GStreamer y `obs-studio`.
+
+No se instala nada del escritorio: ni DMS, ni niri, ni Waybar, ni SDDM/GDM, ni
+GNOME/KDE. Si CachyOS ya los tiene, quedan intactos.
 
 ### Qué protege
 
 - **Nunca usa `stow --adopt`.**
-- Si `~/.bashrc`, `~/.gitconfig` o `~/.config/ghostty/config` ya existen como archivos reales,
-  los **mueve** a `~/.dotfiles-backup/<timestamp>/` (con `manifest.txt`) antes de enlazar.
+- Si `~/.bashrc`, `~/.bash_profile`, `~/.gitconfig` o `~/.config/ghostty/config`
+  ya existen como archivos reales, los **mueve** a
+  `~/.dotfiles-backup/<timestamp>/` (con `manifest.txt`) antes de enlazar.
 - Si un enlace apunta a otro sitio, lo trata como conflicto y lo respalda; no lo pisa.
 - `--dry-run` jamás crea respaldos, instala paquetes ni escribe enlaces.
-- No stowea ni edita archivos administrados por DMS (ver [docs/dms.md](docs/dms.md)).
+- No stowea ni edita archivos administrados por DMS/niri.
 
-## Aplicaciones y post-instalación
+## Shell: Bash
 
-El bootstrap deja listos Zed y Obsidian. Los demás módulos son opcionales y no se
-ejecutan solos:
+Bash es el shell principal. `bash/.bashrc` es la configuración interactiva y
+`bash/.bash_profile` carga `~/.bashrc` en shells de login. No hay una segunda
+inicialización de Starship, zoxide o fzf.
 
-| Necesidad | Comando | Documentación |
-|---|---|---|
-| Zed / Obsidian | `install-zed.sh`, `install-obsidian.sh` | [docs/applications.md](docs/applications.md) |
-| DNF5, firmware, Flatpak, AppImage, Bluetooth | `diagnose-system.sh` | [docs/fedora-post-install.md](docs/fedora-post-install.md) |
-| Ajustes de rendimiento DNF5 | `configure-dnf.sh` | [docs/fedora-post-install.md](docs/fedora-post-install.md) |
-| Códecs RPM Fusion | `install-multimedia.sh` | [docs/fedora-post-install.md](docs/fedora-post-install.md) |
-| Docker CE | `install-docker.sh` | [docs/fedora-post-install.md](docs/fedora-post-install.md) |
-| NetBird y SMB | `install-netbird.sh` | [docs/fedora-post-install.md](docs/fedora-post-install.md) |
-| OBS Studio | `./bootstrap.sh --with-optional` | [docs/applications.md](docs/applications.md) |
-| Recuperar desde cero | — | [docs/fedora-reinstall.md](docs/fedora-reinstall.md) |
-| Revisión de seguridad | `linaudit` | [docs/security-hardening.md](docs/security-hardening.md) |
+`scripts/set-shell.sh`:
 
-`diagnose-system.sh` es de solo lectura: no instala, habilita ni edita nada.
+1. comprueba que Bash exista y esté en `/etc/shells` (lo agrega si falta);
+2. lee la shell actual del usuario;
+3. solo modifica al usuario que ejecuta el instalador (`SUDO_USER` si se usó sudo);
+4. informa que hay que cerrar sesión para aplicar el cambio.
+
+### Migración desde Fish
+
+La auditoría no encontró **ningún** archivo Fish versionado en este repositorio
+ni en su historial (`config.fish`, `conf.d/`, `functions/`, variables
+universales). Por eso no hubo funciones del repo que migrar: las capacidades
+equivalentes ya están en Bash (PATH idempotente, aliases, funciones de venv/uv,
+historial, autocompletado, fzf, zoxide y Starship). Fish **no** se instala ni se
+configura.
+
+Un equipo CachyOS puede tener configuración local en `~/.config/fish` que no
+está versionada. El bootstrap **no la lee, no la modifica y no la borra**;
+`verify.sh` solo avisa si existe. Antes de eliminar Fish, comparala a mano:
+
+```bash
+ls -la ~/.config/fish
+grep -RInE 'alias|function|set -gx|fish_add_path|starship init|zoxide init|fzf' ~/.config/fish
+```
+
+Después de `./scripts/set-shell.sh`, cerrá sesión y comprobá:
+
+```bash
+echo "$SHELL"
+ps -p $$ -o comm=
+getent passwd "$USER"
+```
+
+Zsh queda **fuera de esta etapa**: no se instala ni se configura. Una migración
+Bash → Zsh se auditará por separado.
 
 ## Stow: uso manual
 
@@ -188,15 +213,15 @@ Primero simulá y después aplicá:
 
 ```bash
 cd ~/dotfiles
-stow -n -v bash bash-dnf git ghostty opencode starship   # simulación
-stow -v    bash bash-dnf git ghostty opencode starship   # aplicar
+stow -n -v bash bash-arch git ghostty opencode starship   # simulación
+stow -v    bash bash-arch git ghostty opencode starship   # aplicar
 ```
 
 Combinaciones habituales:
 
 ```bash
-# Escritorio Fedora completo
-stow -v bash bash-dnf git ghostty opencode starship
+# Escritorio completo
+stow -v bash bash-arch git ghostty opencode starship
 command -v delta && stow -v git-delta
 
 # Servidor o VM sin escritorio
@@ -218,9 +243,8 @@ stow -D -v git-delta
 Verificar:
 
 ```bash
-ls -l ~/.bashrc ~/.gitconfig ~/.config/ghostty/config
-find ~ -maxdepth 4 -type l -lname '*dotfiles/*'
-stow -n -v bash bash-dnf git ghostty opencode starship    # no debe listar LINK/UNLINK
+ls -l ~/.bashrc ~/.bash_profile ~/.gitconfig ~/.config/ghostty/config
+stow -n -v bash bash-arch git ghostty opencode starship    # no debe listar LINK/UNLINK
 ```
 
 ### Reglas de Stow
@@ -229,59 +253,9 @@ stow -n -v bash bash-dnf git ghostty opencode starship    # no debe listar LINK/
 2. La ruta dentro del paquete es la ruta bajo `$HOME`.
 3. Antes de mover un archivo, revisá que no tenga claves, tokens ni rutas privadas.
 4. Agregá la fila en la tabla y la línea en la estructura de este README.
-5. `.stowrc` usa `--no-folding`: enlaza archivos sueltos, no directorios enteros. Sin esa opción,
-   `~/.config/git` sería un enlace al repo y todo lo que escriba Git terminaría versionado.
-
-## DMS (DankMaterialShell)
-
-DMS administra su propia configuración. **No la stowees ni la edites a mano:**
-
-- `~/.config/dms/` (settings, plugins, CSS)
-- `~/.config/niri/dms/*` (`binds.kdl`, `colors.kdl`, `outputs.kdl`, `layout.kdl`, …)
-- `~/.config/niri/config.kdl` y sus `include optional=true "dms/..."`
-- `~/.config/ghostty/themes/dankcolors`
-
-Los atajos de teclado actuales están en `~/.config/niri/dms/binds.kdl`; se cambian desde la
-interfaz de DMS, no desde el repositorio. El repo solo aporta la configuración **principal** de
-Ghostty. Si DMS todavía no generó el tema, `deploy-dotfiles.sh` copia
-`assets/ghostty/dankcolors`; en cuanto DMS lo regenere, el archivo administrado gana.
-
-Diagnóstico y detalles: [docs/dms.md](docs/dms.md).
-
-## Ghostty
-
-Ghostty es la terminal principal. La configuración está en `ghostty/.config/ghostty/config` y se
-enlaza a `~/.config/ghostty/config`.
-
-```bash
-ghostty +validate-config
-```
-
-WezTerm **no** forma parte de la migración y no se reinstala. El tema `dankcolors` es de DMS.
-
-## Prompt (Starship)
-
-`starship/.config/starship.toml` se enlaza a `~/.config/starship.toml`. El prompt es de una sola
-línea y muestra directorio, rama y estado de Git, duración de comandos de más de 2 s, código de
-salida y la versión de Python/Node/Rust/Go solo dentro de sus proyectos. No usa iconos ni Nerd
-Font, y no ejecuta comandos externos.
-
-`bash/.bashrc` inicializa Starship una sola vez:
-
-```bash
-eval "$(starship init bash)"
-```
-
-Aplicar cambios:
-
-```bash
-cd ~/dotfiles
-stow -R -v starship
-exec bash            # o: source ~/.bashrc
-```
-
-`starship` viene de Terra porque Fedora no lo empaqueta. `scripts/install-packages.sh` habilita ese
-repositorio solo cuando el paquete falta; si ya está habilitado, no lo toca.
+5. `.stowrc` usa `--no-folding`: enlaza archivos sueltos, no directorios enteros.
+   Sin esa opción, `~/.config/git` sería un enlace al repo y todo lo que escriba
+   Git terminaría versionado.
 
 ## OpenCode V2
 
@@ -292,23 +266,45 @@ La configuración global versionada vive en `opencode/.config/opencode/`:
 - `dcp.jsonc`: Dynamic Context Pruning fijado, sin auto-update.
 - `opencode.omniroute.example.jsonc`: plantilla para OmniRoute, inactiva por defecto.
 
+El paquete `opencode` de los repositorios oficiales provee el CLI V2. No se usa
+Terra, RPM ni instaladores remotos.
+
 Decisiones importantes:
 
-- **Ponytail** (`opencode-ponytail@4.7.3`) es un plugin de V1 y **no** corre en OpenCode V2.
-  Por eso no se instala: sus reglas **Lite** viven en `AGENTS.md`, que V2 sí carga. No hay
-  `~/.config/ponytail/config.json` porque sería configurado para un plugin ausente.
-- **DCP** (`@tarquinen/opencode-dcp@3.2.0`) sí soporta la API de plugins V2 y queda fijado.
-- **OmniRoute** es opcional: se activa copiando su bloque a `opencode.jsonc` y definiendo
-  `OMNIROUTE_API_KEY` en el entorno. Nunca se versiona la clave.
-- **Addy skills** y **Graphify** son opcionales y no se cargan por defecto:
-  `./scripts/install-addy-skills.sh` y `./scripts/install-graphify.sh`.
+- **Ponytail** (`opencode-ponytail@4.7.3`) es un plugin de V1 y **no** corre en
+  OpenCode V2. Sus reglas **Lite** viven en `AGENTS.md`. No hay configuración
+  muerta de Ponytail.
+- **DCP** (`@tarquinen/opencode-dcp@3.2.0`) soporta la API V2 y queda fijado.
+- **OmniRoute** es opcional: se activa copiando su bloque a `opencode.jsonc` y
+  definiendo `OMNIROUTE_API_KEY` en el entorno. Nunca se versiona la clave.
+- **Addy skills** y **Graphify** son opcionales y no se cargan por defecto.
 
 ```bash
-~/.local/bin/opencode --version
-~/.local/bin/opencode plugin list
+opencode --version
+opencode plugin list
 ```
 
-Detalles, verificación y solución de problemas: [docs/opencode.md](docs/opencode.md).
+Detalles y solución de problemas: [docs/opencode.md](docs/opencode.md).
+
+## Aplicaciones
+
+| Aplicación | Integración | Instalación | Actualización |
+|---|---|---|---|
+| Ghostty | Config principal | `bootstrap.sh` (pacman) | `sudo pacman -Syu` |
+| Zed | Editor | `bootstrap.sh` (pacman) | `sudo pacman -Syu` |
+| OpenCode | Agente/CLI | `bootstrap.sh` (pacman) | `sudo pacman -Syu` |
+| Obsidian | Notas | `bootstrap.sh` (pacman) | `sudo pacman -Syu` |
+| Docker | Opcional | `scripts/install-docker.sh` | `sudo pacman -Syu` |
+| NetBird | Opcional (AUR) | `scripts/install-netbird.sh` | `scripts/install-netbird.sh --update` |
+| OBS Studio | Opcional | `./bootstrap.sh --with-optional` | `sudo pacman -Syu` |
+
+Detalle: [docs/applications.md](docs/applications.md).
+
+## Escritorio (DMS / niri)
+
+CachyOS administra el escritorio. **No lo instales ni lo stowees desde acá.**
+El repositorio solo aporta la configuración principal de Ghostty y un tema de
+fallback. Ver [docs/dms.md](docs/dms.md).
 
 ## Actualizaciones
 
@@ -318,18 +314,16 @@ git pull --ff-only
 ./bootstrap.sh            # idempotente: solo completa lo que falte
 ./scripts/verify.sh
 
-sudo dnf upgrade --refresh
-sudo flatpak update
-opencode upgrade           # o: ~/.local/bin/opencode upgrade
-./scripts/install-zed.sh --update
-./scripts/install-obsidian.sh --update
+sudo pacman -Syu
 ```
 
 - Después de cambiar archivos de un paquete: `stow -R -v <paquete>`.
-- DCP está fijado a propósito. Para actualizarlo, cambiá la versión en `opencode.jsonc`,
-  revisá las notas del plugin y volvé a ejecutar `opencode plugin list`.
-- Addy skills está fijado a un commit. Actualizá `ADDY_COMMIT` en el script solo después de
-  revisar los cambios upstream.
+- DCP está fijado a propósito. Para actualizarlo, cambiá la versión en
+  `opencode.jsonc`, revisá las notas del plugin y volvé a ejecutar
+  `opencode plugin list`.
+- Addy skills está fijado a un commit. Actualizá `ADDY_COMMIT` en el script solo
+  después de revisar los cambios upstream.
+- No se actualiza nada automáticamente ni se reinicia el sistema.
 
 ## Configuración local (no versionada)
 
@@ -355,6 +349,7 @@ Cada despliegue con conflictos crea:
 ~/.dotfiles-backup/<timestamp>/
 ├── manifest.txt          # origen -> respaldo
 ├── .bashrc
+├── .bash_profile
 ├── .gitconfig
 └── .config/ghostty/config
 ```
@@ -365,10 +360,11 @@ Volver atrás:
 
 ```bash
 cd ~/dotfiles
-stow -D -v bash bash-dnf git ghostty opencode
+stow -D -v bash bash-arch git ghostty opencode starship
 
 backup="$(readlink -f ~/.dotfiles-backup/LATEST)"
 cp -a "$backup/.bashrc"                    ~/.bashrc
+cp -a "$backup/.bash_profile"              ~/.bash_profile
 cp -a "$backup/.gitconfig"                 ~/.gitconfig
 cp -a "$backup/.config/ghostty/config"     ~/.config/ghostty/config
 ```
@@ -379,51 +375,38 @@ Los respaldos viven fuera del repositorio y están cubiertos por `.gitignore`.
 
 - No se versionan `service.json`, `auth.json`, `.env`, claves privadas ni `dcp-prompts/`.
 - En `opencode.jsonc` usá `{env:VARIABLE}` o `{file:ruta}`; nunca escribas claves.
-- `scripts/verify.sh` busca archivos sensibles y patrones obvios de secretos en los archivos
-  versionados.
-- Habilitar COPR, Terra o RPM Fusion es una decisión de confianza. El bootstrap habilita los COPR
-  de DMS/Dux que el escritorio necesita y Terra solo cuando falta `starship` (no está en Fedora).
-  RPM Fusion queda bajo `--with-optional` y solo si ya está configurado.
-- El bootstrap **no aplica endurecimiento**. PAM, repositorios, sysctl, umask y políticas de
-  contraseñas requieren revisión y aprobación: ver
-  [docs/security-hardening.md](docs/security-hardening.md).
+- `scripts/verify.sh` busca archivos sensibles y patrones obvios de secretos.
+- No se descargan ni ejecutan instaladores remotos: todo sale de pacman.
+- No se agrega al usuario al grupo `docker` (equivale a root).
+- No se aplica endurecimiento del sistema ni se modifican PAM, sysctl o repositorios.
 
 ## Problemas frecuentes
 
 | Síntoma | Causa / solución |
 |---|---|
-| `existing target is neither a link nor a directory` | Archivo real en el destino. Usá `./scripts/deploy-dotfiles.sh` (respalda) o `mv archivo archivo.orig`. |
-| `stow: command not found` | `sudo dnf install stow`; el paso de paquetes lo instala. |
-| Un paquete DMS no aparece | Verificá `dnf repolist --enabled`, luego `sudo dnf copr enable duxlabs/dms` y `duxlabs/dux-repo`. |
-| `starship` no se instala | Fedora no lo empaqueta; el bootstrap habilita Terra automáticamente. Si falla, revisá `dnf repolist --enabled | grep terra` y <https://terra.fyralabs.com>. |
-| Códecs no se instalan | Requieren RPM Fusion Free; usá `./scripts/install-multimedia.sh` o habilitalo desde <https://rpmfusion.org>. |
-| Un AppImage no arranca | Verificá `/dev/fuse`, `fuse`/`fuse-libs` y `chmod +x`; ver [docs/fedora-post-install.md](docs/fedora-post-install.md). |
-| Obsidian no aparece | El script detecta Flatpak/AppImage; revisá `./scripts/install-obsidian.sh --dry-run` y `~/.local/share/applications/obsidian.desktop`. |
-| Zed no se actualiza | `./scripts/install-zed.sh --update`; la configuración en `~/.config/zed` se conserva. |
-| `opencode` no está en PATH | `./scripts/install-opencode.sh` crea `~/.local/bin/opencode`; abrí una shell nueva o `source ~/.bashrc`. |
-| `opencode plugin list` dice “No plugins found” | El servicio aún no arrancó o falta red para descargar DCP; `opencode plugin list` tras el primer inicio. |
-| DMS cambia el tema de Ghostty | Es esperado: `dankcolors` es administrado por DMS. El fallback solo cubre el primer arranque. |
+| `existing target is neither a link nor a directory` | Archivo real en el destino. Usá `./scripts/deploy-dotfiles.sh` (respalda) o movelo a `.orig`. |
+| `stow: command not found` | `sudo pacman -S stow`; el paso de paquetes lo instala. |
+| `pacman failed` al instalar | Base de datos vieja: `sudo pacman -Syu` y reintentar. |
+| Bash no es la shell al abrir una terminal | `./scripts/set-shell.sh`; después cerrá sesión y volvé a entrar. |
+| `starship`/`zoxide` no aparecen | Verificá que estén instalados y que `~/.bashrc` sea el enlace al repo. |
 | `git diff` falla por `delta` | Desplegaste `git-delta` sin tener `delta`. `stow -D git-delta` o instalá `git-delta`. |
-| El enlace dejó de ser simbólico | Una app reescribió el archivo. Revisá con `ls -l` y volvé a desplegar. |
+| DMS cambia el tema de Ghostty | Es esperado: `dankcolors` es administrado por DMS. El fallback solo cubre el primer arranque. |
+| `opencode plugin list` no muestra DCP | El servicio aún no arrancó o falta red; reintentá tras el primer inicio. |
+| Un AppImage no arranca | Verificá `/dev/fuse` y `fuse2`/`fuse3`. |
+| `gh` pide autenticación | `gh auth login` (única acción manual esperada). |
 
-## Antes de hacer commit
+## Validación
+
+Antes de dar por buena una instalación:
 
 ```bash
-cd ~/dotfiles
-git status
-git diff --cached
-for f in bash/.bashrc bash-dnf/.config/bash/dnf.sh scripts/*.sh bootstrap.sh; do bash -n "$f" || echo "ERROR: $f"; done
+for f in bootstrap.sh scripts/*.sh bash/.bashrc bash/.bash_profile \
+         bash-arch/.config/bash/pacman.sh; do bash -n "$f"; done
+shellcheck -x bootstrap.sh scripts/*.sh
 ./bootstrap.sh --dry-run
-git diff --cached | grep -niE '(token|secret|passw|api[_-]?key|BEGIN [A-Z ]*PRIVATE KEY)'   # debe salir vacío
+./scripts/verify.sh
 ```
 
-Si algo sensible llegó a un commit, borrarlo del archivo actual **no** lo elimina del historial.
-
-## Portable vs. escritorio
-
-| Portable (servidores, VMs, SSH) | Fedora escritorio | Opcional |
-|---|---|---|
-| `bash`, `git` | `bash-dnf`, `ghostty`, `opencode`, stack DMS | `git-delta`, Addy skills, Graphify, OmniRoute |
-
-niri, DMS, Ghostty y OpenCode se documentan acá, pero **solo sus archivos principales** se
-versionan; el resto lo administra cada aplicación.
+`--dry-run` no instala nada y no escribe enlaces. La verificación real requiere
+una sesión CachyOS/Arch con los paquetes instalados. Ver [AUDIT.md](AUDIT.md) para
+el estado de las comprobaciones realizadas en esta auditoría.

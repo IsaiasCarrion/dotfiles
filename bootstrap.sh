@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# bootstrap.sh — one-command restore for this Fedora desktop.
+# bootstrap.sh — one-command restore for this CachyOS desktop.
 # The real work lives in scripts/; this wrapper only keeps the entry point tidy.
 
 set -Eeuo pipefail
