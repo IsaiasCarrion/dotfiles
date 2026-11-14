@@ -1,20 +1,12 @@
-# Bootstrap/runtime dependencies (Arch/CachyOS official repositories).
+# Bootstrap/runtime dependencies (Arch/Omarchy official repositories).
 # One package per line. Comments and blank lines are ignored.
 # Installed only when missing; already-installed packages are never touched.
+#
+# Omarchy already provides bash, git, curl, tar, gzip, unzip, findutils,
+# util-linux, sudo and ca-certificates. They are not repeated here on purpose.
+# stow is the only real prerequisite this repository adds to a stock Omarchy.
 
-bash
-git
 stow
-sudo
 curl
-ca-certificates
 jq
-util-linux
-tar
-gzip
-bzip2
-xz
-zstd
-unzip
 7zip
-findutils

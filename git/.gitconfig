@@ -1,11 +1,13 @@
-# ~/.gitconfig — paquete "git" (portable).
+# ~/.gitconfig — paquete "git" (complemento de Omarchy).
 #
-# - Identidad (nombre, correo, firma) y ajustes por equipo: ~/.gitconfig.local
-#   (no versionado). Se incluye al final para que pueda pisar lo de acá.
-# - El editor lo define $VISUAL/$EDITOR (ver .bashrc), no este archivo.
-# - delta es opcional: paquete "git-delta".
-# - Algunas opciones piden Git reciente (zdiff3 >= 2.35, autocorrect=prompt >= 2.40,
-#   updateRefs >= 2.38). Revisá `git --version` en servidores viejos.
+# Omarchy ya instala ~/.config/git/config con la identidad, los aliases base y
+# los ajustes generales. Git lee ambos archivos y este ~/.gitconfig tiene la
+# última palabra, así que acá solo van preferencias personales que Omarchy no
+# define. No repitas los ajustes de Omarchy.
+#
+# - Identidad y ajustes por equipo: ~/.gitconfig.local (no versionado).
+# - delta es opcional: paquete "git-delta" y se incluye más abajo.
+# - $EDITOR/$VISUAL los define Omarchy; este archivo no los toca.
 
 [core]
 	autocrlf = input
@@ -13,46 +15,28 @@
 	excludesfile = ~/.gitignore_global
 
 [init]
+	# Preferencia personal; Omarchy usa "master".
 	defaultBranch = main
 
 [help]
 	autocorrect = prompt
 
-[column]
-	ui = auto
-
 [fetch]
 	prune = true
 	pruneTags = true
 
-[pull]
-	rebase = true
-
 [push]
-	autoSetupRemote = true
 	followTags = true
 
 [rebase]
 	autoStash = true
 	updateRefs = true
 
-[rerere]
-	enabled = true
-	autoupdate = true
-
 [merge]
 	conflictstyle = zdiff3
 
-[diff]
-	algorithm = histogram
-	colorMoved = default
-
-[commit]
-	verbose = true
-
-[tag]
-	sort = version:refname
-
+# Omarchy apunta el helper a una ruta versionada de mise; `gh` en PATH es más
+# estable entre actualizaciones. Si preferís el helper de Omarchy, borrá este bloque.
 [credential "https://github.com"]
 	helper =
 	helper = !gh auth git-credential
@@ -64,16 +48,12 @@
 [alias]
 	# Estado
 	s = status -sb
-	st = status
 	aa = add --all
 
 	# Navegación
-	co = checkout
 	sw = switch
-	br = branch
 
 	# Commits (ojo: wip agrega TODO con add -A)
-	ci = commit
 	amend = commit --amend
 	wip = !git add -A && git commit -m "WIP"
 
@@ -86,7 +66,7 @@
 	last = log -1 HEAD --stat
 	contributors = shortlog -sn
 
-	# Sincronización (pull ya hace rebase + autostash por la configuración de arriba)
+	# Sincronización (Omarchy ya configura pull.rebase y push.autoSetupRemote)
 	up = pull
 	publish = push -u origin HEAD
 
@@ -104,7 +84,3 @@
 [include]
 	path = ~/.config/git/delta.gitconfig
 	path = ~/.gitconfig.local
-[user]
-	mail = carrionsaias@gmail.com
-	name = Isaias Carrion
-	email = carrionsaias@gmail.com

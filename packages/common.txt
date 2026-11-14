@@ -1,6 +1,9 @@
-# Portable CLI tools used by the Bash, Git, Starship, Ghostty and OpenCode
-# configurations. Official Arch/CachyOS repositories only.
+# CLI tools used by the personal configurations.
+# Omarchy already ships most of them; listing them keeps the repository
+# self-documenting and works on a plain Arch system too. The installer only
+# installs what is missing.
 
+# Provided by a stock Omarchy install (kept for portability).
 bash-completion
 ripgrep
 fzf
@@ -9,10 +12,20 @@ bat
 eza
 zoxide
 starship
-tree
 tmux
 neovim
+
+# These tools stay listed so the repository also works on plain Arch; on
+# Omarchy the installer skips them when mise already provides them
+# (see /etc/mise/conf.d/omarchy-tools.toml).
+
+# Personal additions not guaranteed by Omarchy.
+tree
 python
-uv
-github-cli
 git-delta
+
+# uv is provided by Omarchy through mise; listed here for plain Arch only.
+uv
+
+# NOTE: gh (GitHub CLI) is provided by Omarchy through mise, not pacman.
+# Installing github-cli here would duplicate it. Check with: command -v gh

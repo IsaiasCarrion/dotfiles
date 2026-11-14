@@ -1,20 +1,15 @@
 # Optional packages: install with ./bootstrap.sh --with-optional.
-# Kept out of the default bootstrap to keep a fresh system lightweight.
+# Kept out of the default bootstrap to keep the system lightweight.
+#
+# Omarchy already provides base-devel, ffmpeg, Docker and the GStreamer stack;
+# they are not repeated here.
 
 # Development toolchains.
-gcc
-make
 go
 rust
 
-# Media codecs and the optional creative application.
-ffmpeg
-gst-plugins-good
-gst-plugins-bad
-gst-plugins-ugly
-gst-libav
-obs-studio
+# Container runtime preferred over Docker for rootless work.
+podman
 
-# NOTE: rust already provides cargo on Arch; do not list cargo separately.
-# NOTE: Docker is an optional module (scripts/install-docker.sh), not part of
-# this manifest, so there is only one installation path.
+# Creative application.
+obs-studio

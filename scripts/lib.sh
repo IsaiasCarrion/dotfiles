@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scripts/lib.sh — helpers shared by the bootstrap scripts (CachyOS/Arch).
+# scripts/lib.sh — helpers shared by the bootstrap scripts (Arch/Omarchy).
 # Sourced, never executed directly.
 
 set -Eeuo pipefail
@@ -70,23 +70,37 @@ os_release_field() {
     ( set +u; . /etc/os-release; printf '%s' "${!field:-}" )
 }
 
-# Accept CachyOS and any Arch-compatible distribution.
+# Accept Omarchy and any Arch-compatible distribution.
 require_arch() {
     local id id_like
     id="$(os_release_field ID || true)"
     id_like="$(os_release_field ID_LIKE || true)"
 
     case "$id" in
-        cachyos|arch|endeavouros|manjaro|garuda) ;;
+        omarchy|cachyos|arch|endeavouros|manjaro|garuda) ;;
         *)
             case " $id_like " in
                 *" arch "*) ;;
-                *) die "This bootstrap targets CachyOS/Arch (detected ID='${id:-unknown}')." ;;
+                *) die "This bootstrap targets Omarchy/Arch (detected ID='${id:-unknown}')." ;;
             esac
             ;;
     esac
 
     have pacman || die "pacman was not found; this is not an Arch-compatible system."
+}
+
+is_omarchy() {
+    [[ "$(os_release_field ID || true)" == "omarchy" ]]
+}
+
+omarchy_version() {
+    if have omarchy-version; then
+        omarchy-version 2>/dev/null | head -n1
+    elif [[ -r /usr/share/omarchy/version ]]; then
+        head -n1 /usr/share/omarchy/version
+    else
+        printf 'unknown\n'
+    fi
 }
 
 require_cmd() {
@@ -102,6 +116,21 @@ manifest_packages() {
 
 pkg_installed() { pacman -Qq -- "$1" >/dev/null 2>&1; }
 pkg_available() { pacman -Si -- "$1" >/dev/null 2>&1; }
+
+# Omarchy manages a set of CLI tools through mise (gh, opencode, uv, node, ...).
+# See /etc/mise/conf.d/omarchy-tools.toml. Installing the pacman package on top
+# would duplicate or shadow the mise version, so the installer leaves them alone.
+OMARCHY_MISE_CONFIG="${OMARCHY_MISE_CONFIG:-/etc/mise/conf.d/omarchy-tools.toml}"
+
+omarchy_mise_tool() {
+    is_omarchy || return 1
+    [[ -r "$OMARCHY_MISE_CONFIG" ]] || return 1
+    grep -qE "^[[:space:]]*(\"?${1//./\\.}\"?)[[:space:]]*=" "$OMARCHY_MISE_CONFIG"
+}
+
+# A tool is satisfied when its command runs, whether it came from pacman,
+# mise or ~/.local/bin.
+tool_available() { have "$1"; }
 
 # Return the available AUR helper, if any. Never installs one implicitly.
 aur_helper() {

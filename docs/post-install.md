@@ -1,23 +1,24 @@
-# CachyOS: post-instalación
+# Omarchy: post-instalación
 
-Este documento cubre lo que ocurre **después** de instalar CachyOS y antes de
-considerar el equipo listo. El bootstrap normal (`./bootstrap.sh`) ya resuelve
-las dependencias personales; los módulos marcados como **opcionales** se ejecutan
-a mano y son idempotentes.
+Este documento cubre lo que ocurre **después** de instalar Omarchy y antes de
+considerar el equipo listo. El bootstrap normal (`./bootstrap.sh`) resuelve las
+dependencias personales; los módulos opcionales se ejecutan a mano y son
+idempotentes.
 
-El escritorio (DMS, niri, display manager) ya viene con CachyOS y **no se toca**.
+Omarchy administra el escritorio, los temas, Bash, Starship y Ghostty. Este
+repositorio no los reinstala ni los reconfigura.
 
 ## Actualizaciones
 
 ```bash
-sudo pacman -Syu
+omarchy update        # o: sudo pacman -Syu
 ```
 
 No se ejecutan actualizaciones automáticas ni se reinicia el sistema desde el
 repositorio. Si `pacman` falla por una base de datos vieja durante el bootstrap:
 
 ```bash
-sudo pacman -Syu
+omarchy update
 ./bootstrap.sh
 ```
 
@@ -47,14 +48,10 @@ pacman -Qq | grep -E '(^|-)nvidia(-|$)'
 ```
 
 - `nvidia-smi` respondiendo es la evidencia principal de un driver **activo**.
-  `/sys/module/nvidia` y `lspci -k` (`Kernel driver in use: nvidia`) son
-  respaldos válidos si `nvidia-smi` no está disponible.
-- Los paquetes `nvidia-utils` y `linux-*-nvidia-open` indican driver
-  **instalado**, no necesariamente cargado. No confundas ambos estados.
+  `/sys/module/nvidia` y `lspci -k` son respaldos válidos.
+- Omarchy instala los drivers NVIDIA según el hardware; este repositorio no
+  instala ni firma módulos.
 - Si Secure Boot está deshabilitado, no se modifica: es una decisión de firmware.
-- Si hay GPU NVIDIA sin driver activo, usá la vía que provee CachyOS (por
-  ejemplo `nvidia-utils`/`linux-cachyos-nvidia-open` según el kernel). Este
-  repositorio no instala drivers ni firma módulos.
 
 ## Flatpak (opcional)
 
@@ -80,25 +77,21 @@ Si un AppImage no arranca:
 
 ```bash
 chmod +x archivo.AppImage
-./archivo.AppImage --appimage-extract-and-run
+./archivo.AppImage --extract-and-run
 ```
 
 `fuse2` suele ser el paquete que necesitan los AppImages. Instalalo solo si usás
 AppImages: `sudo pacman -S fuse2`.
 
-## Docker CE (opcional)
+## Contenedores
 
-Arch/CachyOS prefiere **Podman rootless**. Docker solo se instala si un flujo de
-trabajo lo exige:
+Omarchy instala Docker por defecto y **no** es tarea de este repo habilitarlo ni
+agregar al usuario al grupo `docker` (equivale a root). Para trabajo rootless:
 
 ```bash
-./scripts/install-docker.sh --dry-run
-./scripts/install-docker.sh --yes
-sudo systemctl enable --now docker
+./scripts/install-packages.sh --with-optional   # incluye podman
+podman info
 ```
-
-El script no elimina Podman y **no** agrega al usuario al grupo `docker` (ese
-grupo equivale a root). Usá `sudo docker` o configurá Docker rootless.
 
 ## SSH y GitHub
 
@@ -109,7 +102,7 @@ gh auth status
 ```
 
 - `sshd` no se habilita automáticamente.
-- `gh` se instala con `packages/common.txt`; la única acción manual esperada es
+- Omarchy provee `gh` a través de mise; la única acción manual esperada es
   `gh auth login`.
 - Las claves y `~/.ssh/config` son locales y no se versionan.
 
@@ -123,8 +116,8 @@ NetBird (opcional, AUR):
 sudo netbird up          # unirse a una red es una acción manual
 ```
 
-Requiere `paru` o `yay`; el script no instala el helper, no maneja setup keys y
-no ejecuta `netbird up`.
+Omarchy incluye `yay`; el script detecta `paru`/`yay`, no instala el helper, no
+maneja setup keys y no ejecuta `netbird up`.
 
 Utilidades SMB (opcionales):
 
@@ -136,11 +129,11 @@ command -v mount.cifs smbclient
 ## Bluetooth
 
 ```bash
-sudo pacman -S bluez bluez-utils
-sudo systemctl enable --now bluetooth
 rfkill list bluetooth
 bluetoothctl list
 ```
+
+Omarchy ya incluye `bluez`, `bluez-utils` y el servicio de Bluetooth.
 
 ## Diagnóstico integral (solo lectura)
 
@@ -148,9 +141,9 @@ bluetoothctl list
 ./scripts/diagnose-system.sh
 ```
 
-Revisa actualizaciones/reinicio, firmware, Secure Boot, NVIDIA, Flatpak, FUSE,
-contenedores, SSH/GitHub, NetBird/CIFS/SMB, Bluetooth, shell y aplicaciones
-administradas. No instala, habilita ni edita nada.
+Revisa Omarchy, Hyprland, tema, actualizaciones/reinicio, firmware, Secure Boot,
+NVIDIA, Flatpak, FUSE, contenedores, SSH/GitHub, NetBird/CIFS, Bluetooth, shell
+y aplicaciones administradas. No instala, habilita ni edita nada.
 
 ## Resumen de módulos
 
@@ -158,11 +151,11 @@ administradas. No instala, habilita ni edita nada.
 |---|---|---|
 | Paquetes base, CLI y apps | `install-packages.sh` | Sí |
 | Stow | `deploy-dotfiles.sh` | Sí |
-| Shell Bash | `set-shell.sh` | Sí |
 | Verificación | `verify.sh` | Sí |
+| Pruebas seguras | `test.sh` | No (solo lectura/HOMEs temporales) |
 | Diagnóstico | `diagnose-system.sh` | No (solo lectura) |
-| Docker | `install-docker.sh` | No |
+| Preferencias Ghostty | `ghostty-personal.sh` | No |
+| Podman/Go/Rust/OBS | `--with-optional` | No |
 | NetBird (AUR) | `install-netbird.sh` | No |
-| OBS Studio | `--with-optional` | No |
 | Addy skills | `install-addy-skills.sh` | No |
 | Graphify | `install-graphify.sh` | No |

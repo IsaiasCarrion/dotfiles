@@ -1,23 +1,40 @@
 # shellcheck shell=bash
-# ~/.bashrc — paquete "bash" (portable: escritorio, notebook, VMs, servidores).
+# ~/.bashrc — paquete "bash" para Omarchy (Bash).
 #
-# - Las herramientas opcionales se activan solo si están instaladas.
-# - Lo específico de Arch/CachyOS vive en el paquete "bash-arch".
-# - Lo privado o propio de un equipo va en ~/.bashrc.local (no versionado).
-# - Bash es el shell principal; no se instala Fish ni Zsh.
+# Omarchy ya aporta y este archivo NO duplica:
+#   - entorno (OMARCHY_PATH, mise, ~/.local/bin, shims de mise)
+#   - aliases y funciones (/usr/share/omarchy/default/bash/rc)
+#   - inicialización de mise, Starship, zoxide, fzf y bash-completion
+#   - EDITOR, BROWSER, MANPAGER y BAT_THEME
+#
+# Acá solo viven preferencias personales, funciones propias y la carga del
+# paquete "bash-arch" (pacman). Lo privado de cada equipo va en ~/.bashrc.local.
 
 # ==============================================================================
-# ARCH/CACHYOS: configuración global del sistema
+# 1. Entorno de Omarchy (también en shells no interactivas)
 # ==============================================================================
 
-# Mantiene lo que el sistema define para shells interactivas.
-# Si el archivo no existe, se ignora.
-if [[ -r /etc/bash.bashrc ]]; then
-    . /etc/bash.bashrc
+if [[ -r /usr/share/omarchy/default/bash/env-bootstrap ]]; then
+    source /usr/share/omarchy/default/bash/env-bootstrap
+fi
+export OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}"
+
+# ==============================================================================
+# 2. Shells no interactivas: no cargar aliases, prompt ni bindings
+# ==============================================================================
+
+[[ $- == *i* ]] || return
+
+# ==============================================================================
+# 3. Defaults de Omarchy (aliases, funciones, mise, Starship, zoxide, fzf)
+# ==============================================================================
+
+if [[ -r "$OMARCHY_PATH/default/bash/rc" ]]; then
+    source "$OMARCHY_PATH/default/bash/rc"
 fi
 
 # ==============================================================================
-# PATH (también en shells no interactivas, p. ej. `ssh host comando`)
+# PATH personal (Omarchy ya agrega ~/.local/bin y los shims de mise)
 # ==============================================================================
 
 __path_prepend() {
@@ -27,7 +44,6 @@ __path_prepend() {
         *) PATH="$1:$PATH" ;;
     esac
 }
-__path_prepend "$HOME/.local/bin"
 __path_prepend "$HOME/.cargo/bin"
 __path_prepend "$HOME/go/bin"
 unset -f __path_prepend
@@ -36,45 +52,13 @@ export PATH
 # Fragmentos locales del sistema (~/.bashrc.d/*.sh; convención opcional).
 if [[ -d "$HOME/.bashrc.d" ]]; then
     for _bashrc_fragment in "$HOME"/.bashrc.d/*; do
-        [[ -r "$_bashrc_fragment" ]] && . "$_bashrc_fragment"
+        [[ -r "$_bashrc_fragment" ]] && source "$_bashrc_fragment"
     done
     unset _bashrc_fragment
 fi
 
-# A partir de acá, solo shells interactivas.
-[[ $- == *i* ]] || return
-
 # ==============================================================================
-# AUTOCOMPLETADO
-# ==============================================================================
-
-# bash-completion carga los completados del sistema (incluido gh) bajo demanda.
-if [[ -r /usr/share/bash-completion/bash_completion ]]; then
-    . /usr/share/bash-completion/bash_completion
-fi
-
-# ==============================================================================
-# EDITOR
-# ==============================================================================
-
-# Zed solo con sesión gráfica. --wait hace que git espere a que cierres el archivo.
-if [[ -n "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ]] && command -v zeditor >/dev/null 2>&1; then
-    export EDITOR="zeditor --wait"
-elif [[ -n "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ]] && command -v zed >/dev/null 2>&1; then
-    export EDITOR="zed --wait"
-elif command -v nvim >/dev/null 2>&1; then
-    export EDITOR=nvim
-elif command -v vim >/dev/null 2>&1; then
-    export EDITOR=vim
-elif command -v nano >/dev/null 2>&1; then
-    export EDITOR=nano
-else
-    export EDITOR=vi
-fi
-export VISUAL="$EDITOR"
-
-# ==============================================================================
-# HISTORIAL Y OPCIONES DE SHELL
+# HISTORIAL (preferencias personales; Omarchy define la base)
 # ==============================================================================
 
 HISTSIZE=100000
@@ -95,7 +79,7 @@ if [[ -t 0 ]]; then
 fi
 
 # ==============================================================================
-# FZF (Ctrl+R historial, Ctrl+T archivos, Alt+C directorios)
+# FZF: solo opciones personales; Omarchy ya carga los keybindings
 # ==============================================================================
 
 if command -v fzf >/dev/null 2>&1; then
@@ -111,16 +95,9 @@ if command -v fzf >/dev/null 2>&1; then
     fi
     unset __fzf_fd
 
-    # bat se llama batcat en Debian/Ubuntu.
     if command -v bat >/dev/null 2>&1; then
-        __fzf_bat=bat
-    elif command -v batcat >/dev/null 2>&1; then
-        __fzf_bat=batcat
+        export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
     fi
-    if [[ -n "${__fzf_bat:-}" ]]; then
-        export FZF_CTRL_T_OPTS="--preview '$__fzf_bat --color=always --style=numbers --line-range=:500 {}'"
-    fi
-    unset __fzf_bat
 
     export FZF_DEFAULT_OPTS='
     --height=40%
@@ -138,19 +115,6 @@ if command -v fzf >/dev/null 2>&1; then
     --bind=ctrl-f:preview-page-down
     --bind=ctrl-b:preview-page-up
     '
-
-    # Key-bindings: primero archivos del paquete (sin lanzar procesos),
-    # y solo si no están, `fzf --bash` (fzf >= 0.48).
-    if [[ -f /usr/share/fzf/key-bindings.bash ]]; then
-        source /usr/share/fzf/key-bindings.bash
-    elif [[ -f /usr/share/fzf/shell/key-bindings.bash ]]; then
-        source /usr/share/fzf/shell/key-bindings.bash
-    elif [[ -f /usr/share/doc/fzf/examples/key-bindings.bash ]]; then
-        source /usr/share/doc/fzf/examples/key-bindings.bash
-    elif __fzf_init=$(fzf --bash 2>/dev/null); then
-        eval "$__fzf_init"
-    fi
-    unset __fzf_init
 fi
 
 # ==============================================================================
@@ -326,7 +290,7 @@ gpush() {
 }
 
 # ==============================================================================
-# ALIASES GENERALES
+# ALIASES PERSONALES
 # ==============================================================================
 
 alias rm='rm -i'
@@ -335,29 +299,10 @@ alias mv='mv -i'
 
 alias reload='source ~/.bashrc'
 alias myip='curl -fsS https://ipecho.net/plain; echo'
-alias c='clear'
-
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-
-if command -v eza >/dev/null 2>&1; then
-    alias ls='eza -lF --git --icons=always'
-    alias ll='eza -alF --git --icons=always'
-    alias lt='eza --tree --level=2 --icons=always'
-
-fi
 
 # `zed` solo como atajo si el binario real se llama zeditor.
 if command -v zeditor >/dev/null 2>&1 && ! command -v zed >/dev/null 2>&1; then
     alias zed='zeditor'
-fi
-
-# GitHub CLI: si bash-completion no está instalado, carga su completado puntual.
-if command -v gh >/dev/null 2>&1 && ! declare -F _gh >/dev/null 2>&1; then
-    if [[ -r /usr/share/bash-completion/completions/gh ]]; then
-        . /usr/share/bash-completion/completions/gh
-    fi
 fi
 
 # ==============================================================================
@@ -373,64 +318,12 @@ bind '"\e[B": history-search-forward'
 bind '"\eOA": history-search-backward'
 bind '"\eOB": history-search-forward'
 
-# ── Podman (Docker alternative) ──────────────────────
-# Solo si Podman existe; si no, `docker` queda apuntando al Docker real.
-if command -v podman >/dev/null 2>&1; then
-    alias docker='podman'
-    alias d='podman'
-
-    # Containers
-    alias dps='podman ps'
-    alias dpa='podman ps -a'
-    alias dstart='podman start'
-    alias dstop='podman stop'
-    alias drestart='podman restart'
-    alias drm='podman rm'
-    alias drmf='podman rm -f'
-    alias dex='podman exec -it'
-    alias dlog='podman logs -f'
-
-    # Images
-    alias di='podman images'
-    alias dpull='podman pull'
-    alias dpush='podman push'
-    alias drmi='podman rmi'
-
-    # Volumes & networks
-    alias dvol='podman volume'
-    alias dnet='podman network'
-
-    # Compose
-    alias dc='podman compose'
-    alias dcu='podman compose up -d'
-    alias dcd='podman compose down'
-    alias dcl='podman compose logs -f'
-    alias dcb='podman compose build'
-
-    # System
-    alias dprune='podman system prune'
-    alias dinfo='podman info'
-    alias dver='podman version'
-fi
-
 # ==============================================================================
-# PACMAN (Arch/CachyOS: paquete "bash-arch")
+# PACMAN (Arch/Omarchy: paquete "bash-arch")
 # ==============================================================================
 
 if [[ -r "$HOME/.config/bash/pacman.sh" ]]; then
     source "$HOME/.config/bash/pacman.sh"
-fi
-
-# ==============================================================================
-# ZOXIDE Y STARSHIP (al final, como recomiendan ambos)
-# ==============================================================================
-
-if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init bash)"
-fi
-
-if command -v starship >/dev/null 2>&1; then
-    eval "$(starship init bash)"
 fi
 
 # ==============================================================================

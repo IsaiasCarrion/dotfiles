@@ -5,15 +5,18 @@ El repositorio versiona solo la primera; la segunda es preferencia local de cada
 
 ## Instalación
 
-OpenCode V2 es el paquete oficial `opencode` de los repositorios de Arch/CachyOS:
+En Omarchy, OpenCode se usa tal como lo provee **mise** (declarado en
+`/etc/mise/conf.d/omarchy-tools.toml`); no instales el paquete pacman encima
+porque duplicaría el binario. En Arch puro el paquete oficial `opencode` de los
+repositorios sigue siendo válido. El instalador del repo omite pacman cuando
+mise ya provee la herramienta.
 
 ```bash
-sudo pacman -S --needed opencode
 opencode --version     # opencode v2.x
 ```
 
-No se usa el RPM de Fedora, Terra ni un instalador remoto. El paquete ya deja el
-CLI en `PATH`; no hace falta enlazar nada en `~/.local/bin`.
+El CLI ya queda en `PATH`; no hace falta enlazar nada en `~/.local/bin`. Omarchy
+provee además una configuración base mínima; este repo la complementa.
 
 Verificación:
 
@@ -21,6 +24,23 @@ Verificación:
 opencode --version
 opencode plugin list
 ```
+
+## Convivencia con Omarchy
+
+Omarchy entrega dos archivos que **no se reemplazan**:
+
+| Archivo | Contenido | Dueño |
+|---|---|---|
+| `~/.config/opencode/opencode.json` | `{"update": "disable"}` | Omarchy |
+| `~/.config/opencode/cli.json` | Tema de la TUI (`system`) | Omarchy |
+
+OpenCode carga, en este orden: `config.json`, `opencode.json`, `opencode.jsonc`.
+Por eso el `opencode.jsonc` del repo se **fusiona encima** de la base de
+Omarchy sin pisarla. No agregues `"update"` al jsonc: Omarchy ya lo desactiva.
+Si `omarchy refresh` reemplaza `opencode.json`, el jsonc sigue aplicándose.
+
+`~/.config/opencode/service.json` (secreto) y `auth.json` no se versionan ni se
+enlazan.
 
 ## Archivos versionados
 
@@ -38,9 +58,9 @@ Tampoco `dcp-prompts/`.
 
 ### Configuración de terminal
 
-Temas, keybinds y preferencias de la TUI viven en `~/.config/opencode/cli.json`. No se versiona
-porque depende de la terminal y de la sesión; si querés conservarlo, agregalo como un paquete Stow
-aparte después de revisarlo.
+Temas, keybinds y preferencias de la TUI viven en `~/.config/opencode/cli.json`,
+que administra Omarchy. El repo no lo versiona ni lo enlaza; si querés cambiarlo,
+usá la configuración de Omarchy o editá ese archivo fuera del repositorio.
 
 ## Modelo
 
@@ -169,19 +189,22 @@ en todos los proyectos.
 
 ```bash
 cd ~/dotfiles
-./scripts/verify.sh
+./scripts/verify.sh --repo    # antes de desplegar
+./scripts/verify.sh           # con el despliegue hecho
 opencode plugin list
 opencode debug config
 ```
 
-`verify.sh` parsea los JSONC, revisa los enlaces, busca secretos y comprueba que DCP sea visible.
-`opencode debug config` muestra las fuentes de configuración que el servicio está usando.
+`verify.sh` parsea los JSONC, revisa que el repo no tenga secretos, comprueba la
+convivencia con la base de Omarchy y, en modo desplegado, que DCP sea visible.
+`opencode debug config` muestra las fuentes de configuración que el servicio
+está usando.
 
 ## Problemas frecuentes
 
 | Síntoma | Solución |
 |---|---|
-| `opencode: command not found` | `sudo pacman -S opencode`; abrí una shell nueva o `source ~/.bashrc`. |
+| `opencode: command not found` | En Omarchy revisá `mise which opencode`; en Arch puro `sudo pacman -S opencode`. Abrí una shell nueva o `source ~/.bashrc`. |
 | El plugin no aparece | Iniciá OpenCode una vez (`opencode`), luego `opencode plugin list`. Revisá la red. |
 | DCP no poda nada | Verificá `dcp.jsonc` y que el plugin figure en `plugins`; `opencode plugin list`. |
 | Error de JSONC | `./scripts/verify.sh`; los comentarios y comas finales son válidos, pero el resto debe ser JSON. |

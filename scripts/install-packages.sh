@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
-# scripts/install-packages.sh — install only missing CachyOS/Arch packages.
+# scripts/install-packages.sh — install only missing Arch/Omarchy packages.
 #
 # Reads:
 #   packages/base.txt     bootstrap/runtime dependencies
 #   packages/common.txt   CLI tools used by the managed configurations
 #   packages/apps.txt     personal applications installed by default
-#   packages/optional.txt optional toolchains/codecs (--with-optional)
+#   packages/optional.txt optional toolchains/runtimes (--with-optional)
 #
+# Omarchy already ships a large base system; this step only fills the gaps.
+# Tools that Omarchy provides through mise (gh, opencode, uv, ...) are skipped
+# so the pacman package does not duplicate or shadow them.
 # Idempotent: installed packages are skipped. Nothing is upgraded implicitly;
 # if the sync database is stale, run `sudo pacman -Syu` and retry.
 
@@ -41,20 +44,30 @@ while (($#)); do
 done
 
 # Read a manifest and append the packages that are not installed yet.
+# Tools that Omarchy already provides through mise are skipped: a pacman
+# package would duplicate or shadow the mise-installed command.
 collect_missing() {
     local manifest="$1"
     local -n target="$2"
     local pkg
     while IFS= read -r pkg; do
         [[ -n "$pkg" ]] || continue
-        if ! pkg_installed "$pkg"; then
-            target+=("$pkg")
+        if pkg_installed "$pkg"; then
+            continue
         fi
+        if omarchy_mise_tool "$pkg"; then
+            info "skipping $pkg: provided by Omarchy through mise"
+            continue
+        fi
+        target+=("$pkg")
     done < <(manifest_packages "$manifest")
 }
 
 main() {
     require_arch
+    if is_omarchy; then
+        info "Omarchy $(omarchy_version) detected; only missing packages will be installed."
+    fi
 
     local -a required=() optional=()
     collect_missing "$REPO_ROOT/packages/base.txt" required
@@ -82,6 +95,10 @@ main() {
         while IFS= read -r pkg; do
             [[ -n "$pkg" ]] || continue
             if pkg_installed "$pkg"; then
+                continue
+            fi
+            if omarchy_mise_tool "$pkg"; then
+                info "skipping $pkg: provided by Omarchy through mise"
                 continue
             fi
             if pkg_available "$pkg"; then

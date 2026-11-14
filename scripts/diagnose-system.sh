@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# scripts/diagnose-system.sh — read-only CachyOS/Arch diagnostics.
+# scripts/diagnose-system.sh — read-only Omarchy/Arch diagnostics.
 #
-# Reports packages, updates, kernel/reboot, firmware, Secure Boot, NVIDIA,
-# Flatpak, FUSE/AppImage, containers, SSH/GitHub, NetBird/CIFS, Bluetooth,
-# the login shell and the managed applications.
+# Reports Omarchy, Hyprland, theme, packages, updates, kernel/reboot, firmware,
+# Secure Boot, NVIDIA, Flatpak, FUSE/AppImage, containers, SSH/GitHub,
+# NetBird/CIFS, Bluetooth, the login shell and the managed applications.
 # It never installs, enables or edits anything.
 
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
@@ -41,6 +41,23 @@ main() {
     note "kernel: $(uname -r) ($(uname -m))"
     note "$(pacman --version | grep -m1 . || true)"
     note "installed packages: $(pacman -Qq | wc -l)"
+
+    section "Omarchy y escritorio"
+    if is_omarchy; then
+        ok "Omarchy $(omarchy_version)"
+        note "session: ${XDG_CURRENT_DESKTOP:-unknown} / ${XDG_SESSION_TYPE:-unknown}"
+        if [[ -r "$HOME/.local/state/omarchy/current/theme/ghostty.conf" ]]; then
+            ok "Omarchy theme file for Ghostty is present."
+        else
+            warnc "Omarchy theme file for Ghostty is missing."
+        fi
+        if have hyprctl; then
+            note "Hyprland: $(hyprctl version 2>/dev/null | head -n1 || true)"
+        fi
+        note "Packages managed by Omarchy; this repository does not reinstall them."
+    else
+        note "This is not an Omarchy system."
+    fi
 
     section "Actualizaciones y reinicio"
     local updates
@@ -200,7 +217,7 @@ main() {
     if [[ "$(basename -- "$login_shell")" == "bash" ]]; then
         ok "Bash is the login shell: $(bash --version | head -n1)"
     else
-        warnc "Bash is not the login shell; run ./scripts/set-shell.sh."
+        warnc "Bash is not the login shell; Omarchy expects Bash as the login shell."
     fi
     if shopt -oq posix; then
         note "POSIX mode in this diagnostic shell: enabled."

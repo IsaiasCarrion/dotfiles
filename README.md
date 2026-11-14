@@ -1,13 +1,14 @@
-# dotfiles — CachyOS + DMS/Niri + Ghostty + Zed + OpenCode
+# dotfiles — Omarchy + Hyprland + Ghostty + Zed + OpenCode
 
-Configuración personal para **CachyOS (Arch Linux)** administrada con
-[GNU Stow](https://www.gnu.org/software/stow/). Cada carpeta de primer nivel es un
-**paquete** que reproduce la ruta que tendrá bajo `$HOME`; Stow crea los enlaces
+Configuración personal para **Omarchy 4.5** (Arch Linux + Hyprland) administrada
+con [GNU Stow](https://www.gnu.org/software/stow/). Cada carpeta de primer nivel
+es un **paquete** que reproduce su ruta bajo `$HOME`; Stow crea los enlaces
 simbólicos. No hay framework ni instalador opaco: Bash, pacman y Stow.
 
-El escritorio (**DMS, niri, display manager**) ya viene instalado con CachyOS y
-**este repositorio no lo instala, no lo configura y no lo reemplaza**. El repo se
-encarga de las herramientas, aplicaciones y configuraciones personales.
+Omarchy ya administra el escritorio, Hyprland, el shell de Omarchy, los temas,
+Bash, Starship, Git base y la configuración base de Ghostty/OpenCode. Este
+repositorio **no duplica** esas capas: solo agrega preferencias personales y las
+herramientas que no vienen en la imagen.
 
 > **Regla de oro:** Stow se ejecuta desde la raíz del repositorio. `bootstrap.sh`
 > resuelve esa ruta solo, así que podés invocarlo desde cualquier directorio.
@@ -18,24 +19,24 @@ encarga de las herramientas, aplicaciones y configuraciones personales.
 git clone https://github.com/IsaiasCarrion/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 
+./scripts/test.sh          # pruebas seguras, no toca tu HOME
 ./bootstrap.sh --dry-run   # muestra todo sin cambiar nada
 ./bootstrap.sh             # instala lo que falta, despliega y verifica
 gh auth login              # única autenticación manual necesaria
 ```
 
-Después del bootstrap, cerrá la sesión por completo y volvé a entrar (o
-reiniciá) para que Bash quede como shell de login y el entorno de systemd deje
-de arrastrar `SHELL=/bin/fish`. `exec bash` cambia solo esa terminal: no
-actualiza la sesión ni el entorno que usan Ghostty/DMS.
+El bootstrap **no** cambia la shell: Omarchy ya usa Bash. Tampoco toca Ghostty,
+Starship ni el escritorio.
 
 ### Requisitos
 
-- CachyOS o una distribución Arch compatible (`/etc/os-release` con
-  `ID=cachyos`, `ID=arch` o `ID_LIKE=arch`).
-- `sudo` para instalar paquetes y cambiar la shell de login.
+- Omarchy o una distribución Arch compatible (`/etc/os-release` con
+  `ID=omarchy` o `ID_LIKE=arch`).
+- `sudo` para instalar paquetes.
 - Conexión a Internet para los repositorios oficiales.
 - No se requiere AUR para la instalación normal. El único módulo AUR es NetBird,
-  que es opcional y detecta `paru`/`yay` sin instalarlos.
+  que es opcional y detecta `paru`/`yay` sin instalarlos (`yay` ya viene en
+  Omarchy).
 
 ## Estructura
 
@@ -44,66 +45,61 @@ dotfiles/
 ├── bootstrap.sh                     # entrada: ./bootstrap.sh [opciones]
 ├── scripts/
 │   ├── lib.sh                       # helpers (dry-run, sudo, backups, manifiestos)
-│   ├── bootstrap.sh                 # orquestador: paquetes → Stow → shell → verificación
+│   ├── bootstrap.sh                 # orquestador: paquetes → Stow → verificación
 │   ├── install-packages.sh          # pacman, solo lo ausente
 │   ├── deploy-dotfiles.sh           # Stow con respaldo de conflictos
-│   ├── set-shell.sh                 # Bash como shell de login (solo el usuario actual)
-│   ├── verify.sh                    # enlaces, sintaxis, JSONC, apps, shell y secretos
+│   ├── verify.sh                    # repo (--repo) o despliegue + Omarchy
+│   ├── test.sh                      # pruebas en HOMEs temporales
 │   ├── diagnose-system.sh           # diagnóstico de solo lectura
-│   ├── install-docker.sh            # opcional: Docker
+│   ├── ghostty-personal.sh          # preferencias Ghostty sin tocar el tema
 │   ├── install-netbird.sh           # opcional: NetBird (AUR)
 │   ├── install-addy-skills.sh       # opcional, commit fijado
 │   └── install-graphify.sh          # opcional, versión fijada
 ├── packages/
-│   ├── base.txt                     # dependencias del bootstrap
+│   ├── base.txt                     # stow y utilidades del bootstrap
 │   ├── common.txt                   # CLI usado por las configuraciones
-│   ├── apps.txt                     # aplicaciones personales por defecto
-│   └── optional.txt                 # toolchains, códecs y OBS (--with-optional)
-├── bash/.bashrc                     # -> ~/.bashrc
+│   ├── apps.txt                     # Ghostty, Zed, OpenCode, Obsidian
+│   └── optional.txt                 # Go, Rust, Podman, OBS (--with-optional)
+├── bash/.bashrc                     # -> ~/.bashrc (carga el rc de Omarchy)
 ├── bash/.bash_profile               # -> ~/.bash_profile
 ├── bash-arch/.config/bash/pacman.sh # -> ~/.config/bash/pacman.sh
-├── starship/.config/starship.toml   # -> ~/.config/starship.toml
-├── git/.gitconfig                   # -> ~/.gitconfig
+├── git/.gitconfig                   # -> ~/.gitconfig (complemento de Omarchy)
 ├── git/.gitignore_global            # -> ~/.gitignore_global
 ├── git-delta/.config/git/delta.gitconfig  # opcional, solo si delta existe
-├── ghostty/.config/ghostty/config   # -> ~/.config/ghostty/config
-├── assets/ghostty/dankcolors        # fallback si DMS aún no generó el tema
 ├── opencode/.config/opencode/
-│   ├── opencode.jsonc               # configuración global V2
+│   ├── opencode.jsonc               # configuración global V2 (se fusiona)
 │   ├── AGENTS.md                    # Ponytail Lite + reglas de tokens/seguridad
 │   ├── dcp.jsonc                    # DCP fijado y sin auto-update
 │   └── opencode.omniroute.example.jsonc
+├── assets/ghostty/personal.conf     # fragmento no visual (no se stowea)
 ├── docs/
-│   ├── dms.md                       # límites del escritorio administrado por CachyOS
-│   ├── opencode.md                  # configuración V2, plugins y skills
+│   ├── omarchy.md                   # qué administra Omarchy
+│   ├── ghostty.md                   # cómo se preserva el tema
+│   ├── stow.md                      # despliegue por paquete
+│   ├── opencode.md                  # configuración V2 y convivencia
 │   ├── applications.md              # Zed, Obsidian y apps opcionales
-│   ├── cachyos-post-install.md      # post-instalación y módulos opcionales
-│   └── cachyos-reinstall.md         # recuperar el entorno desde cero
-├── AUDIT.md                         # auditoría y decisiones de esta migración
+│   ├── post-install.md              # post-instalación y módulos opcionales
+│   └── reinstall.md                 # recuperar el entorno desde cero
+├── AUDIT.md                         # auditoría y decisiones
 ├── .stowrc                          # --no-folding
 └── .gitignore                       # secretos, respaldos y archivos locales
 ```
 
-## Paquetes
+## Paquetes Stow
 
 | Paquete | Qué aporta | Alcance | Requiere |
 |---|---|---|---|
-| `bash` | `.bashrc` portable + `.bash_profile` de login | **Portable** | bash |
-| `bash-arch` | `pkgs`, `pkgrm`, `pacup`, `pkgclean` para pacman | Arch/CachyOS | pacman, fzf |
-| `starship` | Prompt compacto | **Portable** | starship |
-| `git` | `.gitconfig`, aliases, `.gitignore_global` | **Portable** | git ≥ 2.40 |
-| `git-delta` | delta como pager de Git | Escritorio, opcional | git-delta |
-| `ghostty` | Configuración principal de Ghostty | Escritorio | ghostty |
-| `opencode` | Configuración global de OpenCode V2, DCP y reglas | Escritorio | opencode |
+| `bash` | `.bashrc` que carga Omarchy + preferencias/funciones propias | Omarchy/Arch | bash |
+| `bash-arch` | `pkgs`, `pkgrm`, `pacup`, `pkgclean` para pacman | Arch/Omarchy | pacman, fzf |
+| `git` | Complementos de Git y `.gitignore_global` | Portable | git |
+| `git-delta` | delta como pager de Git | Opcional | git-delta |
+| `opencode` | Configuración global V2, DCP y reglas | Omarchy/Arch | opencode |
 
-Notas:
+No hay paquetes Stow de **Ghostty**, **Starship** ni del escritorio:
 
-- `bash` activa cada herramienta opcional solo si existe; funciona en un servidor mínimo.
-- `git-delta` **solo** se despliega si `command -v delta` funciona. Si no, Git fallaría
-  al usarlo como pager. `deploy-dotfiles.sh` lo decide automáticamente.
-- `bash-arch` reemplazó al viejo `bash-dnf`; el bootstrap no usa `dnf`, `rpm`,
-  COPR ni Flatpak: los paquetes salen solo de pacman.
-- No se instala Fish. La configuración equivalente vive en Bash (ver más abajo).
+- **Ghostty** y su tema son de Omarchy. Ver [docs/ghostty.md](docs/ghostty.md).
+- **Starship** ya lo instala, configura e inicializa Omarchy.
+- El **escritorio** (Hyprland, Omarchy shell) nunca se stowea.
 
 ## Bootstrap
 
@@ -114,22 +110,20 @@ Notas:
 | Opción | Efecto |
 |---|---|
 | `--dry-run` | Muestra comandos y conflictos; no modifica nada |
-| `--yes`, `-y` | No pregunta antes de mover archivos o cambiar la shell |
+| `--yes`, `-y` | No pregunta antes de mover archivos |
 | `--with-optional` | Instala `packages/optional.txt` |
 | `--no-packages` | No toca pacman |
 | `--no-apps` | No instala `packages/apps.txt` |
 | `--no-deploy` | No ejecuta Stow |
-| `--no-shell` | No cambia la shell de login |
 | `--no-verify` | No ejecuta las verificaciones finales |
 | `--help` | Ayuda |
 
 Pasos:
 
-1. Verifica que sea CachyOS/Arch y que exista pacman.
+1. Verifica que sea Omarchy/Arch y que exista pacman.
 2. Instala solo los paquetes ausentes de `base.txt`, `common.txt` y `apps.txt`.
 3. Despliega los paquetes Stow, moviendo conflictos a `~/.dotfiles-backup/<timestamp>/`.
-4. Configura Bash como shell de login del usuario que ejecuta el bootstrap.
-5. Verifica enlaces, sintaxis, JSONC, aplicaciones, shell y secretos.
+4. Verifica enlaces, sintaxis, JSONC, aplicaciones, tema de Omarchy y secretos.
 
 Los pasos también se pueden ejecutar sueltos:
 
@@ -137,103 +131,120 @@ Los pasos también se pueden ejecutar sueltos:
 ./scripts/install-packages.sh --dry-run
 ./scripts/install-packages.sh --with-optional
 ./scripts/deploy-dotfiles.sh --dry-run
-./scripts/set-shell.sh --dry-run
+./scripts/verify.sh --repo
 ./scripts/verify.sh
+./scripts/diagnose-system.sh
 ```
 
 ### Qué instala
 
-- **Base** (`packages/base.txt`): `bash`, `git`, `stow`, `sudo`, `curl`,
-  `ca-certificates`, `jq`, `util-linux`, `tar`, `gzip`, `bzip2`, `xz`, `zstd`,
-  `unzip`, `7zip`, `findutils`.
+- **Base** (`packages/base.txt`): `stow`, `curl`, `jq`, `7zip`. El resto del
+  bootstrap lo provee Omarchy.
 - **CLI** (`packages/common.txt`): `bash-completion`, `ripgrep`, `fzf`, `fd`,
-  `bat`, `eza`, `zoxide`, `starship`, `tree`, `tmux`, `neovim`, `python`, `uv`,
-  `github-cli`, `git-delta`.
+  `bat`, `eza`, `zoxide`, `starship`, `tmux`, `neovim`, `tree`, `python`, `uv`,
+  `git-delta`. Omarchy ya trae la mayoría; el instalador omite lo presente.
 - **Aplicaciones** (`packages/apps.txt`): `ghostty`, `zed`, `opencode`, `obsidian`.
-  Todas están en los repositorios oficiales de Arch/CachyOS.
-- **Opcionales** (`packages/optional.txt`): `gcc`, `make`, `go`, `rust`, `ffmpeg`,
-  plugins de GStreamer y `obs-studio`.
+- **Opcionales** (`packages/optional.txt`): `go`, `rust`, `podman`, `obs-studio`.
 
-No se instala nada del escritorio: ni DMS, ni niri, ni Waybar, ni SDDM/GDM, ni
-GNOME/KDE. Si CachyOS ya los tiene, quedan intactos.
+`gh` (GitHub CLI) **no** está en el manifiesto: Omarchy lo provee mediante mise.
+Instalar `github-cli` lo duplicaría. Por la misma razón, en Omarchy el instalador
+omite `opencode` y `uv` cuando ya figuran en
+`/etc/mise/conf.d/omarchy-tools.toml`; los manifiestos los conservan para
+instalaciones de Arch puro.
+
+No se instala nada del escritorio. Docker ya viene con Omarchy; el repo no lo
+reinstala ni lo habilita. Podman queda como opción.
 
 ### Qué protege
 
 - **Nunca usa `stow --adopt`.**
-- Si `~/.bashrc`, `~/.bash_profile`, `~/.gitconfig` o `~/.config/ghostty/config`
+- Si `~/.bashrc`, `~/.bash_profile`, `~/.gitconfig` o `~/.config/opencode/*.jsonc`
   ya existen como archivos reales, los **mueve** a
   `~/.dotfiles-backup/<timestamp>/` (con `manifest.txt`) antes de enlazar.
 - Si un enlace apunta a otro sitio, lo trata como conflicto y lo respalda; no lo pisa.
 - `--dry-run` jamás crea respaldos, instala paquetes ni escribe enlaces.
-- No stowea ni edita archivos administrados por DMS/niri.
+- No stowea ni edita archivos administrados por Omarchy (Ghostty, Starship,
+  Hyprland, temas, escritorio).
 
-## Shell: Bash
+## Shell: Bash + Omarchy
 
-Bash es el shell principal. `bash/.bashrc` es la configuración interactiva y
-`bash/.bash_profile` carga `~/.bashrc` en shells de login. No hay una segunda
-inicialización de Starship, zoxide o fzf.
+`bash/.bashrc` no reimplementa Omarchy. Carga, en orden:
 
-Ghostty fija `command = /usr/bin/bash` en `ghostty/.config/ghostty/config`.
-Eso evita que herede un `$SHELL` viejo (Fish) cuando se lanza desde una CLI o
-desde una sesión anterior al cambio de shell. El `--posix` que aparece en `ps`
-es la integración oficial de Ghostty: `ghostty.bash` carga los startup files y
-ejecuta `set +o posix`, así que el shell interactivo **no** queda en modo POSIX.
+1. `/usr/share/omarchy/default/bash/env-bootstrap` (`OMARCHY_PATH`, mise, PATH).
+2. `/usr/share/omarchy/default/bash/rc` (aliases, funciones, mise, Starship,
+   zoxide, fzf, completados).
+3. Preferencias personales: PATH de Cargo/Go, historial extendido, funciones de
+   venv/uv, `extract`, `mkpaths`, `gpush`, alias de seguridad y pacman.
 
-`scripts/set-shell.sh`:
+No hay una segunda inicialización de Starship, zoxide ni fzf, y no se pisan
+`EDITOR`, `BROWSER` ni `MANPAGER` (los define Omarchy). `bash/.bash_profile`
+solo carga `~/.bashrc` una vez.
 
-1. comprueba que Bash exista y esté en `/etc/shells` (lo agrega si falta);
-2. lee la shell actual del usuario;
-3. solo modifica al usuario que ejecuta el instalador (`SUDO_USER` si se usó sudo);
-4. informa que hay que cerrar sesión para aplicar el cambio.
+La shell de login la administra Omarchy (Bash). No hay `chsh` ni script de
+cambio de shell.
 
-### Migración desde Fish
+## Git + Omarchy
 
-La auditoría no encontró **ningún** archivo Fish versionado en este repositorio
-ni en su historial (`config.fish`, `conf.d/`, `functions/`, variables
-universales). Por eso no hubo funciones del repo que migrar: las capacidades
-equivalentes ya están en Bash (PATH idempotente, aliases, funciones de venv/uv,
-historial, autocompletado, fzf, zoxide y Starship). Fish **no** se instala ni se
-configura.
+Omarchy entrega `~/.config/git/config` con la identidad, los aliases base y los
+ajustes generales. El paquete `git` de este repo enlaza `~/.gitconfig`, que Git
+lee **después** y por eso solo contiene complementos:
 
-Un equipo CachyOS puede tener configuración local en `~/.config/fish` que no
-está versionada. El bootstrap **no la lee, no la modifica y no la borra**;
-`verify.sh` solo avisa si existe. Antes de eliminar Fish, comparala a mano:
+- `init.defaultBranch=main`, `fetch.prune`, `rebase.autoStash`,
+  `merge.conflictstyle=zdiff3` y aliases personales.
+- `core.excludesfile = ~/.gitignore_global`.
+- El helper portable `!gh auth git-credential` para GitHub, que evita depender
+  de la ruta versionada de mise que usa Omarchy.
+- Includes opcionales de `~/.config/git/delta.gitconfig` (`delta`) y
+  `~/.gitconfig.local` (identidad y ajustes del equipo).
+- **Nunca** fija `user.name`, `user.email` ni claves de firma.
 
-```bash
-ls -la ~/.config/fish
-grep -RInE 'alias|function|set -gx|fish_add_path|starship init|zoxide init|fzf' ~/.config/fish
-```
-
-Después de `./scripts/set-shell.sh`, cerrá sesión y comprobá:
+La identidad se configura en la base de Omarchy o, si falta, en
+`~/.gitconfig.local`:
 
 ```bash
-echo "$SHELL"
-ps -p $$ -o comm=
-getent passwd "$USER"
+git config --file ~/.gitconfig.local user.name  "Tu Nombre"
+git config --file ~/.gitconfig.local user.email "tu@correo"
 ```
 
-Zsh queda **fuera de esta etapa**: no se instala ni se configura. Una migración
-Bash → Zsh se auditará por separado.
+Verificación:
+
+```bash
+git config --list --show-origin | grep -E 'user\.|credential|include'
+git config --get user.email
+gh auth status
+```
+
+`git-delta` es opcional: si `delta` no existe, su paquete Stow no se despliega y
+el include se ignora sin error. No se modifica la autenticación de Git ni de
+`gh`; la única acción manual es `gh auth login`.
+
+## Ghostty: tema de Omarchy intacto
+
+Regla obligatoria: Ghostty conserva **exactamente** el tema de Omarchy.
+
+- Omarchy entrega `~/.config/ghostty/config` con
+  `config-file = ?"~/.local/state/omarchy/current/theme/ghostty.conf"`.
+- El repo no versiona colores, paletas ni `theme =`.
+- No hay paquete Stow `ghostty/`.
+- `scripts/ghostty-personal.sh` es opcional y solo agrega preferencias no
+  visuales (tamaño de fuente, scrollback, atajos), con respaldo y validación.
+
+```bash
+./scripts/ghostty-personal.sh --dry-run
+./scripts/ghostty-personal.sh
+```
+
+Detalle: [docs/ghostty.md](docs/ghostty.md).
 
 ## Stow: uso manual
 
-Primero simulá y después aplicá:
+Primero simulá y después aplicá (la fase actual del repo **no** debe desplegar):
 
 ```bash
 cd ~/dotfiles
-stow -n -v bash bash-arch git ghostty opencode starship   # simulación
-stow -v    bash bash-arch git ghostty opencode starship   # aplicar
-```
-
-Combinaciones habituales:
-
-```bash
-# Escritorio completo
-stow -v bash bash-arch git ghostty opencode starship
-command -v delta && stow -v git-delta
-
-# Servidor o VM sin escritorio
-stow -v bash git starship
+stow -n -v bash bash-arch git opencode   # simulación
+stow -v    bash bash-arch git opencode   # aplicar, solo cuando corresponda
+command -v delta && stow -v git-delta    # opcional
 ```
 
 Rehacer enlaces después de agregar o renombrar archivos dentro de un paquete:
@@ -251,19 +262,22 @@ stow -D -v git-delta
 Verificar:
 
 ```bash
-ls -l ~/.bashrc ~/.bash_profile ~/.gitconfig ~/.config/ghostty/config
-stow -n -v bash bash-arch git ghostty opencode starship    # no debe listar LINK/UNLINK
+ls -l ~/.bashrc ~/.bash_profile ~/.gitconfig
+./scripts/verify.sh           # despliegue real
+./scripts/verify.sh --repo    # solo el repositorio
 ```
 
 ### Reglas de Stow
 
 1. Un paquete = una responsabilidad. No crees paquetes vacíos.
 2. La ruta dentro del paquete es la ruta bajo `$HOME`.
-3. Antes de mover un archivo, revisá que no tenga claves, tokens ni rutas privadas.
+3. No agregues archivos de Omarchy, secretos ni rutas privadas.
 4. Agregá la fila en la tabla y la línea en la estructura de este README.
 5. `.stowrc` usa `--no-folding`: enlaza archivos sueltos, no directorios enteros.
    Sin esa opción, `~/.config/git` sería un enlace al repo y todo lo que escriba
    Git terminaría versionado.
+
+Guía completa: [docs/stow.md](docs/stow.md).
 
 ## OpenCode V2
 
@@ -274,14 +288,15 @@ La configuración global versionada vive en `opencode/.config/opencode/`:
 - `dcp.jsonc`: Dynamic Context Pruning fijado, sin auto-update.
 - `opencode.omniroute.example.jsonc`: plantilla para OmniRoute, inactiva por defecto.
 
-El paquete `opencode` de los repositorios oficiales provee el CLI V2. No se usa
-Terra, RPM ni instaladores remotos.
+Omarchy entrega `~/.config/opencode/opencode.json` (solo `update: disable`) y
+`cli.json` (tema de la TUI). OpenCode carga `config.json` → `opencode.json` →
+`opencode.jsonc`, así que el archivo del repo se **fusiona encima** sin
+reemplazar la base de Omarchy.
 
 Decisiones importantes:
 
 - **Ponytail** (`opencode-ponytail@4.7.3`) es un plugin de V1 y **no** corre en
-  OpenCode V2. Sus reglas **Lite** viven en `AGENTS.md`. No hay configuración
-  muerta de Ponytail.
+  OpenCode V2. Sus reglas **Lite** viven en `AGENTS.md`.
 - **DCP** (`@tarquinen/opencode-dcp@3.2.0`) soporta la API V2 y queda fijado.
 - **OmniRoute** es opcional: se activa copiando su bloque a `opencode.jsonc` y
   definiendo `OMNIROUTE_API_KEY` en el entorno. Nunca se versiona la clave.
@@ -292,27 +307,27 @@ opencode --version
 opencode plugin list
 ```
 
-Detalles y solución de problemas: [docs/opencode.md](docs/opencode.md).
+Detalles: [docs/opencode.md](docs/opencode.md).
 
 ## Aplicaciones
 
 | Aplicación | Integración | Instalación | Actualización |
 |---|---|---|---|
-| Ghostty | Config principal | `bootstrap.sh` (pacman) | `sudo pacman -Syu` |
-| Zed | Editor | `bootstrap.sh` (pacman) | `sudo pacman -Syu` |
-| OpenCode | Agente/CLI | `bootstrap.sh` (pacman) | `sudo pacman -Syu` |
-| Obsidian | Notas | `bootstrap.sh` (pacman) | `sudo pacman -Syu` |
-| Docker | Opcional | `scripts/install-docker.sh` | `sudo pacman -Syu` |
-| NetBird | Opcional (AUR) | `scripts/install-netbird.sh` | `scripts/install-netbird.sh --update` |
-| OBS Studio | Opcional | `./bootstrap.sh --with-optional` | `sudo pacman -Syu` |
+| Ghostty | Omarchy (tema/config) | `apps.txt` solo si falta | `omarchy update` |
+| Zed | Editor | `apps.txt` (pacman) | `omarchy update` |
+| OpenCode | Agente/CLI | `apps.txt` (pacman o mise) | `omarchy update` |
+| Obsidian | Notas | `apps.txt` solo si falta | `omarchy update` |
+| Podman | Opcional | `--with-optional` | `omarchy update` |
+| NetBird | Opcional (AUR) | `scripts/install-netbird.sh` | `install-netbird.sh --update` |
+| OBS Studio | Opcional | `--with-optional` | `omarchy update` |
 
 Detalle: [docs/applications.md](docs/applications.md).
 
-## Escritorio (DMS / niri)
+## Escritorio (Omarchy / Hyprland)
 
-CachyOS administra el escritorio. **No lo instales ni lo stowees desde acá.**
-El repositorio solo aporta la configuración principal de Ghostty y un tema de
-fallback. Ver [docs/dms.md](docs/dms.md).
+Omarchy administra el escritorio. **No lo instales ni lo stowees desde acá.**
+El repositorio no toca Hyprland, el shell de Omarchy, los temas ni los
+terminales. Ver [docs/omarchy.md](docs/omarchy.md).
 
 ## Actualizaciones
 
@@ -322,15 +337,15 @@ git pull --ff-only
 ./bootstrap.sh            # idempotente: solo completa lo que falte
 ./scripts/verify.sh
 
-sudo pacman -Syu
+omarchy update
 ```
 
 - Después de cambiar archivos de un paquete: `stow -R -v <paquete>`.
 - DCP está fijado a propósito. Para actualizarlo, cambiá la versión en
   `opencode.jsonc`, revisá las notas del plugin y volvé a ejecutar
   `opencode plugin list`.
-- Addy skills está fijado a un commit. Actualizá `ADDY_COMMIT` en el script solo
-  después de revisar los cambios upstream.
+- Addy skills está fijado a un commit. Actualizá `ADDY_COMMIT` solo después de
+  revisar los cambios upstream.
 - No se actualiza nada automáticamente ni se reinicia el sistema.
 
 ## Configuración local (no versionada)
@@ -342,7 +357,7 @@ sudo pacman -Syu
 | `~/.ssh/config` | Accesos SSH |
 | `~/.config/opencode/service.json` | Secreto generado por OpenCode; **nunca** se versiona |
 
-Identidad de Git en un equipo nuevo:
+Identidad de Git en un equipo nuevo (si Omarchy no la configuró):
 
 ```bash
 git config --file ~/.gitconfig.local user.name  "Tu Nombre"
@@ -359,21 +374,20 @@ Cada despliegue con conflictos crea:
 ├── .bashrc
 ├── .bash_profile
 ├── .gitconfig
-└── .config/ghostty/config
+└── .config/opencode/...
 ```
 
 `~/.dotfiles-backup/LATEST` apunta al respaldo más reciente.
 
-Volver atrás (quitar los enlaces no toca el repositorio; después se restauran
-solo los archivos que el manifiesto respaldó):
+Volver atrás:
 
 ```bash
 cd ~/dotfiles
-stow -D -v bash bash-arch git ghostty opencode starship
-# si estaba desplegado:
-stow -D -v git-delta
+stow -D -v bash bash-arch git opencode
+command -v delta && stow -D -v git-delta
 
 backup="$(readlink -f ~/.dotfiles-backup/LATEST)"
+cat "$backup/manifest.txt"
 while IFS= read -r line; do
     orig="${line%% -> *}"
     dest="${line#* -> }"
@@ -382,19 +396,20 @@ while IFS= read -r line; do
 done < "$backup/manifest.txt"
 ```
 
-El manifiesto tiene el formato `origen -> respaldo`. Revisalo antes de copiar:
-`cat "$backup/manifest.txt"`. El procedimiento sobrescribe el contenido actual
-de esas rutas, no borra archivos que no estén en el manifiesto y no usa
-`stow --adopt`.
-
-Los respaldos viven fuera del repositorio y están cubiertos por `.gitignore`.
+El manifiesto tiene el formato `origen -> respaldo`. El procedimiento solo
+restaura lo que el script respaldó, no borra archivos ajenos al manifiesto y no
+usa `stow --adopt`. Los respaldos viven fuera del repositorio y están cubiertos
+por `.gitignore`.
 
 ## Seguridad
 
-- No se versionan `service.json`, `auth.json`, `.env`, claves privadas ni `dcp-prompts/`.
+- No se versionan `service.json`, `auth.json`, `.env`, claves privadas ni
+  `dcp-prompts/`.
 - En `opencode.jsonc` usá `{env:VARIABLE}` o `{file:ruta}`; nunca escribas claves.
-- `scripts/verify.sh` busca archivos sensibles y patrones obvios de secretos.
-- No se descargan ni ejecutan instaladores remotos: todo sale de pacman.
+- `scripts/verify.sh` y `scripts/test.sh` buscan archivos sensibles y patrones
+  obvios de secretos.
+- No se descargan ni ejecutan instaladores remotos: todo sale de pacman (salvo
+  Stow temporal para las pruebas y AUR para NetBird, ambos explícitos).
 - No se agrega al usuario al grupo `docker` (equivale a root).
 - No se aplica endurecimiento del sistema ni se modifican PAM, sysctl o repositorios.
 
@@ -404,35 +419,35 @@ Los respaldos viven fuera del repositorio y están cubiertos por `.gitignore`.
 |---|---|
 | `existing target is neither a link nor a directory` | Archivo real en el destino. Usá `./scripts/deploy-dotfiles.sh` (respalda) o movelo a `.orig`. |
 | `stow: command not found` | `sudo pacman -S stow`; el paso de paquetes lo instala. |
-| `pacman failed` al instalar | Base de datos vieja: `sudo pacman -Syu` y reintentar. |
-| Bash no es la shell al abrir una terminal | `./scripts/set-shell.sh`; después cerrá sesión y volvé a entrar. |
-| `starship`/`zoxide` no aparecen | Verificá que estén instalados y que `~/.bashrc` sea el enlace al repo. |
+| `pacman failed` al instalar | Base de datos vieja: `omarchy update` y reintentar. |
+| `starship`/`zoxide` no aparecen | Omarchy los inicializa desde su rc; verificá que `~/.bashrc` cargue `default/bash/rc`. |
+| Ghostty cambió de tema | No stowees Ghostty. Revisá `~/.config/ghostty/config` y `./scripts/verify.sh`. |
+| `ghostty +validate-config` falla | `ghostty-personal.sh` restaura el respaldo automáticamente; revisá el bloque personal. |
 | `git diff` falla por `delta` | Desplegaste `git-delta` sin tener `delta`. `stow -D git-delta` o instalá `git-delta`. |
-| DMS cambia el tema de Ghostty | Es esperado: `dankcolors` es administrado por DMS. El fallback solo cubre el primer arranque. |
-| `ghostty +show-config` muestra `/bin/fish` | `$SHELL` de la sesión está viejo. El repo fija `command = /usr/bin/bash`; cerrá sesión por completo y volvé a entrar. |
-| `ps` muestra `bash --posix` | Es la integración de shell de Ghostty; `ghostty.bash` ejecuta `set +o posix`. `ps -p $$ -o comm=` debe mostrar `bash`. |
-| `diagnose-system.sh` decía que no había driver NVIDIA | Corregido: usa `nvidia-smi`, `/sys/module/nvidia` y `lspci -k`, no solo paquetes o `lsmod`. |
+| `git` usa una ruta rara de `gh` | Omarchy apunta a una ruta de mise; el repo la reemplaza por `!gh auth git-credential`. |
 | `opencode plugin list` no muestra DCP | El servicio aún no arrancó o falta red; reintentá tras el primer inicio. |
-| Un AppImage no arranca | Verificá `/dev/fuse` y `fuse2`/`fuse3`. |
+| `opencode.jsonc` no se aplica | Verificá el orden: `config.json` → `opencode.json` → `opencode.jsonc`. |
 | `gh` pide autenticación | `gh auth login` (única acción manual esperada). |
 
 ## Validación
 
-Antes de dar por buena una instalación:
+Las pruebas no tocan el `$HOME` real: despliegan en directorios temporales.
 
 ```bash
 for f in bootstrap.sh scripts/*.sh bash/.bashrc bash/.bash_profile \
          bash-arch/.config/bash/pacman.sh; do bash -n "$f"; done
-if command -v shellcheck >/dev/null; then shellcheck -x bootstrap.sh scripts/*.sh; fi
-./bootstrap.sh --dry-run
-./scripts/verify.sh
+
+./scripts/test.sh          # sintaxis, JSONC, manifiestos, Stow, idempotencia, Ghostty
+./scripts/verify.sh --repo # integridad del repo, sin desplegar
+./scripts/verify.sh        # solo después de desplegar
 ./scripts/diagnose-system.sh
 ```
 
-`verify.sh` comprueba la configuración efectiva de Ghostty (`command` Bash y
-`theme = dankcolors`), no solo que el archivo exista. `diagnose-system.sh`
-distingue GPU detectada, driver instalado y driver activo.
+`verify.sh` comprueba que Ghostty siga usando el tema dinámico de Omarchy y que
+el repo no contenga colores ni un `theme =`. `test.sh` descarga GNU Stow a un
+directorio temporal si no está instalado, para poder ejecutar
+`stow --simulate` sin modificar el sistema. `diagnose-system.sh` distingue GPU
+detectada, driver instalado y driver activo.
 
-`--dry-run` no instala nada y no escribe enlaces. La verificación real requiere
-una sesión CachyOS/Arch con los paquetes instalados. Ver [AUDIT.md](AUDIT.md) para
-el estado de las comprobaciones realizadas en esta auditoría.
+`--dry-run` no instala nada y no escribe enlaces. Ver [AUDIT.md](AUDIT.md) para
+el estado de las comprobaciones realizadas.

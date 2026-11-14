@@ -6,7 +6,9 @@
 #   * Existing real files are moved to ~/.dotfiles-backup/<timestamp>/ (not deleted).
 #   * Symlinks that point somewhere other than this repository are treated as
 #     conflicts and are backed up instead of overwritten.
-#   * DMS-managed files are never stowed or edited.
+#   * Omarchy-managed files (~/.config/ghostty/config, ~/.config/starship.toml,
+#     ~/.config/git/config, ~/.bashrc from the skel, ...) are never stowed.
+#   * Ghostty is not part of the deployment: Omarchy owns its config and theme.
 
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 
@@ -18,6 +20,9 @@ Options:
   --dry-run   Show the conflicts and the Stow simulation; change nothing.
   --yes, -y   Do not ask before moving conflicting files to the backup folder.
   -h, --help  Show this help.
+
+Packages deployed: bash, bash-arch, git, opencode and, when `delta` exists,
+git-delta. Ghostty, Starship and the Omarchy desktop are not managed here.
 EOF
 }
 
@@ -40,17 +45,19 @@ main() {
         fi
     fi
 
-    local -a packages=(bash bash-arch git ghostty opencode starship)
+    local -a packages=(bash bash-arch git opencode)
     local pkg
 
     for pkg in "${packages[@]}"; do
         [[ -d "$REPO_ROOT/$pkg" ]] || die "Missing Stow package directory: $pkg"
     done
 
+    # delta is optional: Git would fail as a pager if the package were linked
+    # without the binary.
     if have delta; then
         packages+=(git-delta)
     else
-        warn "delta is not installed; skipping the git-delta package."
+        info "delta is not installed; skipping the optional git-delta package."
     fi
 
     local -a conflicts=()
@@ -143,16 +150,8 @@ main() {
         stow -v -t "$HOME" "${packages[@]}" || die "Stow failed; review the output above."
     fi
 
-    # DMS owns ~/.config/ghostty/themes/dankcolors. Provide a fallback only when
-    # DMS has not generated it yet; never overwrite the managed file.
-    local theme="$HOME/.config/ghostty/themes/dankcolors"
-    if [[ -e "$theme" || -L "$theme" ]]; then
-        info "DMS Ghostty theme present; leaving it untouched."
-    else
-        log "Installing the Ghostty fallback theme (DMS will replace it later)."
-        run install -Dm644 "$REPO_ROOT/assets/ghostty/dankcolors" "$theme"
-    fi
-
+    info "Ghostty, Starship and the Omarchy desktop were not touched."
+    info "Personal Ghostty preferences (optional, never the theme): ./scripts/ghostty-personal.sh"
     log "Deployment step finished."
 }
 

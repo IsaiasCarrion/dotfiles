@@ -1,5 +1,9 @@
 # Personal applications installed by the default bootstrap.
-# All of them are available in the official Arch/CachyOS repositories.
+# All of them are available in the official Arch repositories.
+#
+# Omarchy ships ghostty optionally and obsidian by default; zed is not part of
+# the base image, and opencode is provided through mise. The installer skips
+# whatever is already installed or already provided by Omarchy.
 
 ghostty
 zed

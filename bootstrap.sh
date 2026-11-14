@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# bootstrap.sh — one-command restore for this CachyOS desktop.
+# bootstrap.sh — one-command restore for this Omarchy desktop.
 # The real work lives in scripts/; this wrapper only keeps the entry point tidy.
 
 set -Eeuo pipefail
